@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A calmer way to keep up - Join the Waitlist</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="A new space for the content that matters – minus the noise. Join our waitlist for early access to a more peaceful way of managing your digital life.">
+    <meta name="keywords" content="content management, digital organization, productivity, peaceful technology">
+    <meta name="author" content="Content Management App">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="A calmer way to keep up - Join the Waitlist">
+    <meta property="og:description" content="A new space for the content that matters – minus the noise.">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A calmer way to keep up - Join the Waitlist">
+    <meta name="twitter:description" content="A new space for the content that matters – minus the noise.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">A calmer way to keep up.</h1>
+                    <p class="hero-subtitle">A new space for the content that matters – minus the noise.</p>
+                    
+                    <form class="signup-form" id="hero-form">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input 
+                                    type="email" 
+                                    id="hero-email" 
+                                    name="email" 
+                                    placeholder="Your Email Address" 
+                                    required
+                                    aria-label="Email address"
+                                >
+                                <button type="submit" class="submit-btn" aria-label="Join waitlist">
+                                    <span class="btn-text">Join Waitlist!</span>
+                                    <span class="btn-loading">
+                                        <svg class="loading-spinner" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                                                <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1.5s" repeatCount="indefinite" />
+                                            </circle>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="error-message" id="hero-error"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Problem & Value Section -->
+        <section class="problem-section">
+            <div class="container">
+                <div class="problem-content">
+                    <h2 class="problem-title">Everything's scattered.</h2>
+                    <div class="problem-text">
+                        <p>Inbox overflowing. Too many tabs. Too many feeds.</p>
+                        <p>What you care about is buried, and what you don't is constant.</p>
+                        <p>We're building a quiet little home for your digital life.</p>
+                        <p>So you can spend less time checking, and more time enjoying.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Secondary CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Let your content come to you.</h2>
+                    <p class="cta-subtitle">Get early access to a more peaceful way of keeping up.</p>
+                    
+                    <form class="signup-form" id="cta-form">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input 
+                                    type="email" 
+                                    id="cta-email" 
+                                    name="email" 
+                                    placeholder="Your Email Address" 
+                                    required
+                                    aria-label="Email address"
+                                >
+                                <button type="submit" class="submit-btn" aria-label="Join waitlist">
+                                    <span class="btn-text">Join Waitlist!</span>
+                                    <span class="btn-loading">
+                                        <svg class="loading-spinner" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                                                <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1.5s" repeatCount="indefinite" />
+                                            </circle>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="error-message" id="cta-error"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>

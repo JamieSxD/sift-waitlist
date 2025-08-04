@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sift</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <main class="main-content">
+        <!-- Header Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Welcome to Sift</h1>
+                    <p class="hero-subtitle">Your personalized content hub</p>
+
+                    <div style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
+                        <button class="submit-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletters Section -->
+        <section class="problem-section">
+            <div class="container">
+                <div class="problem-content">
+                    <h2 class="problem-title">📧 Newsletters</h2>
+                    <div class="problem-text">
+                        <p>Manage your newsletter subscriptions here.</p>
+                        <p>Add new newsletters, view recent issues, and organize your reading.</p>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <button class="submit-btn" onclick="manageNewsletters()">Manage Newsletters</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YouTube Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">📺 YouTube</h2>
+                    <p class="cta-subtitle">Connect your YouTube account to see new videos from your subscriptions without the algorithmic distractions.</p>
+
+                    <div style="margin-top: 24px;">
+                        <button class="submit-btn" onclick="connectYoutube()">Connect YouTube</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSS Feeds Section -->
+        <section class="problem-section">
+            <div class="container">
+                <div class="problem-content">
+                    <h2 class="problem-title">📰 RSS Feeds</h2>
+                    <div class="problem-text">
+                        <p>Add RSS feeds from your favorite blogs and news sites.</p>
+                        <p>All your content updates in one organized timeline.</p>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <button class="submit-btn" onclick="manageRss()">Manage RSS Feeds</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">⚙️ Settings</h2>
+                    <p class="cta-subtitle">Customize your Sift experience, manage notifications, and adjust your reading preferences.</p>
+
+                    <div style="margin-top: 24px;">
+                        <button class="submit-btn" onclick="openSettings()">Open Settings</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function logout() {
+            console.log('Logout clicked');
+            // Redirect to home page for now
+            window.location.href = '/';
+        }
+
+        function manageNewsletters() {
+            console.log('Manage newsletters clicked');
+        }
+
+        function connectYoutube() {
+            console.log('Connect YouTube clicked');
+        }
+
+        function manageRss() {
+            console.log('Manage RSS feeds clicked');
+        }
+
+        function openSettings() {
+            console.log('Open settings clicked');
+        }
+    </script>
+</body>
+</html>

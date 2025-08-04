@@ -46,31 +46,10 @@
                     <h1 class="hero-title">A calmer way to keep up.</h1>
                     <p class="hero-subtitle">A new space for the content that matters – minus the noise.</p>
                     
-                    <form class="signup-form" id="hero-form">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input 
-                                    type="email" 
-                                    id="hero-email" 
-                                    name="email" 
-                                    placeholder="Your Email Address" 
-                                    required
-                                    aria-label="Email address"
-                                >
-                                <button type="submit" class="submit-btn" aria-label="Join waitlist">
-                                    <span class="btn-text">Join Waitlist!</span>
-                                    <span class="btn-loading">
-                                        <svg class="loading-spinner" viewBox="0 0 24 24">
-                                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
-                                                <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1.5s" repeatCount="indefinite" />
-                                            </circle>
-                                        </svg>
-                                    </span>
-                                </button>
-                            </div>
-                            <div class="error-message" id="hero-error"></div>
-                        </div>
-                    </form>
+                    <div style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
+                        <button class="submit-btn" onclick="signUp()">Sign Up</button>
+                        <button class="submit-btn" onclick="signIn()">Sign In</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -97,36 +76,24 @@
                     <h2 class="cta-title">Let your content come to you.</h2>
                     <p class="cta-subtitle">Get early access to a more peaceful way of keeping up.</p>
                     
-                    <form class="signup-form" id="cta-form">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input 
-                                    type="email" 
-                                    id="cta-email" 
-                                    name="email" 
-                                    placeholder="Your Email Address" 
-                                    required
-                                    aria-label="Email address"
-                                >
-                                <button type="submit" class="submit-btn" aria-label="Join waitlist">
-                                    <span class="btn-text">Join Waitlist!</span>
-                                    <span class="btn-loading">
-                                        <svg class="loading-spinner" viewBox="0 0 24 24">
-                                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
-                                                <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1.5s" repeatCount="indefinite" />
-                                            </circle>
-                                        </svg>
-                                    </span>
-                                </button>
-                            </div>
-                            <div class="error-message" id="cta-error"></div>
-                        </div>
-                    </form>
+                    <div style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
+                        <button class="submit-btn" onclick="signUp()">Sign Up</button>
+                        <button class="submit-btn" onclick="signIn()">Sign In</button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
     
     <script src="script.js"></script>
+    <script>
+        function signUp() {
+            window.location.href = '/auth/google';
+        }
+
+        function signIn() {
+            window.location.href = '/auth/google';
+        }
+    </script>
 </body>
 </html>

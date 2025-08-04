@@ -147,12 +147,31 @@ class FormHandler {
     }
 }
 
+// Reading progress bar functionality (keeping this - it's nice and subtle)
+function updateProgressBar() {
+    const progressBar = document.getElementById('progress-bar');
+    if (!progressBar) return;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight - windowHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    const progress = (scrollTop / documentHeight) * 100;
+    progressBar.style.width = Math.min(progress, 100) + '%';
+}
+
 // Initialize forms when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize both forms
     new FormHandler('hero-form', 'hero-email', 'hero-error');
     new FormHandler('cta-form', 'cta-email', 'cta-error');
     
+    // Add scroll event listener for progress bar
+    window.addEventListener('scroll', updateProgressBar);
+
+    // Initialize progress bar
+    updateProgressBar();
+
     // Add smooth scrolling enhancement
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

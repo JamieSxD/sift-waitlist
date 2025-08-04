@@ -291,7 +291,7 @@ body {
     .hero-title {
         font-size: 42px;
     }
-    
+
     .problem-title,
     .cta-title {
         font-size: 28px;
@@ -303,58 +303,58 @@ body {
         padding: 60px 0 80px;
         min-height: auto;
     }
-    
+
     .hero-title {
         font-size: 36px;
         margin-bottom: 20px;
     }
-    
+
     .hero-subtitle {
         font-size: 16px;
         margin-bottom: 40px;
     }
-    
+
     .problem-section,
     .cta-section {
         padding: 60px 0;
     }
-    
+
     .problem-title,
     .cta-title {
         font-size: 24px;
         margin-bottom: 32px;
     }
-    
+
     .problem-text p {
         font-size: 16px;
     }
-    
+
     .cta-subtitle {
         font-size: 14px;
         margin-bottom: 32px;
     }
-    
+
     .input-wrapper {
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .input-wrapper input,
     .submit-btn {
         width: 100%;
         min-height: 52px;
     }
-    
+
     .submit-btn {
         padding: 16px 24px;
     }
-    
+
     .toast-container {
         top: 16px;
         right: 16px;
         left: 16px;
     }
-    
+
     .toast {
         max-width: none;
     }
@@ -364,22 +364,22 @@ body {
     .container {
         padding: 0 16px;
     }
-    
+
     .hero-title {
         font-size: 32px;
     }
-    
+
     .problem-title,
     .cta-title {
         font-size: 22px;
     }
-    
+
     .input-wrapper input,
     .submit-btn {
         min-height: 48px;
         padding: 14px 18px;
     }
-    
+
     .submit-btn {
         font-size: 15px;
     }
@@ -409,8 +409,48 @@ input:focus-visible {
     .cta-subtitle {
         color: #4A5568;
     }
-    
+
     .input-wrapper input {
         border-color: #2D3748;
     }
+}
+
+/* Add ONLY this to your existing styles.css file */
+/* This removes all arrow-related styles and keeps just the progress bar */
+
+/* Reading progress bar (the only enhancement we're keeping) */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    z-index: 1000;
+    transition: width 0.25s ease-out;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+/* Remove any extra padding that was added for arrows */
+.hero-section {
+    position: relative;
+    /* Remove any extra padding-bottom that was added for scroll indicators */
+}
+
+/* Smooth scroll behavior (keep this - it's useful) */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Problem section smooth scrolling offset (keep this) */
+.problem-section {
+    scroll-margin-top: 50px;
+}
+
+/* Hide any leftover arrow elements if they exist */
+.fun-arrow,
+.scroll-indicator,
+.scroll-indicator-text,
+.scroll-arrow {
+    display: none !important;
 }

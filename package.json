@@ -1,19 +1,32 @@
 {
-  "name": "content-management-waitlist",
+  "name": "sift-waitlist",
   "version": "1.0.0",
-  "description": "Waitlist landing page for personal content management app",
+  "description": "Waitlist application for Sift with Loops email integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "mkdir -p dist && cp -r public/* dist/"
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "express-validator": "^7.0.1"
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "loops": "^5.0.1",
+    "morgan": "^1.10.0"
   },
-  "keywords": ["waitlist", "landing-page", "content-management"],
-  "author": "",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "waitlist",
+    "email",
+    "loops",
+    "saas"
+  ],
+  "author": "Your Name",
   "license": "MIT"
 }

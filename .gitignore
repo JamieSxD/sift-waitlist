@@ -1,2 +1,17 @@
 node_modules/
 .env
+
+# Environment variables (IMPORTANT - protects your Loops API key)
+.env.local
+.env.production
+
+# Email storage file
+emails.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db

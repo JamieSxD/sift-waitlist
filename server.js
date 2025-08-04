@@ -1,8 +1,14 @@
+// Load environment variables first
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const { body, validationResult } = require('express-validator');
 const fs = require('fs').promises;
 const path = require('path');
+
+// Import Loops service
+const loopsService = require('./services/loopsService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +38,7 @@ async function loadEmails() {
   }
 }
 
-// Save email to file
+// Save email to file (keeping your existing backup system)
 async function saveEmail(email) {
   try {
     const data = await loadEmails();
@@ -61,7 +67,7 @@ async function saveEmail(email) {
 const validateEmail = [
   body('email')
     .isEmail()
-    .normalizeEmail()
+    .trim()  // Just trim whitespace, don't normalize
     .withMessage('Please provide a valid email address')
 ];
 
@@ -70,7 +76,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Email signup endpoint
+// Email signup endpoint (enhanced with Loops integration)
 app.post('/api/signup', validateEmail, async (req, res) => {
   try {
     // Check for validation errors
@@ -84,24 +90,65 @@ app.post('/api/signup', validateEmail, async (req, res) => {
     }
 
     const { email } = req.body;
+    console.log(`📝 Processing signup for: ${email}`);
     
-    // Save email
-    await saveEmail(email);
-    
-    res.status(200).json({
-      success: true,
-      message: "You're on the list. We'll be in touch soon ✨"
-    });
-    
-  } catch (error) {
-    if (error.message === 'Email already registered') {
+    let fileSuccess = false;
+    let loopsSuccess = false;
+    let isDuplicate = false;
+
+    // 1. Save to file first (your existing system)
+    try {
+      await saveEmail(email);
+      fileSuccess = true;
+      console.log(`✅ Email saved to file: ${email}`);
+    } catch (error) {
+      if (error.message === 'Email already registered') {
+        isDuplicate = true;
+        console.log(`ℹ️  Email already in file: ${email}`);
+      } else {
+        console.error('❌ Error saving to file:', error);
+      }
+    }
+
+    // 2. Add to Loops (new integration)
+    try {
+      const loopsResult = await loopsService.addToWaitlist(email);
+      if (loopsResult.success) {
+        loopsSuccess = true;
+        console.log(`✅ Email added to Loops: ${email}`);
+      } else {
+        console.log(`ℹ️  Loops addition failed: ${loopsResult.message}`);
+      }
+    } catch (error) {
+      console.error('❌ Error with Loops integration:', error);
+    }
+
+    // 3. Determine response based on results
+    if (isDuplicate) {
+      // Email already exists - return same message as before
       return res.status(409).json({
         success: false,
         message: "You're already on our list! We'll be in touch soon."
       });
     }
+
+    if (fileSuccess || loopsSuccess) {
+      // Success if either method worked
+      res.status(200).json({
+        success: true,
+        message: "You're on the list. We'll be in touch soon ✨"
+      });
+    } else {
+      // Both methods failed
+      console.error('❌ Both file and Loops saving failed for:', email);
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong. Please try again later.'
+      });
+    }
     
-    console.error('Error saving email:', error);
+  } catch (error) {
+    console.error('❌ Unexpected error in signup:', error);
     res.status(500).json({
       success: false,
       message: 'Something went wrong. Please try again later.'
@@ -109,13 +156,36 @@ app.post('/api/signup', validateEmail, async (req, res) => {
   }
 });
 
-// Get email count (optional admin endpoint)
+// Get email count (enhanced with Loops status)
 app.get('/api/count', async (req, res) => {
   try {
     const data = await loadEmails();
-    res.json({ count: data.emails.length });
+    const loopsStatus = loopsService.getStatus();
+
+    res.json({
+      count: data.emails.length,
+      loops: loopsStatus
+    });
   } catch (error) {
     res.status(500).json({ error: 'Failed to get count' });
+  }
+});
+
+// Health check endpoint (new)
+app.get('/api/health', async (req, res) => {
+  try {
+    const loopsStatus = await loopsService.testConnection();
+    res.json({
+      server: 'ok',
+      loops: loopsStatus,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      server: 'ok',
+      loops: { success: false, message: 'Health check failed' },
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
@@ -139,8 +209,18 @@ app.use((req, res) => {
 // Initialize and start server
 async function startServer() {
   await initializeEmailFile();
+
+  // Test Loops connection on startup
+  const loopsStatus = await loopsService.testConnection();
+  if (loopsStatus.success) {
+    console.log('🚀 Loops integration ready');
+  } else {
+    console.log('⚠️  Loops integration not available:', loopsStatus.message);
+  }
+
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📧 Loops configured: ${loopsService.getStatus().configured ? '✅' : '❌'}`);
   });
 }
 

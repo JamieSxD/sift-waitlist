@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sift</title>
+    <title>Dashboard - Siftly</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
@@ -95,6 +95,22 @@
                 </div>
             </div>
         </section>
+
+        <section class="problem-section">
+            <div class="container">
+                <div class="problem-content">
+                    <h2 class="problem-title">💬 Feedback</h2>
+                    <div class="problem-text">
+                        <p>Help us improve Siftly by sharing your thoughts and feature requests.</p>
+                        <p>Your feedback directly shapes our development priorities.</p>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <button class="submit-btn" onclick="openFeedback()">Share Feedback</button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
@@ -118,6 +134,10 @@
 
         function openSettings() {
             console.log('Open settings clicked');
+        }
+
+        function openFeedback() {
+            window.open('https://siftly.canny.io/feature-requests', '_blank');
         }
     </script>
 </body>

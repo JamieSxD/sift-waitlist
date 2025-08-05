@@ -263,6 +263,11 @@ app.get('/api/count', async (req, res) => {
   }
 });
 
+// Feedback page
+app.get('/feedback', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
+});
+
 // =================
 // STATIC FILES (AFTER ROUTES)
 // =================

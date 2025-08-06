@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletters - Siftly</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .newsletter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .newsletter-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(224, 224, 224, 0.3);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+
+        .newsletter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .newsletter-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .newsletter-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .newsletter-description {
+            font-size: 14px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .newsletter-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .newsletter-tag {
+            background: #F0F0F0;
+            color: #71717A;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .subscribe-btn {
+            width: 100%;
+            padding: 12px;
+            background: #6C7BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .subscribe-btn:hover {
+            background: #5A6ADC;
+        }
+
+        .subscribe-btn.subscribed {
+            background: #10B981;
+        }
+
+        .subscribe-btn.subscribed:hover {
+            background: #059669;
+        }
+
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            color: #6C7BFF;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <main class="main-content">
+        <!-- Header Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+                    <h1 class="hero-title">Discover Newsletters</h1>
+                    <p class="hero-subtitle">Subscribe to your favorite newsletters and read them all in one place</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletters Section -->
+        <section class="problem-section">
+            <div class="container">
+                <div class="problem-content">
+                    <div id="newsletters-loading" class="problem-text">
+                        <p>Loading newsletters...</p>
+                    </div>
+
+                    <div id="newsletters-grid" class="newsletter-grid" style="display: none;">
+                        <!-- Newsletter cards will be populated by JavaScript -->
+                    </div>
+
+                    <div id="newsletters-error" class="problem-text" style="display: none;">
+                        <p>Failed to load newsletters. Please try again later.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 4000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+
+                return toast;
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+
+        // Newsletter management
+        async function loadNewsletters() {
+            try {
+                const response = await fetch('/api/newsletters/available');
+                const data = await response.json();
+
+                if (data.success) {
+                    displayNewsletters(data.newsletters);
+                    document.getElementById('newsletters-loading').style.display = 'none';
+                    document.getElementById('newsletters-grid').style.display = 'grid';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error loading newsletters:', error);
+                document.getElementById('newsletters-loading').style.display = 'none';
+                document.getElementById('newsletters-error').style.display = 'block';
+            }
+        }
+
+        function displayNewsletters(newsletters) {
+            const grid = document.getElementById('newsletters-grid');
+            grid.innerHTML = '';
+
+            newsletters.forEach(newsletter => {
+                const card = createNewsletterCard(newsletter);
+                grid.appendChild(card);
+            });
+        }
+
+        function createNewsletterCard(newsletter) {
+            const card = document.createElement('div');
+            card.className = 'newsletter-card';
+
+            const logoLetter = newsletter.name.charAt(0).toUpperCase();
+            const frequency = newsletter.metadata?.frequency || 'weekly';
+            const category = newsletter.category || 'general';
+
+            card.innerHTML = `
+                <div class="newsletter-logo">${logoLetter}</div>
+                <div class="newsletter-name">${newsletter.name}</div>
+                <div class="newsletter-description">${newsletter.description}</div>
+                <div class="newsletter-meta">
+                    <span class="newsletter-tag">${category}</span>
+                    <span class="newsletter-tag">${frequency}</span>
+                </div>
+                <button class="subscribe-btn ${newsletter.isSubscribed ? 'subscribed' : ''}"
+                        onclick="toggleSubscription('${newsletter.id}', this)">
+                    ${newsletter.isSubscribed ? 'Subscribed ✓' : 'Subscribe'}
+                </button>
+            `;
+
+            return card;
+        }
+
+        async function toggleSubscription(newsletterId, button) {
+            if (button.classList.contains('loading')) return;
+
+            button.classList.add('loading');
+            const originalText = button.textContent;
+            button.textContent = 'Loading...';
+
+            try {
+                const isSubscribed = button.classList.contains('subscribed');
+                const endpoint = isSubscribed ? 'unsubscribe' : 'subscribe';
+
+                const response = await fetch(`/api/newsletters/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ newsletterId }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (isSubscribed) {
+                        button.classList.remove('subscribed');
+                        button.textContent = 'Subscribe';
+                        toastManager.show('Unsubscribed successfully', 'success');
+                    } else {
+                        button.classList.add('subscribed');
+                        button.textContent = 'Subscribed ✓';
+                        toastManager.show(`Subscribed! Forward emails to: ${data.forwardingEmail}`, 'success', 6000);
+                    }
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error toggling subscription:', error);
+                toastManager.show('Something went wrong. Please try again.', 'error');
+                button.textContent = originalText;
+            } finally {
+                button.classList.remove('loading');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNewsletters();
+        });
+    </script>
+</body>
+</html>

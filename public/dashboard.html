@@ -3,142 +3,693 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Siftly</title>
+    <title>Dashboard - Sift</title>
 
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            background: #FDFCFB;
+        }
+
+        .sidebar {
+            background: white;
+            border-right: 1px solid #E0E0E0;
+            padding: 24px;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 24px;
+        }
+
+        .sidebar-header {
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1E1E1E;
+        }
+
+        .add-content-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .add-content-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .content-categories {
+            margin-bottom: 32px;
+        }
+
+        .category-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #71717A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-bottom: 4px;
+        }
+
+        .category-item:hover {
+            background: #F8F9FA;
+        }
+
+        .category-item.active {
+            background: #EEF0FF;
+            color: #6C7BFF;
+        }
+
+        .category-icon {
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .category-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: #71717A;
+            background: #F3F4F6;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .user-menu {
+            border-top: 1px solid #E0E0E0;
+            padding-top: 20px;
+            margin-top: auto;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .user-profile:hover {
+            background: #F8F9FA;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            background: white;
+            color: #71717A;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .header-btn:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .content-feed {
+            max-width: 800px;
+        }
+
+        .content-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #E0E0E0;
+            transition: all 0.2s ease-out;
+        }
+
+        .content-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 16px;
+        }
+
+        .content-source {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .source-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .source-info {
+            flex: 1;
+        }
+
+        .source-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .content-time {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            background: white;
+            color: #71717A;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .action-btn:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .content-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .content-excerpt {
+            font-size: 15px;
+            color: #71717A;
+            line-height: 1.5;
+        }
+
+        .empty-dashboard {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+        }
+
+        .empty-description {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .get-started-btn {
+            padding: 16px 32px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .get-started-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .floating-add-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease-out;
+            display: none; /* Show only on mobile */
+        }
+
+        .floating-add-btn:hover {
+            background: #374151;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .floating-add-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <main class="main-content">
-        <!-- Header Section -->
-        <section class="hero-section">
-            <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Welcome to Sift</h1>
-                    <p class="hero-subtitle">Your personalized content hub</p>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">🌱</div>
+                    <div class="logo-text">Sift</div>
+                </div>
 
-                    <div style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
-                        <button class="submit-btn" onclick="logout()">Logout</button>
+                <button class="add-content-btn" onclick="addContent()">
+                    <span>+</span>
+                    <span>Add Content</span>
+                </button>
+            </div>
+
+            <!-- Content Categories -->
+            <div class="content-categories">
+                <div class="category-title">Content</div>
+                <ul class="category-list">
+                    <li class="category-item active">
+                        <span class="category-icon">📊</span>
+                        <span class="category-name">All Content</span>
+                        <span class="category-count">24</span>
+                    </li>
+                    <li class="category-item">
+                        <span class="category-icon">📧</span>
+                        <span class="category-name">Newsletters</span>
+                        <span class="category-count">8</span>
+                    </li>
+                    <li class="category-item">
+                        <span class="category-icon">📺</span>
+                        <span class="category-name">Videos</span>
+                        <span class="category-count">4</span>
+                    </li>
+                    <li class="category-item">
+                        <span class="category-icon">🎵</span>
+                        <span class="category-name">Music</span>
+                        <span class="category-count">12</span>
+                    </li>
+                    <li class="category-item">
+                        <span class="category-icon">📰</span>
+                        <span class="category-name">News</span>
+                        <span class="category-count">0</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- User Menu -->
+            <div class="user-menu">
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">Loading...</div>
+                        <div class="user-email" id="user-email"></div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Newsletters Section -->
-        <section class="problem-section">
-            <div class="container">
-                <div class="problem-content">
-                    <h2 class="problem-title">📧 Newsletters</h2>
-                    <div class="problem-text">
-                        <p>Manage your newsletter subscriptions here.</p>
-                        <p>Add new newsletters, view recent issues, and organize your reading.</p>
-                    </div>
-
-                    <div style="margin-top: 24px;">
-                        <button class="submit-btn" onclick="manageNewsletters()">Manage Newsletters</button>
-                    </div>
+                <!-- User Menu Dropdown (hidden by default) -->
+                <div id="user-dropdown" style="display: none; margin-top: 12px;">
+                    <button onclick="openSettings()" style="width: 100%; padding: 8px 12px; background: transparent; border: none; text-align: left; cursor: pointer; border-radius: 6px; font-size: 14px; color: #71717A;">Settings</button>
+                    <button onclick="openFeedback()" style="width: 100%; padding: 8px 12px; background: transparent; border: none; text-align: left; cursor: pointer; border-radius: 6px; font-size: 14px; color: #71717A;">Feedback</button>
+                    <button onclick="logout()" style="width: 100%; padding: 8px 12px; background: transparent; border: none; text-align: left; cursor: pointer; border-radius: 6px; font-size: 14px; color: #71717A;">Sign Out</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- YouTube Section -->
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2 class="cta-title">📺 YouTube</h2>
-                    <p class="cta-subtitle">Connect your YouTube account to see new videos from your subscriptions without the algorithmic distractions.</p>
-
-                    <div style="margin-top: 24px;">
-                        <button class="submit-btn" onclick="connectYoutube()">Connect YouTube</button>
-                    </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1 class="header-title">Your Content</h1>
+                <div class="header-actions">
+                    <button class="header-btn">Mark all read</button>
+                    <button class="header-btn">Filter</button>
                 </div>
             </div>
-        </section>
 
-        <!-- RSS Feeds Section -->
-        <section class="problem-section">
-            <div class="container">
-                <div class="problem-content">
-                    <h2 class="problem-title">📰 RSS Feeds</h2>
-                    <div class="problem-text">
-                        <p>Add RSS feeds from your favorite blogs and news sites.</p>
-                        <p>All your content updates in one organized timeline.</p>
-                    </div>
-
-                    <div style="margin-top: 24px;">
-                        <button class="submit-btn" onclick="manageRss()">Manage RSS Feeds</button>
-                    </div>
-                </div>
+            <!-- Content Feed -->
+            <div class="content-feed" id="content-feed">
+                <!-- Content will be loaded here -->
             </div>
-        </section>
 
-        <!-- Settings Section -->
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2 class="cta-title">⚙️ Settings</h2>
-                    <p class="cta-subtitle">Customize your Sift experience, manage notifications, and adjust your reading preferences.</p>
-
-                    <div style="margin-top: 24px;">
-                        <button class="submit-btn" onclick="openSettings()">Open Settings</button>
-                    </div>
-                </div>
+            <!-- Empty State -->
+            <div class="empty-dashboard" id="empty-state" style="display: none;">
+                <div class="empty-icon">📚</div>
+                <h2 class="empty-title">Welcome to Your Content Hub</h2>
+                <p class="empty-description">
+                    Connect your favorite sources in one place and never miss important updates again
+                </p>
+                <button class="get-started-btn" onclick="addContent()">Get Started</button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section class="problem-section">
-            <div class="container">
-                <div class="problem-content">
-                    <h2 class="problem-title">💬 Feedback</h2>
-                    <div class="problem-text">
-                        <p>Help us improve Siftly by sharing your thoughts and feature requests.</p>
-                        <p>Your feedback directly shapes our development priorities.</p>
-                    </div>
-
-                    <div style="margin-top: 24px;">
-                        <button class="submit-btn" onclick="openFeedback()">Share Feedback</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+    <!-- Floating Add Button (Mobile) -->
+    <button class="floating-add-btn" onclick="addContent()">+</button>
 
     <script>
-        function logout() {
-            console.log('Logout clicked');
-            // Redirect to home page for now
-            window.location.href = '/';
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
         }
 
-        function manageNewsletters() {
-            console.log('Manage newsletters clicked');
+        const toastManager = new ToastManager();
+
+        // Mock content data
+        const mockContent = [
+            {
+                id: 1,
+                type: 'newsletter',
+                source: { name: 'Morning Brew', icon: 'M' },
+                title: 'Tesla\'s surprise quarter, Netflix password crackdown, and more',
+                excerpt: 'Tesla shocked everyone by beating delivery expectations despite supply chain challenges. The company delivered 466,140 vehicles...',
+                time: '2 hours ago'
+            },
+            {
+                id: 2,
+                type: 'youtube',
+                source: { name: 'Marques Brownlee', icon: 'MB' },
+                title: 'iPhone 15 Pro Review: Titanium is Tough!',
+                excerpt: 'The iPhone 15 Pro brings titanium construction, Action Button, and USB-C. But is it worth the upgrade?',
+                time: '5 hours ago'
+            },
+            {
+                id: 3,
+                type: 'newsletter',
+                source: { name: 'The Hustle', icon: 'H' },
+                title: 'Why everyone\'s talking about NFTs',
+                excerpt: 'Non-fungible tokens have taken the art world by storm. From digital art selling for millions to celebrities launching...',
+                time: '1 day ago'
+            }
+        ];
+
+        // Load user information
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+
+                if (data.isAuthenticated && data.user) {
+                    document.getElementById('user-name').textContent = data.user.name;
+                    document.getElementById('user-email').textContent = data.user.email;
+
+                    const avatar = document.getElementById('user-avatar');
+                    if (data.user.avatar) {
+                        avatar.innerHTML = `<img src="${data.user.avatar}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%;">`;
+                    } else {
+                        avatar.textContent = data.user.name.charAt(0).toUpperCase();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+            }
         }
 
-        function connectYoutube() {
-            console.log('Connect YouTube clicked');
+        // Load and display content
+        function loadContent() {
+            const contentFeed = document.getElementById('content-feed');
+            const emptyState = document.getElementById('empty-state');
+
+            if (mockContent.length === 0) {
+                contentFeed.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            contentFeed.innerHTML = mockContent.map(item => `
+                <div class="content-item">
+                    <div class="content-header">
+                        <div class="content-source">
+                            <div class="source-icon">${item.source.icon}</div>
+                            <div class="source-info">
+                                <div class="source-name">${item.source.name}</div>
+                                <div class="content-time">${item.time}</div>
+                            </div>
+                        </div>
+                        <div class="content-actions">
+                            <button class="action-btn">⭐</button>
+                            <button class="action-btn">📋</button>
+                        </div>
+                    </div>
+                    <h3 class="content-title">${item.title}</h3>
+                    <p class="content-excerpt">${item.excerpt}</p>
+                </div>
+            `).join('');
         }
 
-        function manageRss() {
-            console.log('Manage RSS feeds clicked');
+        // Navigation functions
+        function addContent() {
+            window.location.href = '/onboarding';
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
         }
 
         function openSettings() {
-            console.log('Open settings clicked');
+            toastManager.show('Settings page coming soon!', 'info');
         }
 
         function openFeedback() {
             window.open('https://siftly.canny.io/feature-requests', '_blank');
         }
+
+        async function logout() {
+            try {
+                const response = await fetch('/auth/logout', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    toastManager.show('Logout failed', 'error');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                toastManager.show('Logout failed', 'error');
+            }
+        }
+
+        // Category filtering
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add click handlers to category items
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active class from all items
+                    document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked item
+                    item.classList.add('active');
+
+                    // Filter content based on category (implement as needed)
+                    const categoryName = item.querySelector('.category-name').textContent;
+                    // TODO: Filter mockContent based on category
+                });
+            });
+
+            // Close user dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.user-profile') && !e.target.closest('#user-dropdown')) {
+                    document.getElementById('user-dropdown').style.display = 'none';
+                }
+            });
+
+            // Initialize
+            loadUserInfo();
+            loadContent();
+        });
     </script>
 </body>
 </html>

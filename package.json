@@ -6,11 +6,14 @@
   "scripts": {
     "start": "node server.js",
     "build": "echo 'No build step required'",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "db:migrate": "node scripts/migrate.js",
+    "seed:newsletters": "node scripts/seed-newsletters.js"
   },
   "dependencies": {
     "connect-session-sequelize": "^8.0.2",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.6.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Newsletters - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .setup-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .setup-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #71717A;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 32px;
+            transition: color 0.2s ease-out;
+        }
+
+        .back-link:hover {
+            color: #1E1E1E;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .content-icon-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .setup-description {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+        }
+
+        .setup-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #71717A;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .search-section {
+            margin-bottom: 32px;
+        }
+
+        .search-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px 16px 48px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.2s ease-out;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6C7BFF;
+            box-shadow: 0 0 0 3px rgba(108, 123, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #71717A;
+            font-size: 20px;
+        }
+
+        .search-button {
+            width: 100%;
+            padding: 16px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .search-button:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .search-results {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .newsletter-result {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .newsletter-result:hover {
+            border-color: #6C7BFF;
+            background: #F8F9FF;
+        }
+
+        .newsletter-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .newsletter-info {
+            flex: 1;
+        }
+
+        .newsletter-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 4px;
+        }
+
+        .newsletter-description {
+            font-size: 14px;
+            color: #71717A;
+            line-height: 1.3;
+        }
+
+        .add-button {
+            padding: 8px 16px;
+            background: #6C7BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .add-button:hover {
+            background: #5A6ADC;
+        }
+
+        .add-button.added {
+            background: #10B981;
+        }
+
+        .setup-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .setup-btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            border: none;
+            min-width: 160px;
+        }
+
+        .setup-btn.primary {
+            background: #1E1E1E;
+            color: white;
+        }
+
+        .setup-btn.primary:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .setup-btn.secondary {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #E0E0E0;
+        }
+
+        .setup-btn.secondary:hover {
+            color: #1E1E1E;
+            border-color: #6C7BFF;
+        }
+
+        @media (max-width: 768px) {
+            .setup-content {
+                padding: 0 20px;
+            }
+
+            .setup-card {
+                padding: 24px;
+            }
+
+            .setup-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .setup-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="setup-container">
+        <div class="setup-content">
+            <!-- Back Navigation -->
+            <a href="/onboarding" class="back-link">
+                ← Back to content types
+            </a>
+
+            <!-- Header -->
+            <div class="setup-header">
+                <div class="content-icon-large">📧</div>
+                <h1 class="setup-title">Newsletters & Email Updates</h1>
+                <p class="setup-description">Subscribe to your favorite newsletters and email updates</p>
+            </div>
+
+            <!-- Quick Setup Card -->
+            <div class="setup-card">
+                <h2 class="card-title">Quick Setup</h2>
+                <p class="card-subtitle">Let's get you connected to newsletters & email updates</p>
+
+                <!-- Search Section -->
+                <div class="search-section">
+                    <label class="search-label">Search for newsletters</label>
+                    <div class="search-container">
+                        <span class="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            class="search-input"
+                            placeholder="Try 'Morning Brew', 'The Hustle', or any newsletter name..."
+                            id="newsletter-search"
+                        >
+                    </div>
+                    <button class="search-button" onclick="searchNewsletters()">Search & Subscribe</button>
+                </div>
+
+                <!-- Search Results -->
+                <div class="search-results" id="search-results">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="setup-actions">
+                <button class="setup-btn secondary" onclick="skipThisType()">Skip for now</button>
+                <button class="setup-btn primary" onclick="continueSetup()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+        let addedNewsletters = new Set();
+
+        // Mock newsletter data for search results
+        const mockNewsletters = [
+            {
+                id: 'morning-brew',
+                name: 'Morning Brew',
+                description: 'Business news made simple - get smarter in just 5 minutes',
+                logo: 'M'
+            },
+            {
+                id: 'the-hustle',
+                name: 'The Hustle',
+                description: 'Tech and business news with personality',
+                logo: 'H'
+            },
+            {
+                id: 'axios',
+                name: 'Axios',
+                description: 'Get smarter, faster with news that matters',
+                logo: 'A'
+            },
+            {
+                id: 'stratechery',
+                name: 'Stratechery',
+                description: 'Analysis of tech industry trends and strategy',
+                logo: 'S'
+            }
+        ];
+
+        function searchNewsletters() {
+            const searchTerm = document.getElementById('newsletter-search').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('search-results');
+
+            if (!searchTerm) {
+                toastManager.show('Please enter a newsletter name to search', 'error');
+                return;
+            }
+
+            // Filter newsletters based on search term
+            const results = mockNewsletters.filter(newsletter =>
+                newsletter.name.toLowerCase().includes(searchTerm) ||
+                newsletter.description.toLowerCase().includes(searchTerm)
+            );
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 32px; color: #71717A;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                        <h3 style="margin-bottom: 8px; color: #1E1E1E;">No newsletters found</h3>
+                        <p>Try a different search term or browse our popular newsletters</p>
+                    </div>
+                `;
+            } else {
+                resultsContainer.innerHTML = results.map(newsletter => `
+                    <div class="newsletter-result" onclick="selectNewsletter('${newsletter.id}')">
+                        <div class="newsletter-logo">${newsletter.logo}</div>
+                        <div class="newsletter-info">
+                            <div class="newsletter-name">${newsletter.name}</div>
+                            <div class="newsletter-description">${newsletter.description}</div>
+                        </div>
+                        <button class="add-button ${addedNewsletters.has(newsletter.id) ? 'added' : ''}"
+                                onclick="addNewsletter(event, '${newsletter.id}', '${newsletter.name}')">
+                            ${addedNewsletters.has(newsletter.id) ? '✓ Added' : 'Add'}
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            resultsContainer.style.display = 'block';
+        }
+
+        function addNewsletter(event, id, name) {
+            event.stopPropagation();
+
+            if (addedNewsletters.has(id)) {
+                return;
+            }
+
+            addedNewsletters.add(id);
+            toastManager.show(`Added ${name} to your dashboard!`, 'success');
+
+            // Update button
+            const button = event.target;
+            button.textContent = '✓ Added';
+            button.classList.add('added');
+
+            // Update continue button text
+            updateContinueButton();
+        }
+
+        function updateContinueButton() {
+            const continueBtn = document.querySelector('.setup-btn.primary');
+            if (addedNewsletters.size > 0) {
+                continueBtn.textContent = `Continue (${addedNewsletters.size} added)`;
+            } else {
+                continueBtn.textContent = 'Continue';
+            }
+        }
+
+        function selectNewsletter(id) {
+            // Handle newsletter card click if needed
+        }
+
+        function skipThisType() {
+            // Continue to next content type or dashboard
+            continueSetup();
+        }
+
+        function continueSetup() {
+            // Check if there are more content types to set up
+            const selectedTypes = JSON.parse(sessionStorage.getItem('selectedContentTypes') || '[]');
+            const currentIndex = selectedTypes.indexOf('newsletters');
+
+            if (currentIndex >= 0 && currentIndex < selectedTypes.length - 1) {
+                // Go to next content type
+                const nextType = selectedTypes[currentIndex + 1];
+                window.location.href = `/setup/${nextType}`;
+            } else {
+                // All done, go to dashboard
+                toastManager.show('Setup complete! Welcome to your dashboard.', 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+            }
+        }
+
+        // Initialize search on Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('newsletter-search').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchNewsletters();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

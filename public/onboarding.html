@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .onboarding-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .onboarding-content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .welcome-section {
+            margin-bottom: 48px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .setup-time {
+            font-size: 14px;
+            color: #71717A;
+        }
+
+        .content-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .content-type-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .content-type-card:hover {
+            border-color: #6C7BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 123, 255, 0.15);
+        }
+
+        .content-type-card.selected {
+            border-color: #6C7BFF;
+            background: #F8F9FF;
+        }
+
+        .content-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .content-icon.newsletters { background: #3B82F6; }
+        .content-icon.youtube { background: #EF4444; }
+        .content-icon.music { background: #10B981; }
+        .content-icon.news { background: #F97316; }
+        .content-icon.rss { background: #8B5CF6; }
+
+        .content-type-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .content-type-description {
+            font-size: 14px;
+            color: #71717A;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .add-sources-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #71717A;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .content-type-card:hover .add-sources-btn,
+        .content-type-card.selected .add-sources-btn {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+            background: white;
+        }
+
+        .onboarding-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            border: none;
+            min-width: 160px;
+        }
+
+        .action-btn.primary {
+            background: #1E1E1E;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #E0E0E0;
+        }
+
+        .action-btn.secondary:hover {
+            color: #1E1E1E;
+            border-color: #6C7BFF;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            transition: all 0.2s ease-out;
+        }
+
+        .progress-dot.active {
+            background: #6C7BFF;
+        }
+
+        @media (max-width: 768px) {
+            .content-types-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .content-type-card {
+                padding: 24px 20px;
+                min-height: 160px;
+            }
+
+            .welcome-title {
+                font-size: 28px;
+            }
+
+            .onboarding-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">Choose Your Content Types</h1>
+                <p class="welcome-subtitle">Select the types of content you want to follow</p>
+            </div>
+
+            <!-- Content Types Grid -->
+            <div class="content-types-grid">
+                <!-- Newsletters -->
+                <div class="content-type-card" data-type="newsletters" onclick="selectContentType(this, 'newsletters')">
+                    <div>
+                        <div class="content-icon newsletters">📧</div>
+                        <h3 class="content-type-title">Newsletters & Email Updates</h3>
+                        <p class="content-type-description">Subscribe to your favorite newsletters and email updates</p>
+                    </div>
+                    <button class="add-sources-btn">Add Sources</button>
+                </div>
+
+                <!-- YouTube -->
+                <div class="content-type-card" data-type="youtube" onclick="selectContentType(this, 'youtube')">
+                    <div>
+                        <div class="content-icon youtube">📺</div>
+                        <h3 class="content-type-title">YouTube Channels</h3>
+                        <p class="content-type-description">Follow channels and get notified of new uploads</p>
+                    </div>
+                    <button class="add-sources-btn">Add Sources</button>
+                </div>
+
+                <!-- Music -->
+                <div class="content-type-card" data-type="music" onclick="selectContentType(this, 'music')">
+                    <div>
+                        <div class="content-icon music">🎵</div>
+                        <h3 class="content-type-title">Music Releases</h3>
+                        <p class="content-type-description">Track new releases from Spotify and Apple Music</p>
+                    </div>
+                    <button class="add-sources-btn">Add Sources</button>
+                </div>
+
+                <!-- News & Blogs -->
+                <div class="content-type-card" data-type="news" onclick="selectContentType(this, 'news')">
+                    <div>
+                        <div class="content-icon news">📰</div>
+                        <h3 class="content-type-title">News & Blogs</h3>
+                        <p class="content-type-description">Stay updated with news sites and blog feeds</p>
+                    </div>
+                    <button class="add-sources-btn">Add Sources</button>
+                </div>
+
+                <!-- RSS -->
+                <div class="content-type-card" data-type="rss" onclick="selectContentType(this, 'rss')">
+                    <div>
+                        <div class="content-icon rss">📡</div>
+                        <h3 class="content-type-title">RSS Feeds</h3>
+                        <p class="content-type-description">Add any RSS feed or website</p>
+                    </div>
+                    <button class="add-sources-btn">Add Sources</button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="onboarding-actions">
+                <button class="action-btn primary" onclick="continueToDashboard()">Continue to Dashboard</button>
+                <button class="action-btn secondary" onclick="skipSetup()">Skip for now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTypes = new Set();
+
+        function selectContentType(card, type) {
+            card.classList.toggle('selected');
+
+            if (selectedTypes.has(type)) {
+                selectedTypes.delete(type);
+            } else {
+                selectedTypes.add(type);
+            }
+
+            // Update button text based on selection
+            updateActionButtons();
+        }
+
+        function updateActionButtons() {
+            const primaryBtn = document.querySelector('.action-btn.primary');
+            if (selectedTypes.size > 0) {
+                primaryBtn.textContent = `Continue with ${selectedTypes.size} type${selectedTypes.size > 1 ? 's' : ''}`;
+            } else {
+                primaryBtn.textContent = 'Continue to Dashboard';
+            }
+        }
+
+        function continueToDashboard() {
+            if (selectedTypes.size > 0) {
+                // Store selected types for setup flow
+                sessionStorage.setItem('selectedContentTypes', JSON.stringify([...selectedTypes]));
+                window.location.href = '/setup';
+            } else {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        function skipSetup() {
+            window.location.href = '/dashboard';
+        }
+
+        // Handle card clicks for better UX
+        document.addEventListener('DOMContentLoaded', () => {
+            // Prevent button clicks from bubbling up to card
+            document.querySelectorAll('.add-sources-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const card = e.target.closest('.content-type-card');
+                    const type = card.dataset.type;
+
+                    // Go directly to that content type's setup
+                    window.location.href = `/setup/${type}`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

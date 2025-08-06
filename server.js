@@ -10,7 +10,7 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const User = require('./models/User');
+const { User, NewsletterSource, UserNewsletterSubscription } = require('./models');
 
 // Import authentication
 const passport = require('./config/passport');
@@ -40,7 +40,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Important: must be false for localhost
+    secure: false,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   },
@@ -54,7 +54,6 @@ app.use(passport.session());
 // AUTH ROUTES
 // =================
 
-// Google OAuth routes
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
@@ -66,7 +65,6 @@ app.get('/auth/google/callback',
   }
 );
 
-// Logout route
 app.post('/auth/logout', (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -76,7 +74,6 @@ app.post('/auth/logout', (req, res) => {
   });
 });
 
-// Check auth status
 app.get('/api/auth/status', (req, res) => {
   res.json({
     isAuthenticated: req.isAuthenticated(),
@@ -90,89 +87,249 @@ app.get('/api/auth/status', (req, res) => {
 });
 
 // =================
-// MAIN ROUTES (BEFORE STATIC FILES)
+// MAIN ROUTES
 // =================
 
 // Home page with redirect logic
 app.get('/', (req, res) => {
-  console.log('Home route hit, authenticated:', req.isAuthenticated());
-
   if (req.isAuthenticated()) {
-    console.log('Redirecting to dashboard');
     return res.redirect('/dashboard');
   }
-
-  console.log('Serving index.html');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// =================
-// PROTECTED ROUTES
-// =================
+// Dashboard - redirects to onboarding if no content
+app.get('/dashboard', requireAuth, async (req, res) => {
+  const hasContent = await checkUserHasContent(req.user.id);
 
-// Dashboard (protected)
-app.get('/dashboard', requireAuth, (req, res) => {
+  if (!hasContent) {
+    return res.redirect('/onboarding');
+  }
+
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Debug routes
-app.get('/test-redirect', (req, res) => {
-  console.log('Test route - authenticated:', req.isAuthenticated());
-  if (req.isAuthenticated()) {
-    return res.redirect('/dashboard');
-  }
-  res.send('Not authenticated');
+// Onboarding flow
+app.get('/onboarding', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'onboarding.html'));
 });
 
-app.get('/debug', (req, res) => {
-  res.json({
-    isAuthenticated: req.isAuthenticated(),
-    user: req.user,
-    session: req.session
-  });
+// Content type setup pages
+app.get('/setup/:type', requireAuth, (req, res) => {
+  const { type } = req.params;
+  const validTypes = ['newsletters', 'youtube', 'music', 'news', 'rss'];
+
+  if (!validTypes.includes(type)) {
+    return res.status(404).send('Content type not found');
+  }
+
+  res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
+});
+
+// Feedback page
+app.get('/feedback', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
 });
 
 // =================
-// API ROUTES
+// CONTENT API ROUTES
 // =================
 
-async function initializeEmailFile() {
+// Get user's content feed
+app.get('/api/content/feed', requireAuth, async (req, res) => {
   try {
-    await fs.access(EMAIL_FILE);
-  } catch (error) {
-    await fs.writeFile(EMAIL_FILE, JSON.stringify({ emails: [] }, null, 2));
-  }
-}
-
-async function loadEmails() {
-  try {
-    const data = await fs.readFile(EMAIL_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return { emails: [] };
-  }
-}
-
-async function saveEmail(email) {
-  try {
-    const data = await loadEmails();
-    const existingEmail = data.emails.find(e => e.email === email);
-    if (existingEmail) {
-      throw new Error('Email already registered');
-    }
-    
-    data.emails.push({
-      email: email,
-      timestamp: new Date().toISOString(),
-      id: Date.now()
+    const content = await getUserContentFeed(req.user.id);
+    res.json({
+      success: true,
+      content
     });
-    
-    await fs.writeFile(EMAIL_FILE, JSON.stringify(data, null, 2));
-    return true;
   } catch (error) {
-    throw error;
+    console.error('Error fetching content feed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch content feed'
+    });
   }
-}
+});
+
+// Check if user has any content sources
+app.get('/api/user/has-content', requireAuth, async (req, res) => {
+  try {
+    const hasContent = await checkUserHasContent(req.user.id);
+    res.json({
+      success: true,
+      hasContent
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      hasContent: false
+    });
+  }
+});
+
+// =================
+// NEWSLETTER API ROUTES
+// =================
+
+// Get available newsletters with user subscription status
+app.get('/api/newsletters/available', requireAuth, async (req, res) => {
+  try {
+    const newsletters = await NewsletterSource.findAll({
+      where: { isActive: true },
+      order: [['name', 'ASC']],
+    });
+
+    const userSubscriptions = await UserNewsletterSubscription.findAll({
+      where: {
+        userId: req.user.id,
+        isActive: true
+      },
+    });
+
+    const subscriptionMap = new Map(
+      userSubscriptions.map(sub => [sub.newsletterSourceId, sub])
+    );
+
+    const newslettersWithStatus = newsletters.map(newsletter => ({
+      id: newsletter.id,
+      name: newsletter.name,
+      description: newsletter.description,
+      website: newsletter.website,
+      category: newsletter.category,
+      metadata: newsletter.metadata,
+      isSubscribed: subscriptionMap.has(newsletter.id),
+    }));
+
+    res.json({
+      success: true,
+      newsletters: newslettersWithStatus,
+    });
+  } catch (error) {
+    console.error('Error fetching newsletters:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch newsletters',
+    });
+  }
+});
+
+// Subscribe to a newsletter
+app.post('/api/newsletters/subscribe', requireAuth, async (req, res) => {
+  try {
+    const { newsletterId } = req.body;
+
+    if (!newsletterId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Newsletter ID is required',
+      });
+    }
+
+    const newsletter = await NewsletterSource.findByPk(newsletterId);
+    if (!newsletter) {
+      return res.status(404).json({
+        success: false,
+        message: 'Newsletter not found',
+      });
+    }
+
+    const existingSubscription = await UserNewsletterSubscription.findOne({
+      where: {
+        userId: req.user.id,
+        newsletterSourceId: newsletterId,
+      },
+    });
+
+    if (existingSubscription) {
+      if (existingSubscription.isActive) {
+        return res.status(400).json({
+          success: false,
+          message: 'Already subscribed to this newsletter',
+        });
+      } else {
+        await existingSubscription.update({ isActive: true });
+        return res.json({
+          success: true,
+          message: 'Subscription reactivated',
+          forwardingEmail: existingSubscription.forwardingEmail,
+        });
+      }
+    }
+
+    const forwardingEmail = generateForwardingEmail(req.user.id, newsletterId);
+
+    const subscription = await UserNewsletterSubscription.create({
+      userId: req.user.id,
+      newsletterSourceId: newsletterId,
+      forwardingEmail,
+      isActive: true,
+    });
+
+    console.log(`✅ User ${req.user.email} subscribed to ${newsletter.name}`);
+
+    res.json({
+      success: true,
+      message: 'Successfully subscribed',
+      forwardingEmail: subscription.forwardingEmail,
+    });
+  } catch (error) {
+    console.error('Error subscribing to newsletter:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to subscribe to newsletter',
+    });
+  }
+});
+
+// Unsubscribe from a newsletter
+app.post('/api/newsletters/unsubscribe', requireAuth, async (req, res) => {
+  try {
+    const { newsletterId } = req.body;
+
+    if (!newsletterId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Newsletter ID is required',
+      });
+    }
+
+    const subscription = await UserNewsletterSubscription.findOne({
+      where: {
+        userId: req.user.id,
+        newsletterSourceId: newsletterId,
+        isActive: true,
+      },
+    });
+
+    if (!subscription) {
+      return res.status(404).json({
+        success: false,
+        message: 'Subscription not found',
+      });
+    }
+
+    await subscription.update({ isActive: false });
+
+    const newsletter = await NewsletterSource.findByPk(newsletterId);
+    console.log(`❌ User ${req.user.email} unsubscribed from ${newsletter?.name}`);
+
+    res.json({
+      success: true,
+      message: 'Successfully unsubscribed',
+    });
+  } catch (error) {
+    console.error('Error unsubscribing from newsletter:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to unsubscribe from newsletter',
+    });
+  }
+});
+
+// =================
+// WAITLIST API ROUTES (for landing page)
+// =================
 
 const validateEmail = [
   body('email').isEmail().trim().withMessage('Please provide a valid email address')
@@ -240,7 +397,6 @@ app.post('/api/signup', validateEmail, async (req, res) => {
         message: 'Something went wrong. Please try again later.'
       });
     }
-    
   } catch (error) {
     console.error('❌ Unexpected error in signup:', error);
     res.status(500).json({
@@ -263,16 +419,113 @@ app.get('/api/count', async (req, res) => {
   }
 });
 
-// Feedback page
-app.get('/feedback', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
-});
+// =================
+// HELPER FUNCTIONS
+// =================
+
+function generateForwardingEmail(userId, newsletterId) {
+  const crypto = require('crypto');
+  const hash = crypto
+    .createHash('md5')
+    .update(`${userId}-${newsletterId}-${Date.now()}`)
+    .digest('hex')
+    .substring(0, 8);
+
+  const domain = process.env.NEWSLETTER_FORWARDING_DOMAIN || 'newsletters.sift.example.com';
+  return `newsletter-${hash}@${domain}`;
+}
+
+async function checkUserHasContent(userId) {
+  try {
+    const newsletterCount = await UserNewsletterSubscription.count({
+      where: {
+        userId,
+        isActive: true
+      }
+    });
+
+    // TODO: Check other content types when implemented
+    return newsletterCount > 0;
+  } catch (error) {
+    console.error('Error checking user content:', error);
+    return false;
+  }
+}
+
+async function getUserContentFeed(userId) {
+  try {
+    // Mock data for now
+    const mockContent = [
+      {
+        id: 1,
+        type: 'newsletter',
+        source: { name: 'Morning Brew', icon: 'M' },
+        title: 'Tesla\'s surprise quarter, Netflix password crackdown, and more',
+        excerpt: 'Tesla shocked everyone by beating delivery expectations despite supply chain challenges...',
+        time: '2 hours ago',
+        url: '#'
+      },
+      {
+        id: 2,
+        type: 'youtube',
+        source: { name: 'Marques Brownlee', icon: 'MB' },
+        title: 'iPhone 15 Pro Review: Titanium is Tough!',
+        excerpt: 'The iPhone 15 Pro brings titanium construction, Action Button, and USB-C...',
+        time: '5 hours ago',
+        url: '#'
+      }
+    ];
+
+    return mockContent;
+  } catch (error) {
+    console.error('Error fetching user content feed:', error);
+    throw error;
+  }
+}
+
+// Waitlist file management functions
+async function initializeEmailFile() {
+  try {
+    await fs.access(EMAIL_FILE);
+  } catch (error) {
+    await fs.writeFile(EMAIL_FILE, JSON.stringify({ emails: [] }, null, 2));
+  }
+}
+
+async function loadEmails() {
+  try {
+    const data = await fs.readFile(EMAIL_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    return { emails: [] };
+  }
+}
+
+async function saveEmail(email) {
+  try {
+    const data = await loadEmails();
+    const existingEmail = data.emails.find(e => e.email === email);
+    if (existingEmail) {
+      throw new Error('Email already registered');
+    }
+
+    data.emails.push({
+      email: email,
+      timestamp: new Date().toISOString(),
+      id: Date.now()
+    });
+
+    await fs.writeFile(EMAIL_FILE, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
 
 // =================
 // STATIC FILES (AFTER ROUTES)
 // =================
 
-// Static files - MUST come after route definitions
 app.use(express.static('public'));
 
 // =================
@@ -299,15 +552,12 @@ async function startServer() {
   try {
     await initializeEmailFile();
 
-    // Initialize database
     await sequelize.authenticate();
     console.log('📊 Database connection established');
 
-    // Sync database models
     await sequelize.sync();
     console.log('📊 Database models synchronized');
 
-    // Create session table
     await sessionStore.sync();
     console.log('📊 Session store synchronized');
 

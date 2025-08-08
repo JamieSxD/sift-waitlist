@@ -31,9 +31,18 @@
             overflow-y: auto;
         }
 
+        /* FIXED: Added max-width and centered content */
         .main-content {
             margin-left: 280px;
             padding: 24px;
+            max-width: 1200px; /* Prevent content from spreading too wide */
+            width: 100%;
+        }
+
+        /* FIXED: Better content feed centering */
+        .content-feed {
+            max-width: 800px;
+            margin: 0 auto; /* Center the content feed */
         }
 
         .sidebar-header {
@@ -229,62 +238,86 @@
             color: #6C7BFF;
         }
 
-        .content-feed {
-            max-width: 800px;
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #71717A;
         }
 
-        .content-item {
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6C7BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== IMPROVED NEWSLETTER CONTENT STYLING ===== */
+        .newsletter-content-card {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
             border: 1px solid #E0E0E0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
             transition: all 0.2s ease-out;
         }
 
-        .content-item:hover {
+        .newsletter-content-card:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .content-header {
             display: flex;
-            align-items: center;
-            justify-content: between;
-            margin-bottom: 16px;
-        }
-
-        .content-source {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .source-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            background: #6C7BFF;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
         }
 
         .source-info {
-            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .source-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .source-logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
         }
 
         .source-name {
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 600;
             color: #1E1E1E;
+            margin-bottom: 4px;
         }
 
-        .content-time {
-            font-size: 12px;
+        .content-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
             color: #71717A;
         }
 
@@ -293,34 +326,195 @@
             gap: 8px;
         }
 
-        .action-btn {
-            padding: 4px 8px;
+        .save-btn, .share-btn {
+            padding: 8px 16px;
             border: 1px solid #E0E0E0;
-            border-radius: 6px;
+            border-radius: 8px;
             background: white;
             color: #71717A;
-            font-size: 12px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease-out;
         }
 
-        .action-btn:hover {
+        .save-btn:hover, .share-btn:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .save-btn.saved {
+            background: #EEF0FF;
             border-color: #6C7BFF;
             color: #6C7BFF;
         }
 
         .content-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E1E1E;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .content-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            background: #F3F4F6;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .content-sections {
+            margin-bottom: 32px;
+        }
+
+        .content-section {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-heading h1,
+        .section-heading h2,
+        .section-heading h3 {
             color: #1E1E1E;
             margin-bottom: 12px;
             line-height: 1.4;
         }
 
-        .content-excerpt {
-            font-size: 15px;
+        .section-heading h1 { font-size: 24px; font-weight: 700; }
+        .section-heading h2 { font-size: 20px; font-weight: 600; }
+        .section-heading h3 { font-size: 18px; font-weight: 600; }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        .section-data-highlight {
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10B981;
+            margin: 16px 0;
+        }
+
+        .section-data-highlight .section-content {
+            font-weight: 500;
+            color: #065F46;
+        }
+
+        .section-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .content-link {
+            padding: 10px 16px;
+            background: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content-link:hover {
+            background: #EEF0FF;
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .content-link.video::before { content: "🎬"; }
+        .content-link.social::before { content: "🌐"; }
+        .content-link.article::before { content: "📄"; }
+        .content-link.download::before { content: "📥"; }
+        .content-link.external::before { content: "🔗"; }
+
+        .section-images {
+            margin: 16px 0;
+        }
+
+        .content-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .image-caption {
+            font-size: 14px;
             color: #71717A;
-            line-height: 1.5;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .section-table {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #E0E0E0;
+        }
+
+        .content-table th,
+        .content-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .content-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid #F3F4F6;
+            font-size: 14px;
+            color: #71717A;
+        }
+
+        .source-link {
+            color: #6C7BFF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
         }
 
         .empty-dashboard {
@@ -380,13 +574,38 @@
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             transition: all 0.2s ease-out;
-            display: none; /* Show only on mobile */
+            display: none;
         }
 
         .floating-add-btn:hover {
             background: #374151;
             transform: translateY(-2px);
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* IMPROVED: Better test content styling */
+        .test-content-btn {
+            padding: 12px 24px;
+            background: #6C7BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-bottom: 24px;
+        }
+
+        .test-content-btn:hover {
+            background: #5A6ADC;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                max-width: 100%;
+                padding: 20px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -402,12 +621,38 @@
 
             .main-content {
                 margin-left: 0;
+                max-width: 100%;
             }
 
             .floating-add-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+
+            .newsletter-content-card {
+                padding: 24px;
+                margin-bottom: 16px;
+            }
+
+            .content-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .content-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .content-title {
+                font-size: 20px;
+            }
+
+            .content-footer {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
             }
         }
     </style>
@@ -434,26 +679,26 @@
             <!-- Content Categories -->
             <div class="content-categories">
                 <div class="category-title">Content</div>
-                <ul class="category-list">
+                <ul class="category-list" id="category-list">
                     <li class="category-item active">
                         <span class="category-icon">📊</span>
                         <span class="category-name">All Content</span>
-                        <span class="category-count">24</span>
+                        <span class="category-count" id="total-count">0</span>
                     </li>
                     <li class="category-item">
                         <span class="category-icon">📧</span>
                         <span class="category-name">Newsletters</span>
-                        <span class="category-count">8</span>
+                        <span class="category-count" id="newsletter-count">0</span>
                     </li>
                     <li class="category-item">
                         <span class="category-icon">📺</span>
                         <span class="category-name">Videos</span>
-                        <span class="category-count">4</span>
+                        <span class="category-count">0</span>
                     </li>
                     <li class="category-item">
                         <span class="category-icon">🎵</span>
                         <span class="category-name">Music</span>
-                        <span class="category-count">12</span>
+                        <span class="category-count">0</span>
                     </li>
                     <li class="category-item">
                         <span class="category-icon">📰</span>
@@ -487,6 +732,7 @@
             <div class="dashboard-header">
                 <h1 class="header-title">Your Content</h1>
                 <div class="header-actions">
+                    <button class="test-content-btn" onclick="createTestContent()">🧪 Create Test Content</button>
                     <button class="header-btn">Mark all read</button>
                     <button class="header-btn">Filter</button>
                 </div>
@@ -494,7 +740,10 @@
 
             <!-- Content Feed -->
             <div class="content-feed" id="content-feed">
-                <!-- Content will be loaded here -->
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading your content...</p>
+                </div>
             </div>
 
             <!-- Empty State -->
@@ -547,33 +796,59 @@
 
         const toastManager = new ToastManager();
 
-        // Mock content data
-        const mockContent = [
-            {
-                id: 1,
-                type: 'newsletter',
-                source: { name: 'Morning Brew', icon: 'M' },
-                title: 'Tesla\'s surprise quarter, Netflix password crackdown, and more',
-                excerpt: 'Tesla shocked everyone by beating delivery expectations despite supply chain challenges. The company delivered 466,140 vehicles...',
-                time: '2 hours ago'
-            },
-            {
-                id: 2,
-                type: 'youtube',
-                source: { name: 'Marques Brownlee', icon: 'MB' },
-                title: 'iPhone 15 Pro Review: Titanium is Tough!',
-                excerpt: 'The iPhone 15 Pro brings titanium construction, Action Button, and USB-C. But is it worth the upgrade?',
-                time: '5 hours ago'
-            },
-            {
-                id: 3,
-                type: 'newsletter',
-                source: { name: 'The Hustle', icon: 'H' },
-                title: 'Why everyone\'s talking about NFTs',
-                excerpt: 'Non-fungible tokens have taken the art world by storm. From digital art selling for millions to celebrities launching...',
-                time: '1 day ago'
+        // Content management
+        let contentData = [];
+
+        // IMPROVED: Create test content for testing
+        async function createTestContent() {
+            try {
+                const testContent = {
+                    newsletterSourceId: 'test-source-id',
+                    emailHtml: `
+                        <h1>Weekly Tech Roundup</h1>
+                        <p>Here are the biggest tech stories from this week:</p>
+
+                        <h2>🤖 AI Breakthrough</h2>
+                        <p>Researchers have developed a new model that significantly improves language understanding capabilities. This represents a major step forward in natural language processing.</p>
+                        <a href="https://example.com/ai-breakthrough">Read more about this breakthrough</a>
+
+                        <h2>📊 Market Update</h2>
+                        <p>Tech stocks showed strong performance this week, with several companies beating earnings expectations.</p>
+
+                        <h2>🚀 Product Launches</h2>
+                        <p>Several major tech companies announced new products this week:</p>
+                        <ul>
+                            <li>Company A launched their new smartphone</li>
+                            <li>Company B unveiled their latest laptop</li>
+                            <li>Company C announced a new cloud service</li>
+                        </ul>
+
+                        <p>Stay tuned for more updates next week!</p>
+                    `,
+                    subject: 'Weekly Tech Roundup - Issue #42'
+                };
+
+                const response = await fetch('/api/content/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testContent)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Test content created successfully!', 'success');
+                    loadContent(); // Reload content
+                } else {
+                    toastManager.show('Failed to create test content: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error creating test content:', error);
+                toastManager.show('Error creating test content', 'error');
             }
-        ];
+        }
 
         // Load user information
         async function loadUserInfo() {
@@ -598,35 +873,307 @@
         }
 
         // Load and display content
-        function loadContent() {
-            const contentFeed = document.getElementById('content-feed');
-            const emptyState = document.getElementById('empty-state');
+        async function loadContent() {
+            try {
+                const contentFeed = document.getElementById('content-feed');
+                const emptyState = document.getElementById('empty-state');
 
-            if (mockContent.length === 0) {
-                contentFeed.style.display = 'none';
-                emptyState.style.display = 'block';
+                // Show loading
+                contentFeed.innerHTML = `
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading your content...</p>
+                    </div>
+                `;
+                emptyState.style.display = 'none';
+
+                const response = await fetch('/api/content/feed');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to load content');
+                }
+
+                contentData = data.content || [];
+
+                if (contentData.length === 0) {
+                    contentFeed.style.display = 'none';
+                    emptyState.style.display = 'block';
+                } else {
+                    contentFeed.style.display = 'block';
+                    emptyState.style.display = 'none';
+                    renderContent(contentData);
+                    updateCategoryCounts();
+                }
+
+            } catch (error) {
+                console.error('Error loading content:', error);
+                document.getElementById('content-feed').innerHTML = `
+                    <div class="loading-state">
+                        <p style="color: #EF4444;">Failed to load content. Please refresh the page.</p>
+                        <button class="test-content-btn" onclick="createTestContent()" style="margin-top: 16px;">
+                            🧪 Create Test Content Instead
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Render content to the feed
+        function renderContent(content) {
+            const contentFeed = document.getElementById('content-feed');
+
+            if (content.length === 0) {
+                contentFeed.innerHTML = `
+                    <div class="loading-state">
+                        <p>No content available yet.</p>
+                        <button class="test-content-btn" onclick="createTestContent()" style="margin-top: 16px;">
+                            🧪 Create Test Content
+                        </button>
+                    </div>
+                `;
                 return;
             }
 
-            contentFeed.innerHTML = mockContent.map(item => `
-                <div class="content-item">
+            contentFeed.innerHTML = content.map(item => renderNewsletterCard(item)).join('');
+        }
+
+        // Render a single newsletter content card
+        function renderNewsletterCard(content) {
+            const brandColor = content.metadata?.brandColors?.primary || '#6C7BFF';
+
+            return `
+                <div class="newsletter-content-card">
+                    <!-- Header -->
                     <div class="content-header">
-                        <div class="content-source">
-                            <div class="source-icon">${item.source.icon}</div>
-                            <div class="source-info">
-                                <div class="source-name">${item.source.name}</div>
-                                <div class="content-time">${item.time}</div>
+                        <div class="source-info">
+                            <div class="source-logo" style="background-color: ${brandColor}">
+                                ${content.source?.logo ?
+                                    `<img src="${content.source.logo}" alt="${content.source?.name || 'Newsletter'}" onerror="this.style.display='none'; this.parentNode.textContent='${(content.source?.name || 'N').charAt(0)}'">` :
+                                    (content.source?.name || 'Newsletter').charAt(0).toUpperCase()
+                                }
+                            </div>
+                            <div class="source-details">
+                                <h3 class="source-name">${content.source?.name || 'Newsletter'}</h3>
+                                <div class="content-meta">
+                                    <span class="publish-date">
+                                        ${new Date(content.publishedAt || Date.now()).toLocaleDateString()}
+                                    </span>
+                                    <span class="read-time">${content.metadata?.readTime || '5 min'}</span>
+                                    <span class="word-count">${content.wordCount || 0} words</span>
+                                </div>
                             </div>
                         </div>
+
                         <div class="content-actions">
-                            <button class="action-btn">⭐</button>
-                            <button class="action-btn">📋</button>
+                            <button
+                                class="save-btn ${content.isSaved ? 'saved' : ''}"
+                                onclick="toggleSave('${content.id}', this)"
+                            >
+                                ${content.isSaved ? '📌 Saved' : '📌 Save'}
+                            </button>
+                            <button class="share-btn" onclick="shareContent('${content.id}')">🔗 Share</button>
                         </div>
                     </div>
-                    <h3 class="content-title">${item.title}</h3>
-                    <p class="content-excerpt">${item.excerpt}</p>
+
+                    <!-- Title -->
+                    <h1 class="content-title">${content.metadata?.title || 'Newsletter Content'}</h1>
+
+                    <!-- Tags -->
+                    ${content.tags && content.tags.length > 0 ? `
+                        <div class="content-tags">
+                            ${content.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <!-- Content Sections -->
+                    <div class="content-sections">
+                        ${content.sections ? content.sections.map(section => renderContentSection(section)).join('') : ''}
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="content-footer">
+                        <div class="engagement-stats">
+                            ${content.timeSpentReading > 0 ?
+                                `<span>📖 ${Math.floor(content.timeSpentReading / 60)}m read</span>` :
+                                ''
+                            }
+                        </div>
+                        <div class="original-source">
+                            <a
+                                href="${content.source?.website || '#'}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="source-link"
+                            >
+                                Visit ${content.source?.name || 'Source'} →
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
+            `;
+        }
+
+        // Render individual content sections
+        function renderContentSection(section) {
+            switch (section.type) {
+                case 'heading':
+                    const headingLevel = section.level || 2;
+                    return `
+                        <div class="content-section section-heading">
+                            <h${headingLevel}>${section.title || section.content}</h${headingLevel}>
+                        </div>
+                    `;
+
+                case 'data_highlight':
+                    return `
+                        <div class="content-section section-data-highlight">
+                            ${section.title ? `<h3>${section.title}</h3>` : ''}
+                            <div class="section-content">${section.content}</div>
+                            ${renderSectionLinks(section.links)}
+                            ${renderSectionImages(section.images)}
+                        </div>
+                    `;
+
+                case 'data_table':
+                    return `
+                        <div class="content-section">
+                            ${section.title ? `<h3>${section.title}</h3>` : ''}
+                            <div class="section-table">
+                                ${renderTable(section.tableData)}
+                            </div>
+                        </div>
+                    `;
+
+                case 'image':
+                case 'image_with_caption':
+                    return `
+                        <div class="content-section">
+                            ${renderSectionImages(section.images || [{src: section.src, alt: section.alt, caption: section.title}])}
+                        </div>
+                    `;
+
+                default:
+                    return `
+                        <div class="content-section">
+                            ${section.title ? `<h3>${section.title}</h3>` : ''}
+                            <div class="section-content">${section.content || ''}</div>
+                            ${renderSectionLinks(section.links)}
+                            ${renderSectionImages(section.images)}
+                        </div>
+                    `;
+            }
+        }
+
+        // Render section links
+        function renderSectionLinks(links) {
+            if (!links || links.length === 0) return '';
+
+            return `
+                <div class="section-links">
+                    ${links.map(link => `
+                        <a
+                            href="${link.href}"
+                            target="${link.target || '_blank'}"
+                            rel="noopener noreferrer"
+                            class="content-link ${link.type || 'external'}"
+                            onclick="trackLinkClick('${link.href}')"
+                        >
+                            ${link.text}
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Render section images
+        function renderSectionImages(images) {
+            if (!images || images.length === 0) return '';
+
+            return `
+                <div class="section-images">
+                    ${images.map(image => `
+                        <div>
+                            <img
+                                src="${image.src}"
+                                alt="${image.alt || ''}"
+                                class="content-image"
+                                loading="lazy"
+                            >
+                            ${image.caption ? `<div class="image-caption">${image.caption}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Render table data
+        function renderTable(tableData) {
+            if (!tableData || tableData.length === 0) return '';
+
+            return `
+                <table class="content-table">
+                    ${tableData.map((row, index) => `
+                        <tr>
+                            ${row.map(cell => `
+                                <${index === 0 ? 'th' : 'td'}>${cell}</${index === 0 ? 'th' : 'td'}>
+                            `).join('')}
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+        }
+
+        // Toggle save state
+        async function toggleSave(contentId, button) {
+            try {
+                const isSaved = button.classList.contains('saved');
+                const newState = !isSaved;
+
+                const response = await fetch(`/api/content/${contentId}/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ isSaved: newState })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    button.classList.toggle('saved', newState);
+                    button.textContent = newState ? '📌 Saved' : '📌 Save';
+                    toastManager.show(newState ? 'Saved for later' : 'Removed from saved', 'success');
+                } else {
+                    toastManager.show('Failed to update save state', 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling save:', error);
+                toastManager.show('Something went wrong', 'error');
+            }
+        }
+
+        // Share content
+        function shareContent(contentId) {
+            // Simple sharing - copy link to clipboard
+            const url = `${window.location.origin}/content/${contentId}`;
+            navigator.clipboard.writeText(url).then(() => {
+                toastManager.show('Link copied to clipboard', 'success');
+            }).catch(() => {
+                toastManager.show('Failed to copy link', 'error');
+            });
+        }
+
+        // Track link clicks
+        function trackLinkClick(href) {
+            // You can implement analytics tracking here
+            console.log('Link clicked:', href);
+        }
+
+        // Update category counts
+        function updateCategoryCounts() {
+            document.getElementById('total-count').textContent = contentData.length;
+            document.getElementById('newsletter-count').textContent = contentData.length;
         }
 
         // Navigation functions
@@ -650,9 +1197,7 @@
         async function logout() {
             try {
                 const response = await fetch('/auth/logout', { method: 'POST' });
-                const data = await response.json();
-
-                if (data.success) {
+                if (response.redirected) {
                     window.location.href = '/';
                 } else {
                     toastManager.show('Logout failed', 'error');
@@ -673,9 +1218,7 @@
                     // Add active class to clicked item
                     item.classList.add('active');
 
-                    // Filter content based on category (implement as needed)
-                    const categoryName = item.querySelector('.category-name').textContent;
-                    // TODO: Filter mockContent based on category
+                    // TODO: Filter content based on category
                 });
             });
 

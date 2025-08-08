@@ -43,6 +43,11 @@ const UserNewsletterSubscription = sequelize.define('UserNewsletterSubscription'
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  subscriptionMethod: {
+    type: DataTypes.ENUM('shared_access', 'individual_forwarding'),
+    allowNull: false,
+    defaultValue: 'individual_forwarding',
+  },
 });
 
 module.exports = UserNewsletterSubscription;

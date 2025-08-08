@@ -11,6 +11,8 @@
     "seed:newsletters": "node scripts/seed-newsletters.js"
   },
   "dependencies": {
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
     "connect-session-sequelize": "^8.0.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -25,16 +27,20 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
   },
   "keywords": [
-    "waitlist",
-    "email",
-    "loops",
-    "saas"
+    "newsletter",
+    "content",
+    "aggregation",
+    "rss",
+    "youtube",
+    "music",
+    "news"
   ],
   "author": "Your Name",
   "license": "MIT"

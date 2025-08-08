@@ -17,11 +17,16 @@ const NewsletterSource = sequelize.define('NewsletterSource', {
   website: {
     type: DataTypes.STRING,
   },
+  subscriptionUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   logo: {
     type: DataTypes.STRING,
+    allowNull: true,
   },
   category: {
-    type: DataTypes.STRING, // tech, business, lifestyle, etc.
+    type: DataTypes.STRING, 
   },
   isActive: {
     type: DataTypes.BOOLEAN,
@@ -30,6 +35,14 @@ const NewsletterSource = sequelize.define('NewsletterSource', {
   metadata: {
     type: DataTypes.JSONB,
     defaultValue: {},
+  },
+  subscriptionType: {
+    type: DataTypes.ENUM('shared', 'individual'),
+    defaultValue: 'individual',
+  },
+  isSharedActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
 });
 

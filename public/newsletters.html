@@ -16,6 +16,35 @@
     <link rel="stylesheet" href="/styles.css" />
 
     <style>
+        .newsletter-card.shared {
+            border-left: 4px solid #10B981;
+        }
+
+        .newsletter-card.individual {
+            border-left: 4px solid #F59E0B;
+        }
+
+        .access-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .access-badge.instant {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .access-badge.forwarding {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
         .newsletter-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -228,13 +257,19 @@
 
         function createNewsletterCard(newsletter) {
             const card = document.createElement('div');
-            card.className = 'newsletter-card';
+            card.className = `newsletter-card ${newsletter.subscriptionType || 'individual'}`;
 
             const logoLetter = newsletter.name.charAt(0).toUpperCase();
             const frequency = newsletter.metadata?.frequency || 'weekly';
             const category = newsletter.category || 'general';
+            const isShared = newsletter.subscriptionType === 'shared';
+
+            const accessBadge = isShared
+                ? '<span class="access-badge instant">Instant</span>'
+                : '<span class="access-badge forwarding">Forward</span>';
 
             card.innerHTML = `
+                ${accessBadge}
                 <div class="newsletter-logo">${logoLetter}</div>
                 <div class="newsletter-name">${newsletter.name}</div>
                 <div class="newsletter-description">${newsletter.description}</div>
@@ -244,7 +279,7 @@
                 </div>
                 <button class="subscribe-btn ${newsletter.isSubscribed ? 'subscribed' : ''}"
                         onclick="toggleSubscription('${newsletter.id}', this)">
-                    ${newsletter.isSubscribed ? 'Subscribed ✓' : 'Subscribe'}
+                    ${newsletter.isSubscribed ? 'Subscribed ✓' : (isShared ? '⚡ Subscribe Instantly' : '📧 Subscribe')}
                 </button>
             `;
 
@@ -280,7 +315,12 @@
                     } else {
                         button.classList.add('subscribed');
                         button.textContent = 'Subscribed ✓';
-                        toastManager.show(`Subscribed! Forward emails to: ${data.forwardingEmail}`, 'success', 6000);
+
+                        if (data.subscriptionMethod === 'shared_access') {
+                            toastManager.show('Subscribed! Content available immediately.', 'success', 4000);
+                        } else {
+                            toastManager.show(`Subscribed! Forward emails to: ${data.forwardingEmail}`, 'success', 8000);
+                        }
                     }
                 } else {
                     throw new Error(data.message);

@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
+const { generateInboxEmail } = require('../utils/emailUtils');
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -14,11 +15,21 @@ passport.use(new GoogleStrategy({
       return done(null, user);
     }
 
+    // Generate unique inbox email
+    const userEmail = profile.emails[0].value;
+    const checkExisting = async (inboxEmail) => {
+      const existingUser = await User.findOne({ where: { inboxEmail } });
+      return !!existingUser;
+    };
+    
+    const inboxEmail = await generateInboxEmail(userEmail, checkExisting);
+
     user = await User.create({
       googleId: profile.id,
       name: profile.displayName,
-      email: profile.emails[0].value,
+      email: userEmail,
       avatar: profile.photos?.[0]?.value,
+      inboxEmail,
     });
 
     return done(null, user);

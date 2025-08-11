@@ -15,18 +15,21 @@ const NewsletterContent = sequelize.define('NewsletterContent', {
       key: 'id',
     },
   },
-  contentType: {
-    type: DataTypes.ENUM('shared', 'individual'),
-    allowNull: false,
-    defaultValue: 'individual',
-  },
   userId: {
     type: DataTypes.UUID,
-    allowNull: true,
+    allowNull: false,
     references: {
       model: 'Users',
       key: 'id',
     },
+  },
+  approvalStatus: {
+    type: DataTypes.ENUM('pending', 'approved', 'blocked'),
+    defaultValue: 'pending',
+  },
+  approvedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
   // Original email data
   originalSubject: {
@@ -35,6 +38,22 @@ const NewsletterContent = sequelize.define('NewsletterContent', {
   },
   originalHtml: {
     type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  originalFrom: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  senderDomain: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  detectedNewsletterName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  detectedCategory: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
   receivedAt: {

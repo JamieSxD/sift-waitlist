@@ -25,6 +25,11 @@ const User = sequelize.define('User', {
     allowNull: true,
     unique: true,
   },
+  inboxEmail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true,
+  },
 });
 
 module.exports = User;

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .settings-header {
+            margin-bottom: 40px;
+        }
+
+        .settings-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .settings-subtitle {
+            font-size: 16px;
+            color: #71717A;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6C7BFF;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #71717A;
+            margin-top: 4px;
+        }
+
+        .inbox-email-display {
+            background: #F8F9FA;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #E0E0E0;
+            margin-bottom: 16px;
+        }
+
+        .inbox-email {
+            font-family: monospace;
+            font-size: 16px;
+            color: #1E1E1E;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #374151;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #71717A;
+            border: 1px solid #E0E0E0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .nav-back {
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="settings-container">
+        <div class="nav-back">
+            <a href="/dashboard" class="btn-secondary">← Back to Dashboard</a>
+        </div>
+
+        <div class="settings-header">
+            <h1 class="settings-title">Account Settings</h1>
+            <p class="settings-subtitle">Manage your account preferences and inbox settings</p>
+        </div>
+
+        <!-- Profile Settings -->
+        <div class="settings-section">
+            <h2 class="section-title">Profile</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-input" />
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" disabled />
+                    <div class="form-help">Email cannot be changed as it's linked to your Google account</div>
+                </div>
+
+                <button type="submit" class="btn-primary">Update Profile</button>
+            </form>
+        </div>
+
+        <!-- Inbox Settings -->
+        <div class="settings-section">
+            <h2 class="section-title">Inbox Settings</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Your Inbox Address</label>
+                <div class="inbox-email-display">
+                    <div class="inbox-email" id="current-inbox-email">Loading...</div>
+                </div>
+                <div class="form-help">Forward your newsletters to this address</div>
+            </div>
+
+            <form id="inbox-form">
+                <div class="form-group">
+                    <label class="form-label" for="custom-prefix">Customize Your Inbox Address</label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="text" id="custom-prefix" name="customInboxPrefix" class="form-input" placeholder="john" style="flex: 1;" />
+                        <span style="color: #71717A; font-size: 14px;">@inbox.siftly.space</span>
+                    </div>
+                    <div class="form-help">Choose a custom prefix for your inbox address (min 3 characters, letters and numbers only)</div>
+                </div>
+
+                <button type="submit" class="btn-primary">Update Inbox Address</button>
+            </form>
+        </div>
+
+        <!-- Links -->
+        <div class="settings-section">
+            <h2 class="section-title">Quick Links</h2>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="/inbox" class="btn-secondary">📥 Inbox</a>
+                <a href="/newsletters" class="btn-secondary">📧 Newsletters</a>
+                <a href="/feedback" class="btn-secondary">💬 Feedback</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+
+                if (data.isAuthenticated && data.user) {
+                    document.getElementById('name').value = data.user.name || '';
+                    document.getElementById('email').value = data.user.email || '';
+                    document.getElementById('current-inbox-email').textContent = data.user.inboxEmail || 'Not set';
+                    
+                    // Pre-fill custom prefix field with current prefix
+                    if (data.user.inboxEmail) {
+                        const currentPrefix = data.user.inboxEmail.split('@')[0];
+                        document.getElementById('custom-prefix').value = currentPrefix;
+                    }
+                } else {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                toastManager.show('Failed to load user data', 'error');
+            }
+        }
+
+        // Update profile
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const name = formData.get('name');
+
+            if (!name.trim()) {
+                toastManager.show('Name is required', 'error');
+                return;
+            }
+
+            try {
+                form.classList.add('loading');
+                
+                const response = await fetch('/api/user/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: name.trim() })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Profile updated successfully', 'success');
+                } else {
+                    toastManager.show(data.message || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                toastManager.show('Failed to update profile', 'error');
+            } finally {
+                form.classList.remove('loading');
+            }
+        });
+
+        // Update inbox address
+        document.getElementById('inbox-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const customPrefix = formData.get('customInboxPrefix');
+
+            if (!customPrefix || customPrefix.trim().length < 3) {
+                toastManager.show('Inbox prefix must be at least 3 characters long', 'error');
+                return;
+            }
+
+            try {
+                form.classList.add('loading');
+                
+                const response = await fetch('/api/user/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ customInboxPrefix: customPrefix.trim() })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Inbox address updated successfully', 'success');
+                    document.getElementById('current-inbox-email').textContent = data.user.inboxEmail;
+                } else {
+                    toastManager.show(data.message || 'Failed to update inbox address', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating inbox address:', error);
+                toastManager.show('Failed to update inbox address', 'error');
+            } finally {
+                form.classList.remove('loading');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

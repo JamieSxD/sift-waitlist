@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .inbox-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .inbox-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1E1E1E;
+        }
+
+        .inbox-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            margin-top: 4px;
+        }
+
+        .inbox-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #374151;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #71717A;
+            border: 1px solid #E0E0E0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .inbox-tabs {
+            border-bottom: 1px solid #E0E0E0;
+            margin-bottom: 32px;
+        }
+
+        .tab-list {
+            display: flex;
+            gap: 32px;
+        }
+
+        .tab-button {
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #71717A;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            color: #1E1E1E;
+            border-bottom-color: #6C7BFF;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .pending-item {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .pending-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .pending-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .sender-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sender-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .sender-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin: 0 0 4px 0;
+        }
+
+        .sender-email {
+            font-size: 14px;
+            color: #71717A;
+            margin: 0;
+        }
+
+        .pending-meta {
+            font-size: 12px;
+            color: #71717A;
+            text-align: right;
+        }
+
+        .pending-subject {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .pending-preview {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .pending-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-approve {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-block {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-block:hover {
+            background: #DC2626;
+        }
+
+        .btn-block-domain {
+            background: #F59E0B;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-block-domain:hover {
+            background: #D97706;
+        }
+
+        .approve-options {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #F0FDF4;
+            border-radius: 8px;
+            border: 1px solid #BBF7D0;
+        }
+
+        .approve-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .approve-checkbox input {
+            margin: 0;
+        }
+
+        .approve-checkbox label {
+            font-size: 14px;
+            color: #065F46;
+            cursor: pointer;
+        }
+
+        .approve-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-confirm {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #D1D5DB;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .block-item {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .block-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .block-type {
+            padding: 4px 8px;
+            background: #FEF3C7;
+            color: #92400E;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .block-value {
+            font-family: monospace;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .btn-unblock {
+            background: transparent;
+            color: #EF4444;
+            border: 1px solid #EF4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-unblock:hover {
+            background: #EF4444;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #71717A;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #71717A;
+        }
+
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #6C7BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .confidence-high { background: #D1FAE5; color: #065F46; }
+        .confidence-medium { background: #FEF3C7; color: #92400E; }
+        .confidence-low { background: #FEE2E2; color: #991B1B; }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bulk-actions.show {
+            display: flex;
+        }
+
+        .bulk-info {
+            flex: 1;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .bulk-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-bulk-approve {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-bulk-approve:hover {
+            background: #059669;
+        }
+
+        .btn-bulk-block {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-bulk-block:hover {
+            background: #DC2626;
+        }
+
+        .btn-bulk-clear {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #E0E0E0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-bulk-clear:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        /* Selection Checkbox */
+        .selection-checkbox {
+            margin-right: 16px;
+        }
+
+        .selection-checkbox input {
+            width: 16px;
+            height: 16px;
+            accent-color: #6C7BFF;
+            cursor: pointer;
+        }
+
+        .select-all-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: #F8F9FA;
+            border-radius: 8px;
+        }
+
+        .select-all-container input {
+            width: 16px;
+            height: 16px;
+            accent-color: #6C7BFF;
+            cursor: pointer;
+        }
+
+        .select-all-label {
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Updated pending item layout */
+        .pending-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .pending-item-content {
+            flex: 1;
+        }
+
+        .pending-item.selected {
+            background: #EEF0FF;
+            border-color: #6C7BFF;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="inbox-container">
+        <div class="inbox-header">
+            <div>
+                <h1 class="inbox-title">Inbox</h1>
+                <p class="inbox-subtitle">Review and approve newsletters before they appear in your feed</p>
+            </div>
+            <div class="inbox-actions">
+                <a href="/dashboard" class="btn-secondary">← Dashboard</a>
+                <a href="/settings" class="btn-secondary">Settings</a>
+            </div>
+        </div>
+
+        <div class="inbox-tabs">
+            <div class="tab-list">
+                <button class="tab-button active" data-tab="pending">
+                    Pending <span id="pending-count" class="count"></span>
+                </button>
+                <button class="tab-button" data-tab="blocked">
+                    Blocked <span id="blocked-count" class="count"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pending Content Tab -->
+        <div class="tab-content active" id="pending-tab">
+            <!-- Select All -->
+            <div class="select-all-container" id="select-all-container" style="display: none;">
+                <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()">
+                <label class="select-all-label" for="select-all-checkbox">Select all</label>
+                <span class="select-count" id="select-count">(0 selected)</span>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" id="bulk-actions">
+                <div class="bulk-info">
+                    <span id="bulk-count">0</span> items selected
+                </div>
+                <div class="bulk-buttons">
+                    <button class="btn-bulk-approve" onclick="showBulkApproveOptions()">
+                        ✅ Approve Selected
+                    </button>
+                    <button class="btn-bulk-block" onclick="showBulkBlockOptions()">
+                        🚫 Block Selected
+                    </button>
+                    <button class="btn-bulk-clear" onclick="clearSelection()">
+                        Clear Selection
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bulk Actions Options -->
+            <div class="bulk-actions" id="bulk-approve-options" style="background: #F0FDF4; border-color: #BBF7D0;">
+                <div class="bulk-info">
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" id="bulk-auto-approve" style="margin-right: 8px;">
+                        <label for="bulk-auto-approve">Auto-approve future emails from these senders</label>
+                    </div>
+                </div>
+                <div class="bulk-buttons">
+                    <button class="btn-bulk-approve" onclick="bulkApprove()">
+                        Confirm Approval
+                    </button>
+                    <button class="btn-bulk-clear" onclick="hideBulkApproveOptions()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div class="bulk-actions" id="bulk-block-options" style="background: #FEF2F2; border-color: #FECACA;">
+                <div class="bulk-info">
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: block; margin-bottom: 4px;">Block type:</label>
+                        <select id="bulk-block-type" style="padding: 4px 8px; border: 1px solid #E0E0E0; border-radius: 4px;">
+                            <option value="email">Block email addresses</option>
+                            <option value="domain">Block domains</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bulk-buttons">
+                    <button class="btn-bulk-block" onclick="bulkBlock()">
+                        Confirm Block
+                    </button>
+                    <button class="btn-bulk-clear" onclick="hideBulkBlockOptions()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div id="pending-content">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading pending content...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blocked Senders Tab -->
+        <div class="tab-content" id="blocked-tab">
+            <div id="blocked-content">
+                <!-- Blocked content will load here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+
+        // Selection management
+        let selectedItems = new Set();
+
+        // Tab management
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+                
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+                
+                // Load content if needed
+                if (tabName === 'blocked') {
+                    loadBlockedContent();
+                }
+            });
+        });
+
+        // Load pending content
+        async function loadPendingContent() {
+            try {
+                const response = await fetch('/api/inbox/pending');
+                const data = await response.json();
+
+                const container = document.getElementById('pending-content');
+                
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                if (data.content.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📬</div>
+                            <h3>All caught up!</h3>
+                            <p>No pending newsletters to review.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = data.content.map(renderPendingItem).join('');
+                    
+                    // Show select all if there are items
+                    document.getElementById('select-all-container').style.display = 'flex';
+                }
+
+                document.getElementById('pending-count').textContent = data.content.length > 0 ? `(${data.content.length})` : '';
+
+            } catch (error) {
+                console.error('Error loading pending content:', error);
+                document.getElementById('pending-content').innerHTML = `
+                    <div class="empty-state">
+                        <p style="color: #EF4444;">Failed to load pending content</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render pending item with selection checkbox
+        function renderPendingItem(item) {
+            const senderDomain = item.senderEmail ? item.senderEmail.split('@')[1] : '';
+            const confidenceClass = item.extractionConfidence > 0.8 ? 'high' : item.extractionConfidence > 0.5 ? 'medium' : 'low';
+            const confidenceText = item.extractionConfidence > 0.8 ? 'High' : item.extractionConfidence > 0.5 ? 'Medium' : 'Low';
+
+            return `
+                <div class="pending-item" data-content-id="${item.id}">
+                    <div class="selection-checkbox">
+                        <input type="checkbox" onchange="toggleItemSelection('${item.id}')" id="checkbox-${item.id}">
+                    </div>
+                    <div class="pending-item-content">
+                        <div class="pending-header">
+                            <div class="sender-info">
+                                <div class="sender-avatar">
+                                    ${item.source?.logo ? 
+                                        `<img src="${item.source.logo}" alt="${item.detectedNewsletterName}" style="width: 100%; height: 100%; border-radius: 50%;">` :
+                                        (item.detectedNewsletterName || 'N').charAt(0).toUpperCase()
+                                    }
+                                </div>
+                                <div class="sender-details">
+                                    <h3>${item.detectedNewsletterName || 'Unknown Newsletter'}</h3>
+                                    <p class="sender-email">${item.senderEmail}</p>
+                                </div>
+                            </div>
+                            <div class="pending-meta">
+                                <div class="confidence-badge confidence-${confidenceClass}">
+                                    ${confidenceText} Confidence
+                                </div>
+                                <div style="margin-top: 4px; font-size: 12px;">
+                                    ${new Date(item.receivedAt).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pending-subject">${item.subject}</div>
+                        
+                        ${item.metadata?.excerpt ? `
+                            <div class="pending-preview">${item.metadata.excerpt}</div>
+                        ` : ''}
+
+                        <div class="pending-actions">
+                            <button class="btn-approve" onclick="showApproveOptions('${item.id}')">
+                                ✅ Approve
+                            </button>
+                            <button class="btn-block" onclick="blockContent('${item.id}', 'email')">
+                                🚫 Block Sender
+                            </button>
+                            ${senderDomain ? `
+                                <button class="btn-block-domain" onclick="blockContent('${item.id}', 'domain')">
+                                    🚫 Block ${senderDomain}
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <div class="approve-options" id="approve-options-${item.id}">
+                            <div class="approve-checkbox">
+                                <input type="checkbox" id="auto-approve-${item.id}">
+                                <label for="auto-approve-${item.id}">
+                                    Auto-approve future emails from this sender
+                                </label>
+                            </div>
+                            <div class="approve-buttons">
+                                <button class="btn-confirm" onclick="approveContent('${item.id}')">
+                                    Approve
+                                </button>
+                                <button class="btn-cancel" onclick="hideApproveOptions('${item.id}')">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show approve options
+        function showApproveOptions(contentId) {
+            document.getElementById(`approve-options-${contentId}`).style.display = 'block';
+        }
+
+        // Hide approve options
+        function hideApproveOptions(contentId) {
+            document.getElementById(`approve-options-${contentId}`).style.display = 'none';
+        }
+
+        // Approve content
+        async function approveContent(contentId) {
+            try {
+                const autoApprove = document.getElementById(`auto-approve-${contentId}`).checked;
+
+                const response = await fetch(`/api/inbox/approve/${contentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ autoApproveFuture: autoApprove })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Content approved successfully', 'success');
+                    document.querySelector(`[data-content-id="${contentId}"]`).remove();
+                    updatePendingCount();
+                } else {
+                    toastManager.show(data.message || 'Failed to approve content', 'error');
+                }
+            } catch (error) {
+                console.error('Error approving content:', error);
+                toastManager.show('Failed to approve content', 'error');
+            }
+        }
+
+        // Block content
+        async function blockContent(contentId, blockType) {
+            if (!confirm(`Are you sure you want to block this ${blockType === 'domain' ? 'domain' : 'sender'}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/inbox/block/${contentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ blockType })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show(data.message, 'success');
+                    document.querySelector(`[data-content-id="${contentId}"]`).remove();
+                    updatePendingCount();
+                } else {
+                    toastManager.show(data.message || 'Failed to block content', 'error');
+                }
+            } catch (error) {
+                console.error('Error blocking content:', error);
+                toastManager.show('Failed to block content', 'error');
+            }
+        }
+
+        // Load blocked content
+        async function loadBlockedContent() {
+            try {
+                const response = await fetch('/api/inbox/blocked');
+                const data = await response.json();
+
+                const container = document.getElementById('blocked-content');
+                
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                if (data.blockList.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🚫</div>
+                            <h3>No blocked senders</h3>
+                            <p>Senders you block will appear here.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = data.blockList.map(renderBlockedItem).join('');
+                }
+
+                document.getElementById('blocked-count').textContent = data.blockList.length > 0 ? `(${data.blockList.length})` : '';
+
+            } catch (error) {
+                console.error('Error loading blocked content:', error);
+                document.getElementById('blocked-content').innerHTML = `
+                    <div class="empty-state">
+                        <p style="color: #EF4444;">Failed to load blocked list</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render blocked item
+        function renderBlockedItem(item) {
+            return `
+                <div class="block-item">
+                    <div class="block-info">
+                        <span class="block-type">${item.blockType}</span>
+                        <span class="block-value">${item.blockValue}</span>
+                        <span style="color: #71717A; font-size: 12px;">
+                            Blocked ${new Date(item.blockedAt).toLocaleDateString()}
+                        </span>
+                    </div>
+                    <button class="btn-unblock" onclick="unblockItem('${item.id}')">
+                        Unblock
+                    </button>
+                </div>
+            `;
+        }
+
+        // Unblock item
+        async function unblockItem(blockId) {
+            try {
+                const response = await fetch(`/api/inbox/blocked/${blockId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Unblocked successfully', 'success');
+                    loadBlockedContent();
+                } else {
+                    toastManager.show(data.message || 'Failed to unblock', 'error');
+                }
+            } catch (error) {
+                console.error('Error unblocking:', error);
+                toastManager.show('Failed to unblock', 'error');
+            }
+        }
+
+        // Update pending count
+        function updatePendingCount() {
+            const pendingItems = document.querySelectorAll('.pending-item').length;
+            document.getElementById('pending-count').textContent = pendingItems > 0 ? `(${pendingItems})` : '';
+        }
+
+        // Bulk selection functions
+        function toggleItemSelection(contentId) {
+            const checkbox = document.getElementById(`checkbox-${contentId}`);
+            const item = document.querySelector(`[data-content-id="${contentId}"]`);
+            
+            if (checkbox.checked) {
+                selectedItems.add(contentId);
+                item.classList.add('selected');
+            } else {
+                selectedItems.delete(contentId);
+                item.classList.remove('selected');
+            }
+            
+            updateBulkActions();
+            updateSelectAll();
+        }
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            const allCheckboxes = document.querySelectorAll('.pending-item input[type="checkbox"]');
+            
+            if (selectAllCheckbox.checked) {
+                // Select all
+                allCheckboxes.forEach(checkbox => {
+                    const contentId = checkbox.id.replace('checkbox-', '');
+                    checkbox.checked = true;
+                    selectedItems.add(contentId);
+                    document.querySelector(`[data-content-id="${contentId}"]`).classList.add('selected');
+                });
+            } else {
+                // Deselect all
+                allCheckboxes.forEach(checkbox => {
+                    const contentId = checkbox.id.replace('checkbox-', '');
+                    checkbox.checked = false;
+                    selectedItems.delete(contentId);
+                    document.querySelector(`[data-content-id="${contentId}"]`).classList.remove('selected');
+                });
+            }
+            
+            updateBulkActions();
+        }
+
+        function updateSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            const allCheckboxes = document.querySelectorAll('.pending-item input[type="checkbox"]');
+            const checkedBoxes = document.querySelectorAll('.pending-item input[type="checkbox"]:checked');
+            
+            if (checkedBoxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else if (checkedBoxes.length > 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+            
+            document.getElementById('select-count').textContent = `(${checkedBoxes.length} selected)`;
+        }
+
+        function updateBulkActions() {
+            const bulkActions = document.getElementById('bulk-actions');
+            const bulkCount = document.getElementById('bulk-count');
+            
+            if (selectedItems.size > 0) {
+                bulkActions.classList.add('show');
+                bulkCount.textContent = selectedItems.size;
+            } else {
+                bulkActions.classList.remove('show');
+                hideBulkApproveOptions();
+                hideBulkBlockOptions();
+            }
+        }
+
+        function clearSelection() {
+            selectedItems.clear();
+            document.querySelectorAll('.pending-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('.pending-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            updateBulkActions();
+            updateSelectAll();
+        }
+
+        function showBulkApproveOptions() {
+            document.getElementById('bulk-approve-options').classList.add('show');
+            document.getElementById('bulk-actions').classList.remove('show');
+        }
+
+        function hideBulkApproveOptions() {
+            document.getElementById('bulk-approve-options').classList.remove('show');
+            if (selectedItems.size > 0) {
+                document.getElementById('bulk-actions').classList.add('show');
+            }
+        }
+
+        function showBulkBlockOptions() {
+            document.getElementById('bulk-block-options').classList.add('show');
+            document.getElementById('bulk-actions').classList.remove('show');
+        }
+
+        function hideBulkBlockOptions() {
+            document.getElementById('bulk-block-options').classList.remove('show');
+            if (selectedItems.size > 0) {
+                document.getElementById('bulk-actions').classList.add('show');
+            }
+        }
+
+        async function bulkApprove() {
+            if (selectedItems.size === 0) return;
+            
+            try {
+                const autoApprove = document.getElementById('bulk-auto-approve').checked;
+                const contentIds = Array.from(selectedItems);
+                
+                const response = await fetch('/api/inbox/bulk-approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        contentIds, 
+                        autoApproveFuture: autoApprove 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show(data.message, 'success');
+                    
+                    // Remove approved items from DOM
+                    contentIds.forEach(contentId => {
+                        const item = document.querySelector(`[data-content-id="${contentId}"]`);
+                        if (item) item.remove();
+                    });
+                    
+                    clearSelection();
+                    updatePendingCount();
+                    hideBulkApproveOptions();
+                } else {
+                    toastManager.show(data.message || 'Failed to approve items', 'error');
+                }
+            } catch (error) {
+                console.error('Error in bulk approve:', error);
+                toastManager.show('Failed to approve items', 'error');
+            }
+        }
+
+        async function bulkBlock() {
+            if (selectedItems.size === 0) return;
+            
+            const blockType = document.getElementById('bulk-block-type').value;
+            
+            if (!confirm(`Are you sure you want to block ${selectedItems.size} ${blockType === 'domain' ? 'domains' : 'senders'}?`)) {
+                return;
+            }
+            
+            try {
+                const contentIds = Array.from(selectedItems);
+                
+                const response = await fetch('/api/inbox/bulk-block', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        contentIds, 
+                        blockType 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show(data.message, 'success');
+                    
+                    // Remove blocked items from DOM
+                    contentIds.forEach(contentId => {
+                        const item = document.querySelector(`[data-content-id="${contentId}"]`);
+                        if (item) item.remove();
+                    });
+                    
+                    clearSelection();
+                    updatePendingCount();
+                    hideBulkBlockOptions();
+                } else {
+                    toastManager.show(data.message || 'Failed to block items', 'error');
+                }
+            } catch (error) {
+                console.error('Error in bulk block:', error);
+                toastManager.show('Failed to block items', 'error');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPendingContent();
+        });
+    </script>
+</body>
+</html>

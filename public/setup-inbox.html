@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Email Inbox - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .setup-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: #FDFCFB;
+        }
+
+        .setup-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            color: #71717A;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+        }
+
+        .setup-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+        }
+
+        .setup-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .setup-step {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #E0E0E0;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 32px;
+            background: #6C7BFF;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+            padding-top: 8px;
+        }
+
+        .step-description {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .inbox-email-display {
+            background: #F8F9FF;
+            border: 2px solid #6C7BFF;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .inbox-email {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .inbox-email-label {
+            font-size: 14px;
+            color: #71717A;
+        }
+
+        .copy-email-btn {
+            padding: 10px 20px;
+            background: #6C7BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-top: 12px;
+        }
+
+        .copy-email-btn:hover {
+            background: #5A67D8;
+            transform: translateY(-1px);
+        }
+
+        .platform-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .platform-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .platform-card:hover {
+            border-color: #6C7BFF;
+            transform: translateY(-2px);
+        }
+
+        .platform-card.selected {
+            border-color: #6C7BFF;
+            background: #F8F9FF;
+        }
+
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 20px;
+        }
+
+        .platform-icon.gmail { background: #EA4335; color: white; }
+        .platform-icon.outlook { background: #0078D4; color: white; }
+        .platform-icon.apple { background: #000; color: white; }
+        .platform-icon.other { background: #6B7280; color: white; }
+
+        .platform-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .setup-instructions {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            display: none;
+        }
+
+        .setup-instructions.active {
+            display: block;
+        }
+
+        .instruction-step {
+            margin-bottom: 16px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .instruction-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #6C7BFF;
+            font-weight: 600;
+        }
+
+        .instruction-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .gmail-integration {
+            background: #EA4335;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .gmail-btn {
+            background: white;
+            color: #EA4335;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gmail-btn:hover {
+            background: #F9FAFB;
+            transform: translateY(-1px);
+        }
+
+        .verification-section {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .verification-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #92400E;
+            margin-bottom: 12px;
+        }
+
+        .verification-text {
+            font-size: 14px;
+            color: #92400E;
+            margin-bottom: 16px;
+        }
+
+        .test-email-btn {
+            background: #F59E0B;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .test-email-btn:hover {
+            background: #D97706;
+        }
+
+        .complete-setup-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-top: 32px;
+        }
+
+        .complete-setup-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .platform-selection {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .setup-step {
+                padding: 24px 20px;
+            }
+            
+            .setup-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <a href="/onboarding" class="back-button">
+        ← Back to Setup
+    </a>
+
+    <div class="setup-container">
+        <div class="setup-content">
+            <!-- Header -->
+            <div class="setup-header">
+                <h1 class="setup-title">Set Up Your Email Inbox</h1>
+                <p class="setup-subtitle">Get your personal inbox address and set up email forwarding</p>
+            </div>
+
+            <!-- Step 1: Your Inbox Email -->
+            <div class="setup-steps">
+                <div class="setup-step">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Your Personal Inbox Address</h2>
+                    <p class="step-description">
+                        This is your unique inbox address where you'll forward all newsletters. We'll organize and approve them for you.
+                    </p>
+                    
+                    <div class="inbox-email-display">
+                        <div class="inbox-email" id="inbox-email">Loading...</div>
+                        <div class="inbox-email-label">Your Sift Inbox Address</div>
+                        <button class="copy-email-btn" onclick="copyInboxEmail()">📋 Copy Address</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Choose Your Email Platform -->
+                <div class="setup-step">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Set Up Newsletter Filtering</h2>
+                    <p class="step-description">
+                        Create a rule to automatically forward only newsletters (emails containing "unsubscribe") to your Sift inbox. This keeps your personal emails separate.
+                    </p>
+
+                    <div style="background: #EEF0FF; border: 1px solid #6C7BFF; border-radius: 8px; padding: 16px; margin: 20px 0; font-size: 14px; color: #374151;">
+                        <strong>💡 Important:</strong> We only want newsletters and marketing emails forwarded to Sift, not your personal messages. The "unsubscribe" keyword filter ensures only newsletter-type emails are forwarded.
+                    </div>
+
+                    <div class="platform-selection">
+                        <div class="platform-card" data-platform="gmail" onclick="selectPlatform('gmail')">
+                            <div class="platform-icon gmail">G</div>
+                            <div class="platform-name">Gmail</div>
+                        </div>
+                        <div class="platform-card" data-platform="outlook" onclick="selectPlatform('outlook')">
+                            <div class="platform-icon outlook">O</div>
+                            <div class="platform-name">Outlook</div>
+                        </div>
+                        <div class="platform-card" data-platform="apple" onclick="selectPlatform('apple')">
+                            <div class="platform-icon apple">🍎</div>
+                            <div class="platform-name">Apple Mail</div>
+                        </div>
+                        <div class="platform-card" data-platform="other" onclick="selectPlatform('other')">
+                            <div class="platform-icon other">📧</div>
+                            <div class="platform-name">Other</div>
+                        </div>
+                    </div>
+
+                    <!-- Gmail One-Click Integration -->
+                    <div class="gmail-integration" id="gmail-integration" style="display: none;">
+                        <h3>Quick Gmail Setup</h3>
+                        <p>Set up automatic forwarding with one click</p>
+                        <button class="gmail-btn" onclick="setupGmailIntegration()">
+                            🚀 Set Up Gmail Forwarding
+                        </button>
+                    </div>
+
+                    <!-- Platform-specific instructions -->
+                    <div class="setup-instructions gmail-instructions">
+                        <h4>Gmail Setup Instructions</h4>
+                        <div class="instruction-step" data-step="1.">
+                            <div class="instruction-text">Open Gmail and go to Settings (gear icon) → "See all settings"</div>
+                        </div>
+                        <div class="instruction-step" data-step="2.">
+                            <div class="instruction-text">Click on "Filters and Blocked Addresses" tab</div>
+                        </div>
+                        <div class="instruction-step" data-step="3.">
+                            <div class="instruction-text">Click "Create a new filter"</div>
+                        </div>
+                        <div class="instruction-step" data-step="4.">
+                            <div class="instruction-text">In "Has the words" field, enter: <strong>unsubscribe</strong></div>
+                        </div>
+                        <div class="instruction-step" data-step="5.">
+                            <div class="instruction-text">Click "Create filter" → Check "Forward it to" and enter your Sift inbox address</div>
+                        </div>
+                        <div class="instruction-step" data-step="6.">
+                            <div class="instruction-text">Also check "Keep Gmail's copy in the Inbox" and click "Create filter"</div>
+                        </div>
+                        <div class="instruction-step" data-step="7.">
+                            <div class="instruction-text">If prompted to add the forwarding address, verify it from your Sift inbox</div>
+                        </div>
+                    </div>
+
+                    <div class="setup-instructions outlook-instructions">
+                        <h4>Outlook Setup Instructions</h4>
+                        <div class="instruction-step" data-step="1.">
+                            <div class="instruction-text">Open Outlook.com and go to Settings (gear icon) → "View all Outlook settings"</div>
+                        </div>
+                        <div class="instruction-step" data-step="2.">
+                            <div class="instruction-text">Go to "Mail" → "Rules"</div>
+                        </div>
+                        <div class="instruction-step" data-step="3.">
+                            <div class="instruction-text">Click "Add new rule" → Name it "Newsletter Forwarding"</div>
+                        </div>
+                        <div class="instruction-step" data-step="4.">
+                            <div class="instruction-text">Set condition: "It includes these words" → enter <strong>unsubscribe</strong></div>
+                        </div>
+                        <div class="instruction-step" data-step="5.">
+                            <div class="instruction-text">Set action: "Forward the message to" → enter your Sift inbox address</div>
+                        </div>
+                        <div class="instruction-step" data-step="6.">
+                            <div class="instruction-text">Save the rule - newsletters will now forward automatically to Sift</div>
+                        </div>
+                    </div>
+
+                    <div class="setup-instructions apple-instructions">
+                        <h4>Apple Mail Setup Instructions</h4>
+                        <div class="instruction-step" data-step="1.">
+                            <div class="instruction-text">Open Mail app and go to Mail → Rules... (or Preferences → Rules)</div>
+                        </div>
+                        <div class="instruction-step" data-step="2.">
+                            <div class="instruction-text">Click "Add Rule" and name it "Newsletter Forwarding"</div>
+                        </div>
+                        <div class="instruction-step" data-step="3.">
+                            <div class="instruction-text">Set condition: "Message Content" → "Contains" → <strong>unsubscribe</strong></div>
+                        </div>
+                        <div class="instruction-step" data-step="4.">
+                            <div class="instruction-text">Set action: "Forward Message" and enter your Sift inbox address</div>
+                        </div>
+                        <div class="instruction-step" data-step="5.">
+                            <div class="instruction-text">Save the rule - newsletters containing "unsubscribe" will forward to Sift</div>
+                        </div>
+                    </div>
+
+                    <div class="setup-instructions other-instructions">
+                        <h4>General Email Forwarding</h4>
+                        <div class="instruction-step" data-step="1.">
+                            <div class="instruction-text">Look for "Rules", "Filters", or "Forwarding" in your email settings</div>
+                        </div>
+                        <div class="instruction-step" data-step="2.">
+                            <div class="instruction-text">Create a rule/filter with condition: "Message contains" → <strong>unsubscribe</strong></div>
+                        </div>
+                        <div class="instruction-step" data-step="3.">
+                            <div class="instruction-text">Set action to forward these emails to your Sift inbox address</div>
+                        </div>
+                        <div class="instruction-step" data-step="4.">
+                            <div class="instruction-text">Make sure to keep a copy in your original inbox</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Verify Setup -->
+                <div class="setup-step">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Test Your Setup</h2>
+                    <p class="step-description">
+                        Send a test email to verify your forwarding is working correctly.
+                    </p>
+
+                    <div class="verification-section">
+                        <div class="verification-title">🧪 Test Your Forwarding</div>
+                        <div class="verification-text">
+                            We'll send a test email to check if your forwarding setup is working
+                        </div>
+                        <button class="test-email-btn" onclick="sendTestEmail()">Send Test Email</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="complete-setup-btn" onclick="completeSetup()">
+                Complete Inbox Setup
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+        let selectedPlatform = null;
+
+        // Load user's inbox email
+        async function loadInboxEmail() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+                
+                if (data.isAuthenticated && data.user && data.user.inboxEmail) {
+                    document.getElementById('inbox-email').textContent = data.user.inboxEmail;
+                } else {
+                    document.getElementById('inbox-email').textContent = 'Error loading inbox email';
+                    toastManager.show('Failed to load inbox email', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading inbox email:', error);
+                document.getElementById('inbox-email').textContent = 'Error loading inbox email';
+                toastManager.show('Failed to load inbox email', 'error');
+            }
+        }
+
+        // Copy inbox email to clipboard
+        function copyInboxEmail() {
+            const inboxEmail = document.getElementById('inbox-email').textContent;
+            navigator.clipboard.writeText(inboxEmail).then(() => {
+                toastManager.show('Email address copied to clipboard!', 'success');
+            }).catch(() => {
+                toastManager.show('Failed to copy email address', 'error');
+            });
+        }
+
+        // Select email platform
+        function selectPlatform(platform) {
+            // Remove selected state from all cards
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected state to clicked card
+            document.querySelector(`[data-platform="${platform}"]`).classList.add('selected');
+            
+            // Hide all instructions
+            document.querySelectorAll('.setup-instructions').forEach(instructions => {
+                instructions.classList.remove('active');
+            });
+            
+            // Show selected platform instructions
+            document.querySelector(`.${platform}-instructions`).classList.add('active');
+            
+            // Show/hide Gmail integration
+            const gmailIntegration = document.getElementById('gmail-integration');
+            if (platform === 'gmail') {
+                gmailIntegration.style.display = 'block';
+            } else {
+                gmailIntegration.style.display = 'none';
+            }
+            
+            selectedPlatform = platform;
+        }
+
+        // Setup Gmail integration (placeholder for OAuth flow)
+        function setupGmailIntegration() {
+            // This would integrate with Gmail API for automatic forwarding setup
+            toastManager.show('Gmail integration coming soon! Please use manual setup for now.', 'info', 5000);
+        }
+
+        // Send test email
+        async function sendTestEmail() {
+            try {
+                const response = await fetch('/api/inbox/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    toastManager.show('Test email sent! Check your inbox and Sift dashboard.', 'success', 5000);
+                } else {
+                    toastManager.show('Failed to send test email', 'error');
+                }
+            } catch (error) {
+                console.error('Error sending test email:', error);
+                toastManager.show('Failed to send test email', 'error');
+            }
+        }
+
+        // Complete setup
+        function completeSetup() {
+            if (!selectedPlatform) {
+                toastManager.show('Please select your email platform first', 'warning');
+                return;
+            }
+            
+            // Save setup completion status
+            localStorage.setItem('inboxSetupComplete', 'true');
+            localStorage.setItem('emailPlatform', selectedPlatform);
+            
+            toastManager.show('Inbox setup completed!', 'success');
+            
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInboxEmail();
+        });
+    </script>
+</body>
+</html>

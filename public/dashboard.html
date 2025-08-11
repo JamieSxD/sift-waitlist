@@ -155,6 +155,53 @@
             border-radius: 4px;
         }
 
+        /* Inbox notification indicator */
+        .inbox-notification {
+            position: relative;
+        }
+
+        .inbox-notification .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .inbox-item {
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease-out;
+            margin-bottom: 4px;
+        }
+
+        .inbox-item:hover {
+            background: #F8F9FA;
+            text-decoration: none;
+            color: inherit;
+        }
+
         .user-menu {
             border-top: 1px solid #E0E0E0;
             padding-top: 20px;
@@ -583,24 +630,6 @@
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
         }
 
-        /* IMPROVED: Better test content styling */
-        .test-content-btn {
-            padding: 12px 24px;
-            background: #6C7BFF;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease-out;
-            margin-bottom: 24px;
-        }
-
-        .test-content-btn:hover {
-            background: #5A6ADC;
-        }
-
         @media (max-width: 1024px) {
             .main-content {
                 max-width: 100%;
@@ -690,20 +719,19 @@
                         <span class="category-name">Newsletters</span>
                         <span class="category-count" id="newsletter-count">0</span>
                     </li>
-                    <li class="category-item">
-                        <span class="category-icon">📺</span>
-                        <span class="category-name">Videos</span>
-                        <span class="category-count">0</span>
-                    </li>
-                    <li class="category-item">
-                        <span class="category-icon">🎵</span>
-                        <span class="category-name">Music</span>
-                        <span class="category-count">0</span>
-                    </li>
-                    <li class="category-item">
-                        <span class="category-icon">📰</span>
-                        <span class="category-name">News</span>
-                        <span class="category-count">0</span>
+                </ul>
+            </div>
+
+            <!-- Inbox Section -->
+            <div class="content-categories">
+                <div class="category-title">Manage</div>
+                <ul class="category-list">
+                    <li>
+                        <a href="/inbox" class="inbox-item inbox-notification" id="inbox-link">
+                            <span class="category-icon">📥</span>
+                            <span class="category-name">Inbox</span>
+                            <span class="notification-badge" id="inbox-badge" style="display: none;">0</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -732,7 +760,6 @@
             <div class="dashboard-header">
                 <h1 class="header-title">Your Content</h1>
                 <div class="header-actions">
-                    <button class="test-content-btn" onclick="createTestContent()">🧪 Create Test Content</button>
                     <button class="header-btn">Mark all read</button>
                     <button class="header-btn">Filter</button>
                 </div>
@@ -799,57 +826,6 @@
         // Content management
         let contentData = [];
 
-        // IMPROVED: Create test content for testing
-        async function createTestContent() {
-            try {
-                const testContent = {
-                    newsletterSourceId: 'test-source-id',
-                    emailHtml: `
-                        <h1>Weekly Tech Roundup</h1>
-                        <p>Here are the biggest tech stories from this week:</p>
-
-                        <h2>🤖 AI Breakthrough</h2>
-                        <p>Researchers have developed a new model that significantly improves language understanding capabilities. This represents a major step forward in natural language processing.</p>
-                        <a href="https://example.com/ai-breakthrough">Read more about this breakthrough</a>
-
-                        <h2>📊 Market Update</h2>
-                        <p>Tech stocks showed strong performance this week, with several companies beating earnings expectations.</p>
-
-                        <h2>🚀 Product Launches</h2>
-                        <p>Several major tech companies announced new products this week:</p>
-                        <ul>
-                            <li>Company A launched their new smartphone</li>
-                            <li>Company B unveiled their latest laptop</li>
-                            <li>Company C announced a new cloud service</li>
-                        </ul>
-
-                        <p>Stay tuned for more updates next week!</p>
-                    `,
-                    subject: 'Weekly Tech Roundup - Issue #42'
-                };
-
-                const response = await fetch('/api/content/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(testContent)
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    toastManager.show('Test content created successfully!', 'success');
-                    loadContent(); // Reload content
-                } else {
-                    toastManager.show('Failed to create test content: ' + data.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error creating test content:', error);
-                toastManager.show('Error creating test content', 'error');
-            }
-        }
-
         // Load user information
         async function loadUserInfo() {
             try {
@@ -909,13 +885,13 @@
             } catch (error) {
                 console.error('Error loading content:', error);
                 document.getElementById('content-feed').innerHTML = `
-                    <div class="loading-state">
-                        <p style="color: #EF4444;">Failed to load content. Please refresh the page.</p>
-                        <button class="test-content-btn" onclick="createTestContent()" style="margin-top: 16px;">
-                            🧪 Create Test Content Instead
-                        </button>
-                    </div>
-                `;
+    <div class="loading-state">
+        <p style="color: #EF4444;">Failed to load content. Please refresh the page.</p>
+        <button class="get-started-btn" onclick="addContent()" style="margin-top: 16px;">
+            Get Started
+        </button>
+    </div>
+`;
             }
         }
 
@@ -925,13 +901,13 @@
 
             if (content.length === 0) {
                 contentFeed.innerHTML = `
-                    <div class="loading-state">
-                        <p>No content available yet.</p>
-                        <button class="test-content-btn" onclick="createTestContent()" style="margin-top: 16px;">
-                            🧪 Create Test Content
-                        </button>
-                    </div>
-                `;
+    <div class="loading-state">
+        <p>No content available yet. Connect your sources to see content here.</p>
+        <button class="get-started-btn" onclick="addContent()" style="margin-top: 16px;">
+            Get Started
+        </button>
+    </div>
+`;
                 return;
             }
 
@@ -1176,6 +1152,26 @@
             document.getElementById('newsletter-count').textContent = contentData.length;
         }
 
+        // Load and display inbox pending count
+        async function loadInboxPendingCount() {
+            try {
+                const response = await fetch('/api/inbox/pending-count');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const badge = document.getElementById('inbox-badge');
+                    if (data.pendingCount > 0) {
+                        badge.textContent = data.pendingCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pending count:', error);
+            }
+        }
+
         // Navigation functions
         function addContent() {
             window.location.href = '/onboarding';
@@ -1187,7 +1183,7 @@
         }
 
         function openSettings() {
-            toastManager.show('Settings page coming soon!', 'info');
+            window.location.href = '/settings';
         }
 
         function openFeedback() {
@@ -1232,6 +1228,10 @@
             // Initialize
             loadUserInfo();
             loadContent();
+            loadInboxPendingCount();
+            
+            // Refresh pending count every 30 seconds
+            setInterval(loadInboxPendingCount, 30000);
         });
     </script>
 </body>

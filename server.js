@@ -10,10 +10,11 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const { User, NewsletterSource, UserNewsletterSubscription } = require('./models');
+const { User, NewsletterSource, NewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction } = require('./models');
 
 const contentExtractionService = require('./services/contentExtraction');
-const { NewsletterContent, UserContentInteraction } = require('./models');
+
+const emailProcessingService = require('./services/emailProcessingService');
 
 // Import authentication
 const passport = require('./config/passport');
@@ -85,8 +86,79 @@ app.get('/api/auth/status', (req, res) => {
       name: req.user.name,
       email: req.user.email,
       avatar: req.user.avatar,
+      inboxEmail: req.user.inboxEmail,
     } : null
   });
+});
+
+// Update user settings
+app.post('/api/user/settings', requireAuth, async (req, res) => {
+  try {
+    const { name, customInboxPrefix } = req.body;
+    const updates = {};
+
+    if (name) {
+      updates.name = name.trim();
+    }
+
+    if (customInboxPrefix) {
+      // Validate the custom prefix
+      const cleanPrefix = customInboxPrefix.toLowerCase().replace(/[^a-z0-9]/g, '');
+      
+      if (cleanPrefix.length < 3) {
+        return res.status(400).json({
+          success: false,
+          message: 'Inbox prefix must be at least 3 characters long'
+        });
+      }
+
+      const newInboxEmail = `${cleanPrefix}@inbox.siftly.space`;
+      
+      // Check if this inbox email is already taken
+      const existingUser = await User.findOne({ 
+        where: { 
+          inboxEmail: newInboxEmail,
+          id: { [require('sequelize').Op.ne]: req.user.id }
+        }
+      });
+
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'This inbox address is already taken'
+        });
+      }
+
+      updates.inboxEmail = newInboxEmail;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No valid updates provided'
+      });
+    }
+
+    await req.user.update(updates);
+    
+    res.json({
+      success: true,
+      message: 'Settings updated successfully',
+      user: {
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        inboxEmail: req.user.inboxEmail,
+      }
+    });
+
+  } catch (error) {
+    console.error('Error updating user settings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update settings'
+    });
+  }
 });
 
 // =================
@@ -117,21 +189,107 @@ app.get('/onboarding', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'onboarding.html'));
 });
 
+// Newsletters page
+app.get('/newsletters', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'newsletters.html'));
+});
+
+app.get('/admin/email', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'email-admin.html'));
+});
+
+// Settings page
+app.get('/settings', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'settings.html'));
+});
+
+// Inbox page (for approving/blocking senders)
+app.get('/inbox', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'inbox.html'));
+});
+
 // Content type setup pages
 app.get('/setup/:type', requireAuth, (req, res) => {
   const { type } = req.params;
-  const validTypes = ['newsletters', 'youtube', 'music', 'news', 'rss'];
+  const validTypes = ['inbox', 'newsletters', 'youtube', 'music', 'news', 'rss'];
 
   if (!validTypes.includes(type)) {
     return res.status(404).send('Content type not found');
   }
 
-  res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
+  // Route to appropriate setup page
+  if (type === 'inbox') {
+    res.sendFile(path.join(__dirname, 'public', 'setup-inbox.html'));
+  } else if (type === 'newsletters') {
+    // Redirect newsletters to inbox setup (single inbox approach)
+    res.redirect('/setup/inbox');
+  } else {
+    // For other types, still serve the newsletter setup (will be updated later)
+    res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
+  }
 });
 
 // Feedback page
 app.get('/feedback', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
+});
+
+// =================
+// EMAIL PROCESSING ROUTES
+// =================
+
+// Webhook endpoint for incoming emails
+app.post('/api/webhooks/email', express.raw({type: 'application/json'}), async (req, res) => {
+  try {
+    const result = await emailProcessingService.processWebhookEmail(req.body);
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+
+  } catch (error) {
+    console.error('❌ Email webhook error:', error);
+    res.status(500).json({ success: false, message: 'Processing failed' });
+  }
+});
+
+// Test endpoint for simulating email receipt
+app.post('/api/test/email', requireAuth, async (req, res) => {
+  try {
+    const { newsletterSourceId, subject, html } = req.body;
+
+    if (!newsletterSourceId || !html) {
+      return res.status(400).json({
+        success: false,
+        message: 'Newsletter source ID and HTML content required'
+      });
+    }
+
+    // Process as if it came from email
+    const result = await emailProcessingService.processIncomingNewsletter({
+      userId: req.user.id,
+      newsletterSourceId,
+      subject: subject || 'Test Newsletter',
+      html,
+      from: 'test@example.com',
+      to: `test-${req.user.id}@example.com`
+    });
+
+    res.json({
+      success: true,
+      message: 'Test email processed successfully',
+      contentId: result.id
+    });
+
+  } catch (error) {
+    console.error('❌ Test email error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process test email'
+    });
+  }
 });
 
 // =================
@@ -278,65 +436,19 @@ app.get('/api/content/feed', requireAuth, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
 
-    const userSubscriptions = await UserNewsletterSubscription.findAll({
+    // Only show approved content for single inbox approach
+    const content = await NewsletterContent.findAndCountAll({
       where: {
         userId: req.user.id,
-        isActive: true
-      }
-    });
-
-    if (userSubscriptions.length === 0) {
-      return res.json({
-        success: true,
-        content: [],
-        pagination: { total: 0, hasMore: false }
-      });
-    }
-
-    // NEW: Separate shared and individual subscriptions
-    const sharedSubscriptions = userSubscriptions.filter(sub => sub.subscriptionMethod === 'shared_access');
-    const individualSubscriptions = userSubscriptions.filter(sub => sub.subscriptionMethod === 'individual_forwarding');
-
-    const sharedNewsletterIds = sharedSubscriptions.map(sub => sub.newsletterSourceId);
-    const individualNewsletterIds = individualSubscriptions.map(sub => sub.newsletterSourceId);
-
-    // NEW: Build where clause for both content types
-    const { Op } = require('sequelize');
-    const whereClause = {
-      processingStatus: 'completed',
-      [Op.or]: []
-    };
-
-    if (sharedNewsletterIds.length > 0) {
-      whereClause[Op.or].push({
-        contentType: 'shared',
-        newsletterSourceId: { [Op.in]: sharedNewsletterIds }
-      });
-    }
-
-    if (individualNewsletterIds.length > 0) {
-      whereClause[Op.or].push({
-        contentType: 'individual',
-        newsletterSourceId: { [Op.in]: individualNewsletterIds },
-        userId: req.user.id
-      });
-    }
-
-    if (whereClause[Op.or].length === 0) {
-      return res.json({
-        success: true,
-        content: [],
-        pagination: { total: 0, hasMore: false }
-      });
-    }
-
-    const content = await NewsletterContent.findAndCountAll({
-      where: whereClause,
+        approvalStatus: 'approved',
+        processingStatus: 'completed'
+      },
       include: [
         {
           model: NewsletterSource,
           as: 'source',
-          attributes: ['id', 'name', 'logo', 'category']
+          attributes: ['id', 'name', 'logo', 'category'],
+          required: false
         },
         {
           model: UserContentInteraction,
@@ -352,11 +464,16 @@ app.get('/api/content/feed', requireAuth, async (req, res) => {
 
     const formattedContent = content.rows.map(item => ({
       id: item.id,
-      source: {
+      source: item.source ? {
         id: item.source.id,
         name: item.source.name,
         logo: item.source.logo,
         category: item.source.category
+      } : {
+        id: null,
+        name: item.detectedNewsletterName || 'Newsletter',
+        logo: null,
+        category: item.detectedCategory || 'other'
       },
       metadata: item.metadata,
       sections: item.sections,
@@ -399,6 +516,532 @@ app.get('/api/user/has-content', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       hasContent: false
+    });
+  }
+});
+
+// Get pending content count for notification indicator
+app.get('/api/inbox/pending-count', requireAuth, async (req, res) => {
+  try {
+    const pendingCount = await NewsletterContent.count({
+      where: {
+        userId: req.user.id,
+        approvalStatus: 'pending'
+      }
+    });
+
+    res.json({
+      success: true,
+      pendingCount
+    });
+
+  } catch (error) {
+    console.error('Error fetching pending count:', error);
+    res.status(500).json({
+      success: false,
+      pendingCount: 0
+    });
+  }
+});
+
+// =================
+// INBOX APPROVAL API ROUTES
+// =================
+
+// Get pending newsletter content for user's inbox
+app.get('/api/inbox/pending', requireAuth, async (req, res) => {
+  try {
+    const { limit = 20, offset = 0 } = req.query;
+
+    const pendingContent = await NewsletterContent.findAndCountAll({
+      where: {
+        userId: req.user.id,
+        approvalStatus: 'pending'
+      },
+      include: [
+        {
+          model: NewsletterSource,
+          as: 'source',
+          required: false
+        }
+      ],
+      order: [['receivedAt', 'DESC']],
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+    const formattedContent = pendingContent.rows.map(item => ({
+      id: item.id,
+      subject: item.originalSubject,
+      senderEmail: item.originalFrom,
+      senderDomain: item.senderDomain,
+      receivedAt: item.receivedAt,
+      source: item.source ? {
+        id: item.source.id,
+        name: item.source.name,
+        logo: item.source.logo
+      } : null,
+      metadata: item.metadata,
+      extractionConfidence: item.extractionConfidence,
+      detectedNewsletterName: item.detectedNewsletterName
+    }));
+
+    res.json({
+      success: true,
+      content: formattedContent,
+      pagination: {
+        total: pendingContent.count,
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        hasMore: (parseInt(offset) + pendingContent.rows.length) < pendingContent.count
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching pending content:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch pending content'
+    });
+  }
+});
+
+// Approve content and sender
+app.post('/api/inbox/approve/:contentId', requireAuth, async (req, res) => {
+  try {
+    const { contentId } = req.params;
+    const { autoApproveFuture = false } = req.body;
+
+    const content = await NewsletterContent.findOne({
+      where: {
+        id: contentId,
+        userId: req.user.id,
+        approvalStatus: 'pending'
+      }
+    });
+
+    if (!content) {
+      return res.status(404).json({
+        success: false,
+        message: 'Content not found or already processed'
+      });
+    }
+
+    // Approve the content
+    await content.update({
+      approvalStatus: 'approved',
+      approvedAt: new Date()
+    });
+
+    // If user wants to auto-approve future emails from this sender
+    if (autoApproveFuture && content.newsletterSourceId) {
+      await NewsletterSubscription.findOrCreate({
+        where: {
+          userId: req.user.id,
+          newsletterSourceId: content.newsletterSourceId
+        },
+        defaults: {
+          isActive: true,
+          autoApprove: true,
+          subscribedAt: new Date()
+        }
+      });
+    }
+
+    console.log(`✅ User ${req.user.email} approved content: ${content.originalSubject}`);
+
+    res.json({
+      success: true,
+      message: 'Content approved successfully'
+    });
+
+  } catch (error) {
+    console.error('Error approving content:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to approve content'
+    });
+  }
+});
+
+// Block content and sender
+app.post('/api/inbox/block/:contentId', requireAuth, async (req, res) => {
+  try {
+    const { contentId } = req.params;
+    const { blockType = 'email', blockReason } = req.body;
+
+    const content = await NewsletterContent.findOne({
+      where: {
+        id: contentId,
+        userId: req.user.id,
+        approvalStatus: 'pending'
+      }
+    });
+
+    if (!content) {
+      return res.status(404).json({
+        success: false,
+        message: 'Content not found or already processed'
+      });
+    }
+
+    // Block the content
+    await content.update({
+      approvalStatus: 'blocked'
+    });
+
+    // Add to user's block list
+    let blockValue;
+    if (blockType === 'domain') {
+      blockValue = content.senderDomain;
+    } else {
+      blockValue = content.originalFrom;
+    }
+
+    await UserBlockList.create({
+      userId: req.user.id,
+      blockType,
+      blockValue,
+      reason: blockReason || 'Blocked from inbox',
+      isActive: true
+    });
+
+    console.log(`🚫 User ${req.user.email} blocked ${blockType}: ${blockValue}`);
+
+    res.json({
+      success: true,
+      message: `${blockType === 'domain' ? 'Domain' : 'Sender'} blocked successfully`
+    });
+
+  } catch (error) {
+    console.error('Error blocking content:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to block content'
+    });
+  }
+});
+
+// Get user's block list
+app.get('/api/inbox/blocked', requireAuth, async (req, res) => {
+  try {
+    const blockList = await UserBlockList.findAll({
+      where: {
+        userId: req.user.id,
+        isActive: true
+      },
+      order: [['blockedAt', 'DESC']]
+    });
+
+    res.json({
+      success: true,
+      blockList: blockList.map(item => ({
+        id: item.id,
+        blockType: item.blockType,
+        blockValue: item.blockValue,
+        reason: item.reason,
+        blockedAt: item.blockedAt
+      }))
+    });
+
+  } catch (error) {
+    console.error('Error fetching block list:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch block list'
+    });
+  }
+});
+
+// Remove item from block list
+app.delete('/api/inbox/blocked/:blockId', requireAuth, async (req, res) => {
+  try {
+    const { blockId } = req.params;
+
+    const blockItem = await UserBlockList.findOne({
+      where: {
+        id: blockId,
+        userId: req.user.id
+      }
+    });
+
+    if (!blockItem) {
+      return res.status(404).json({
+        success: false,
+        message: 'Block item not found'
+      });
+    }
+
+    await blockItem.update({ isActive: false });
+
+    res.json({
+      success: true,
+      message: 'Block removed successfully'
+    });
+
+  } catch (error) {
+    console.error('Error removing block:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to remove block'
+    });
+  }
+});
+
+// Bulk approve content
+app.post('/api/inbox/bulk-approve', requireAuth, async (req, res) => {
+  try {
+    const { contentIds, autoApproveFuture = false } = req.body;
+
+    if (!Array.isArray(contentIds) || contentIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Content IDs array is required'
+      });
+    }
+
+    const results = [];
+    
+    for (const contentId of contentIds) {
+      try {
+        const content = await NewsletterContent.findOne({
+          where: {
+            id: contentId,
+            userId: req.user.id,
+            approvalStatus: 'pending'
+          }
+        });
+
+        if (!content) {
+          results.push({
+            contentId,
+            success: false,
+            message: 'Content not found or already processed'
+          });
+          continue;
+        }
+
+        // Approve the content
+        await content.update({
+          approvalStatus: 'approved',
+          approvedAt: new Date()
+        });
+
+        // Auto-approve future emails if requested
+        if (autoApproveFuture && content.newsletterSourceId) {
+          await NewsletterSubscription.findOrCreate({
+            where: {
+              userId: req.user.id,
+              newsletterSourceId: content.newsletterSourceId
+            },
+            defaults: {
+              isActive: true,
+              autoApprove: true,
+              subscribedAt: new Date()
+            }
+          });
+
+          // Update existing subscription
+          await NewsletterSubscription.update(
+            { autoApprove: true },
+            {
+              where: {
+                userId: req.user.id,
+                newsletterSourceId: content.newsletterSourceId,
+                isActive: true
+              }
+            }
+          );
+        }
+
+        results.push({
+          contentId,
+          success: true,
+          message: 'Approved successfully'
+        });
+
+      } catch (error) {
+        results.push({
+          contentId,
+          success: false,
+          message: error.message
+        });
+      }
+    }
+
+    const successCount = results.filter(r => r.success).length;
+
+    console.log(`✅ User ${req.user.email} bulk approved ${successCount}/${contentIds.length} items`);
+
+    res.json({
+      success: true,
+      message: `Successfully approved ${successCount} out of ${contentIds.length} items`,
+      results
+    });
+
+  } catch (error) {
+    console.error('Error in bulk approve:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process bulk approval'
+    });
+  }
+});
+
+// Bulk block content
+app.post('/api/inbox/bulk-block', requireAuth, async (req, res) => {
+  try {
+    const { contentIds, blockType = 'email', blockReason } = req.body;
+
+    if (!Array.isArray(contentIds) || contentIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Content IDs array is required'
+      });
+    }
+
+    const results = [];
+    const blockedValues = new Set(); // Prevent duplicate blocks
+
+    for (const contentId of contentIds) {
+      try {
+        const content = await NewsletterContent.findOne({
+          where: {
+            id: contentId,
+            userId: req.user.id,
+            approvalStatus: 'pending'
+          }
+        });
+
+        if (!content) {
+          results.push({
+            contentId,
+            success: false,
+            message: 'Content not found or already processed'
+          });
+          continue;
+        }
+
+        // Block the content
+        await content.update({
+          approvalStatus: 'blocked'
+        });
+
+        // Add to user's block list (avoid duplicates)
+        let blockValue;
+        if (blockType === 'domain') {
+          blockValue = content.senderDomain;
+        } else {
+          blockValue = content.originalFrom;
+        }
+
+        if (blockValue && !blockedValues.has(blockValue)) {
+          blockedValues.add(blockValue);
+          
+          // Check if already blocked
+          const existingBlock = await UserBlockList.findOne({
+            where: {
+              userId: req.user.id,
+              blockType,
+              blockValue,
+              isActive: true
+            }
+          });
+
+          if (!existingBlock) {
+            await UserBlockList.create({
+              userId: req.user.id,
+              blockType,
+              blockValue,
+              reason: blockReason || 'Bulk blocked from inbox',
+              isActive: true
+            });
+          }
+        }
+
+        results.push({
+          contentId,
+          success: true,
+          message: 'Blocked successfully'
+        });
+
+      } catch (error) {
+        results.push({
+          contentId,
+          success: false,
+          message: error.message
+        });
+      }
+    }
+
+    const successCount = results.filter(r => r.success).length;
+
+    console.log(`🚫 User ${req.user.email} bulk blocked ${successCount}/${contentIds.length} items`);
+
+    res.json({
+      success: true,
+      message: `Successfully blocked ${successCount} out of ${contentIds.length} items`,
+      results,
+      blockedCount: blockedValues.size
+    });
+
+  } catch (error) {
+    console.error('Error in bulk block:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process bulk blocking'
+    });
+  }
+});
+
+// Send test email for inbox setup verification
+app.post('/api/inbox/test-email', requireAuth, async (req, res) => {
+  try {
+    if (!req.user.inboxEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'No inbox email found for user'
+      });
+    }
+
+    // Create a test newsletter content entry
+    const testResult = await emailProcessingService.processIncomingNewsletter({
+      userId: req.user.id,
+      fromEmail: 'test@siftly.space',
+      subject: '🧪 Sift Inbox Test - Setup Verification',
+      html: `
+        <html>
+          <body>
+            <h2>🎉 Your Sift Inbox is Working!</h2>
+            <p>Congratulations! If you're seeing this email in your Sift dashboard, your inbox forwarding is set up correctly.</p>
+            <p>You can now forward newsletters to your inbox address: <strong>${req.user.inboxEmail}</strong></p>
+            <p>Happy content discovery!</p>
+            <p>- The Sift Team</p>
+          </body>
+        </html>
+      `,
+      text: `🎉 Your Sift Inbox is Working! Congratulations! If you're seeing this email in your Sift dashboard, your inbox forwarding is set up correctly. You can now forward newsletters to your inbox address: ${req.user.inboxEmail}. Happy content discovery! - The Sift Team`,
+      receivedAt: new Date()
+    });
+
+    if (testResult.success) {
+      res.json({
+        success: true,
+        message: 'Test email sent successfully',
+        contentId: testResult.contentId
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to process test email'
+      });
+    }
+
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send test email'
     });
   }
 });
@@ -1581,14 +2224,16 @@ app.get('/api/count', async (req, res) => {
 
 function generateForwardingEmail(userId, newsletterId) {
   const crypto = require('crypto');
+
+  // Create a hash that we can later decode
   const hash = crypto
     .createHash('md5')
-    .update(`${userId}-${newsletterId}-${Date.now()}`)
+    .update(`${userId}-${newsletterId}-${process.env.EMAIL_SECRET || 'default-secret'}`)
     .digest('hex')
-    .substring(0, 8);
+    .substring(0, 12);
 
-  const domain = process.env.NEWSLETTER_FORWARDING_DOMAIN || 'newsletters.sift.example.com';
-  return `newsletter-${hash}@${domain}`;
+  const domain = process.env.NEWSLETTER_FORWARDING_DOMAIN || 'newsletters.yourdomain.com';
+  return `nl-${hash}@${domain}`;
 }
 
 async function checkUserHasContent(userId) {

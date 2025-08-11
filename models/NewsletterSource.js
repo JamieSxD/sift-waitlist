@@ -36,14 +36,6 @@ const NewsletterSource = sequelize.define('NewsletterSource', {
     type: DataTypes.JSONB,
     defaultValue: {},
   },
-  subscriptionType: {
-    type: DataTypes.ENUM('shared', 'individual'),
-    defaultValue: 'individual',
-  },
-  isSharedActive: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
 });
 
 module.exports = NewsletterSource;

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup YouTube - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+        .setup-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: #FDFCFB;
+        }
+
+        .setup-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            color: #71717A;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+        }
+
+        .setup-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+        }
+
+        .setup-options {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .setup-option {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #E0E0E0;
+            transition: all 0.2s ease-out;
+        }
+
+        .setup-option:hover {
+            border-color: #6C7BFF;
+            transform: translateY(-2px);
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .option-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: #FF0000;
+            color: white;
+        }
+
+        .option-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .option-description {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .connect-btn {
+            background: #FF0000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .connect-btn:hover {
+            background: #CC0000;
+            transform: translateY(-1px);
+        }
+
+        .connect-btn:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .manual-option {
+            background: #F8F9FF;
+            border: 1px solid #E0E7FF;
+        }
+
+        .manual-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .form-input {
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6C7BFF;
+            box-shadow: 0 0 0 3px rgba(108, 123, 255, 0.1);
+        }
+
+        .add-channel-btn {
+            background: #6C7BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        .add-channel-btn:hover {
+            background: #5A67D8;
+        }
+
+        .subscriptions-section {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .subscriptions-section.active {
+            display: block;
+        }
+
+        .subscriptions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .subscriptions-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .bulk-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bulk-btn:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 24px;
+        }
+
+        .channel-card {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .channel-card:hover {
+            background: #F0F7FF;
+        }
+
+        .channel-card.selected {
+            border-color: #6C7BFF;
+            background: #F0F7FF;
+        }
+
+        .channel-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E0E0E0;
+        }
+
+        .channel-info {
+            flex: 1;
+        }
+
+        .channel-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 4px;
+        }
+
+        .channel-subs {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        .channel-checkbox {
+            width: 18px;
+            height: 18px;
+        }
+
+        .save-selections-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .save-selections-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .save-selections-btn:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff40;
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .channels-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .setup-option {
+                padding: 24px 20px;
+            }
+            
+            .setup-title {
+                font-size: 24px;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <a href="/onboarding" class="back-button">
+        ← Back to Setup
+    </a>
+
+    <div class="setup-container">
+        <div class="setup-content">
+            <!-- Header -->
+            <div class="setup-header">
+                <h1 class="setup-title">Setup YouTube Integration</h1>
+                <p class="setup-subtitle">Connect your YouTube account or manually add channels to follow</p>
+            </div>
+
+            <!-- Setup Options -->
+            <div class="setup-options">
+                <!-- Connect YouTube Account -->
+                <div class="setup-option" id="youtube-connect-option">
+                    <div class="option-header">
+                        <div class="option-icon">📺</div>
+                        <h2 class="option-title">Connect Your YouTube Account</h2>
+                    </div>
+                    <p class="option-description">
+                        Connect your YouTube account to automatically import your subscriptions and easily select which channels to follow.
+                    </p>
+                    <button class="connect-btn" id="connect-youtube-btn" onclick="connectYouTube()">
+                        <span id="connect-btn-text">🔗 Connect YouTube Account</span>
+                        <div class="loading-spinner" id="connect-loading" style="display: none;"></div>
+                    </button>
+                </div>
+
+                <!-- Manual Channel Input -->
+                <div class="setup-option manual-option">
+                    <div class="option-header">
+                        <div class="option-icon" style="background: #6C7BFF;">✏️</div>
+                        <h2 class="option-title">Add Channels Manually</h2>
+                    </div>
+                    <p class="option-description">
+                        Enter YouTube channel URLs or IDs to add specific channels without connecting your account.
+                    </p>
+                    <div class="manual-form">
+                        <div class="form-group">
+                            <label class="form-label" for="channel-input">YouTube Channel URL or ID</label>
+                            <input 
+                                type="text" 
+                                id="channel-input" 
+                                class="form-input"
+                                placeholder="https://youtube.com/channel/UC... or channel ID"
+                            >
+                        </div>
+                        <button class="add-channel-btn" onclick="addChannelManually()">Add Channel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- YouTube Subscriptions Section -->
+            <div class="subscriptions-section" id="subscriptions-section">
+                <div class="subscriptions-header">
+                    <h2 class="subscriptions-title">Your YouTube Subscriptions</h2>
+                    <div class="bulk-actions">
+                        <button class="bulk-btn" onclick="selectAllChannels()">Select All</button>
+                        <button class="bulk-btn" onclick="deselectAllChannels()">Deselect All</button>
+                    </div>
+                </div>
+
+                <div class="channels-grid" id="channels-grid">
+                    <!-- Channels will be populated here -->
+                </div>
+
+                <button class="save-selections-btn" id="save-selections-btn" onclick="saveSelections()" disabled>
+                    Save Selected Channels (<span id="selected-count">0</span>)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification system
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+            }
+
+            show(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                this.container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    this.hide(toast);
+                }, duration);
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+        let userSubscriptions = [];
+        let selectedChannels = new Set();
+
+        // Connect to YouTube
+        async function connectYouTube() {
+            const connectBtn = document.getElementById('connect-youtube-btn');
+            const connectText = document.getElementById('connect-btn-text');
+            const connectLoading = document.getElementById('connect-loading');
+
+            // Show loading state
+            connectBtn.disabled = true;
+            connectText.textContent = 'Connecting...';
+            connectLoading.style.display = 'inline-block';
+
+            try {
+                // Initiate YouTube OAuth flow
+                window.location.href = '/auth/youtube';
+            } catch (error) {
+                console.error('Error connecting to YouTube:', error);
+                toastManager.show('Failed to connect to YouTube', 'error');
+                
+                // Reset button state
+                connectBtn.disabled = false;
+                connectText.textContent = '🔗 Connect YouTube Account';
+                connectLoading.style.display = 'none';
+            }
+        }
+
+        // Load YouTube subscriptions after OAuth
+        async function loadSubscriptions() {
+            try {
+                toastManager.show('Loading your YouTube subscriptions...', 'info');
+                
+                const response = await fetch('/api/youtube/subscriptions');
+                const data = await response.json();
+
+                if (data.success) {
+                    userSubscriptions = data.subscriptions;
+                    displaySubscriptions();
+                    document.getElementById('subscriptions-section').classList.add('active');
+                } else {
+                    toastManager.show(data.message || 'Failed to load subscriptions', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading subscriptions:', error);
+                toastManager.show('Failed to load subscriptions', 'error');
+            }
+        }
+
+        // Display subscriptions in grid
+        function displaySubscriptions() {
+            const grid = document.getElementById('channels-grid');
+            grid.innerHTML = '';
+
+            userSubscriptions.forEach(channel => {
+                const channelCard = createChannelCard(channel);
+                grid.appendChild(channelCard);
+            });
+        }
+
+        // Create a channel card element
+        function createChannelCard(channel) {
+            const card = document.createElement('div');
+            card.className = 'channel-card';
+            card.dataset.channelId = channel.id;
+            
+            card.innerHTML = `
+                <img class="channel-avatar" src="${channel.thumbnail}" alt="${channel.name}" onerror="this.style.display='none'">
+                <div class="channel-info">
+                    <div class="channel-name">${channel.name}</div>
+                    <div class="channel-subs">${channel.subscriberCount || 'Unknown'} subscribers</div>
+                </div>
+                <input type="checkbox" class="channel-checkbox" onchange="toggleChannelSelection('${channel.id}')">
+            `;
+
+            card.addEventListener('click', (e) => {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = card.querySelector('.channel-checkbox');
+                    checkbox.checked = !checkbox.checked;
+                    toggleChannelSelection(channel.id);
+                }
+            });
+
+            return card;
+        }
+
+        // Toggle channel selection
+        function toggleChannelSelection(channelId) {
+            const card = document.querySelector(`[data-channel-id="${channelId}"]`);
+            const checkbox = card.querySelector('.channel-checkbox');
+
+            if (checkbox.checked) {
+                selectedChannels.add(channelId);
+                card.classList.add('selected');
+            } else {
+                selectedChannels.delete(channelId);
+                card.classList.remove('selected');
+            }
+
+            updateSaveButton();
+        }
+
+        // Select all channels
+        function selectAllChannels() {
+            document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
+                checkbox.checked = true;
+                const channelId = checkbox.closest('.channel-card').dataset.channelId;
+                selectedChannels.add(channelId);
+                checkbox.closest('.channel-card').classList.add('selected');
+            });
+            updateSaveButton();
+        }
+
+        // Deselect all channels
+        function deselectAllChannels() {
+            document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+                const channelId = checkbox.closest('.channel-card').dataset.channelId;
+                selectedChannels.delete(channelId);
+                checkbox.closest('.channel-card').classList.remove('selected');
+            });
+            updateSaveButton();
+        }
+
+        // Update save button state
+        function updateSaveButton() {
+            const saveBtn = document.getElementById('save-selections-btn');
+            const countSpan = document.getElementById('selected-count');
+            
+            countSpan.textContent = selectedChannels.size;
+            saveBtn.disabled = selectedChannels.size === 0;
+        }
+
+        // Save selected channels
+        async function saveSelections() {
+            const saveBtn = document.getElementById('save-selections-btn');
+            
+            if (selectedChannels.size === 0) {
+                toastManager.show('Please select at least one channel', 'warning');
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const selectedChannelData = userSubscriptions.filter(channel => 
+                    selectedChannels.has(channel.id)
+                );
+
+                const response = await fetch('/api/youtube/save-subscriptions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        channels: selectedChannelData
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show(`Successfully saved ${selectedChannels.size} channels!`, 'success');
+                    
+                    // Mark YouTube setup as complete
+                    localStorage.setItem('youtubeSetupComplete', 'true');
+                    
+                    // Redirect back to onboarding after delay
+                    setTimeout(() => {
+                        window.location.href = '/onboarding';
+                    }, 2000);
+                } else {
+                    toastManager.show(data.message || 'Failed to save selections', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving selections:', error);
+                toastManager.show('Failed to save selections', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = `Save Selected Channels (<span id="selected-count">${selectedChannels.size}</span>)`;
+            }
+        }
+
+        // Add channel manually
+        async function addChannelManually() {
+            const input = document.getElementById('channel-input');
+            const channelInput = input.value.trim();
+
+            if (!channelInput) {
+                toastManager.show('Please enter a YouTube channel URL or ID', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/youtube/add-channel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        channelInput: channelInput
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show(`Successfully added ${data.channel.name}!`, 'success');
+                    input.value = '';
+                    
+                    // Add to local subscriptions and refresh display
+                    userSubscriptions.push(data.channel);
+                    displaySubscriptions();
+                    
+                    if (!document.getElementById('subscriptions-section').classList.contains('active')) {
+                        document.getElementById('subscriptions-section').classList.add('active');
+                    }
+                } else {
+                    toastManager.show(data.message || 'Failed to add channel', 'error');
+                }
+            } catch (error) {
+                console.error('Error adding channel:', error);
+                toastManager.show('Failed to add channel', 'error');
+            }
+        }
+
+        // Check if user came back from OAuth
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('connected') === 'true') {
+                toastManager.show('Successfully connected to YouTube!', 'success');
+                loadSubscriptions();
+            }
+        });
+    </script>
+</body>
+</html>

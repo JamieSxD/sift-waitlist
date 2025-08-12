@@ -241,13 +241,13 @@
                 </div>
 
                 <!-- YouTube -->
-                <div class="content-type-card" data-type="youtube" onclick="selectContentType(this, 'youtube')">
+                <div class="content-type-card" data-type="youtube">
                     <div>
                         <div class="content-icon youtube">📺</div>
                         <h3 class="content-type-title">YouTube Channels</h3>
                         <p class="content-type-description">Follow channels and get notified of new uploads</p>
                     </div>
-                    <button class="add-sources-btn">Add Sources</button>
+                    <button class="add-sources-btn" onclick="setupYoutube(event)">Setup YouTube</button>
                 </div>
 
                 <!-- Music -->
@@ -328,6 +328,11 @@
             window.location.href = '/dashboard';
         }
 
+        function setupYoutube(event) {
+            event.stopPropagation();
+            window.location.href = '/setup/youtube';
+        }
+
         // Check completion status and update buttons
         function checkCompletionStatus() {
             // Check inbox setup completion
@@ -341,7 +346,18 @@
                 inboxButton.style.color = 'white';
             }
             
-            // Add other completion checks here for youtube, newsletters, etc.
+            // Check YouTube setup completion
+            const youtubeComplete = localStorage.getItem('youtubeSetupComplete') === 'true';
+            const youtubeCard = document.querySelector('[data-type="youtube"]');
+            const youtubeButton = youtubeCard.querySelector('.add-sources-btn');
+            
+            if (youtubeComplete) {
+                youtubeButton.textContent = '✅ Completed';
+                youtubeButton.style.backgroundColor = '#10B981';
+                youtubeButton.style.color = 'white';
+            }
+            
+            // Add other completion checks here for newsletters, etc.
         }
 
         // Handle card clicks for better UX

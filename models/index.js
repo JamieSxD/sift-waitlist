@@ -2,8 +2,12 @@ const sequelize = require('../config/database');
 const User = require('./User');
 const NewsletterSource = require('./NewsletterSource');
 const NewsletterSubscription = require('./NewsletterSubscription');
+const UserNewsletterSubscription = require('./UserNewsletterSubscription');
 const UserBlockList = require('./UserBlockList');
 const { NewsletterContent, UserContentInteraction } = require('./NewsletterContent');
+const YouTubeChannel = require('./YouTubeChannel');
+const UserYouTubeSubscription = require('./UserYouTubeSubscription');
+const YouTubeVideo = require('./YouTubeVideo');
 
 // Define associations
 
@@ -62,6 +66,27 @@ NewsletterContent.belongsTo(User, {
   as: 'user'
 });
 
+// UserNewsletterSubscription associations
+User.hasMany(UserNewsletterSubscription, {
+  foreignKey: 'userId',
+  as: 'newsletterSubscriptions'
+});
+
+UserNewsletterSubscription.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+NewsletterSource.hasMany(UserNewsletterSubscription, {
+  foreignKey: 'newsletterSourceId',
+  as: 'userSubscriptions'
+});
+
+UserNewsletterSubscription.belongsTo(NewsletterSource, {
+  foreignKey: 'newsletterSourceId',
+  as: 'newsletterSource'
+});
+
 User.hasMany(UserContentInteraction, {
   foreignKey: 'userId',
   as: 'contentInteractions'
@@ -82,12 +107,47 @@ UserContentInteraction.belongsTo(NewsletterContent, {
   as: 'content'
 });
 
+// YouTube associations
+User.hasMany(UserYouTubeSubscription, {
+  foreignKey: 'userId',
+  as: 'youtubeSubscriptions'
+});
+
+UserYouTubeSubscription.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+YouTubeChannel.hasMany(UserYouTubeSubscription, {
+  foreignKey: 'youtubeChannelId',
+  as: 'userSubscriptions'
+});
+
+UserYouTubeSubscription.belongsTo(YouTubeChannel, {
+  foreignKey: 'youtubeChannelId',
+  as: 'youtubeChannel'
+});
+
+YouTubeChannel.hasMany(YouTubeVideo, {
+  foreignKey: 'youtubeChannelId',
+  as: 'videos'
+});
+
+YouTubeVideo.belongsTo(YouTubeChannel, {
+  foreignKey: 'youtubeChannelId',
+  as: 'youtubeChannel'
+});
+
 module.exports = {
   sequelize,
   User,
   NewsletterSource,
   NewsletterSubscription,
+  UserNewsletterSubscription,
   UserBlockList,
   NewsletterContent,
   UserContentInteraction,
+  YouTubeChannel,
+  UserYouTubeSubscription,
+  YouTubeVideo,
 };

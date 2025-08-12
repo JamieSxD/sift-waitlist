@@ -10,7 +10,10 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction } = require('./models');
+const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction, YouTubeChannel, UserYouTubeSubscription, YouTubeVideo } = require('./models');
+
+// Import YouTube API
+const { google } = require('googleapis');
 
 const contentExtractionService = require('./services/contentExtraction');
 
@@ -76,6 +79,54 @@ app.post('/auth/logout', (req, res) => {
     }
     res.redirect('/');
   });
+});
+
+// YouTube OAuth
+app.get('/auth/youtube', requireAuth, (req, res) => {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    `${process.env.APP_URL}/auth/youtube/callback`
+  );
+
+  const scopes = [
+    'https://www.googleapis.com/auth/youtube.readonly',
+    'https://www.googleapis.com/auth/youtube.force-ssl'
+  ];
+
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes,
+    state: req.user.id, // Pass user ID in state
+  });
+
+  res.redirect(authUrl);
+});
+
+app.get('/auth/youtube/callback', requireAuth, async (req, res) => {
+  const { code, state } = req.query;
+  
+  if (state !== req.user.id) {
+    return res.redirect('/setup/youtube?error=invalid_state');
+  }
+
+  try {
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${process.env.APP_URL}/auth/youtube/callback`
+    );
+
+    const { tokens } = await oauth2Client.getToken(code);
+    
+    // Store tokens in user session or database
+    req.session.youtubeTokens = tokens;
+    
+    res.redirect('/setup/youtube?connected=true');
+  } catch (error) {
+    console.error('YouTube OAuth error:', error);
+    res.redirect('/setup/youtube?error=oauth_failed');
+  }
 });
 
 app.get('/api/auth/status', (req, res) => {
@@ -175,14 +226,19 @@ app.get('/', (req, res) => {
 
 // Dashboard - redirects to onboarding if no content
 app.get('/dashboard', requireAuth, async (req, res) => {
+  console.log('🎯 Dashboard access attempt for user:', req.user.email, req.user.id);
   const hasContent = await checkUserHasContent(req.user.id);
+  console.log('✅ User has content:', hasContent);
 
   if (!hasContent) {
+    console.log('❌ Redirecting to onboarding - no content found');
     return res.redirect('/onboarding');
   }
 
+  console.log('🎊 Allowing dashboard access');
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
+
 
 // Onboarding flow
 app.get('/onboarding', requireAuth, (req, res) => {
@@ -223,6 +279,8 @@ app.get('/setup/:type', requireAuth, (req, res) => {
   } else if (type === 'newsletters') {
     // Redirect newsletters to inbox setup (single inbox approach)
     res.redirect('/setup/inbox');
+  } else if (type === 'youtube') {
+    res.sendFile(path.join(__dirname, 'public', 'setup-youtube.html'));
   } else {
     // For other types, still serve the newsletter setup (will be updated later)
     res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
@@ -1465,6 +1523,8 @@ app.post('/api/content/:contentId/read', requireAuth, async (req, res) => {
 
 async function checkUserHasContent(userId) {
   try {
+    console.log('🔍 Checking content for user ID:', userId);
+    
     // Check for active newsletter subscriptions
     const newsletterCount = await UserNewsletterSubscription.count({
       where: {
@@ -1472,6 +1532,7 @@ async function checkUserHasContent(userId) {
         isActive: true
       }
     });
+    console.log('📧 Newsletter subscriptions:', newsletterCount);
 
     // Check for any newsletter content directly assigned to user
     const contentCount = await NewsletterContent.count({
@@ -1479,11 +1540,24 @@ async function checkUserHasContent(userId) {
         userId
       }
     });
+    console.log('📄 Newsletter content:', contentCount);
 
-    // User has content if they have subscriptions or newsletter content
-    return newsletterCount > 0 || contentCount > 0;
+    // Check for active YouTube subscriptions
+    const youtubeCount = await UserYouTubeSubscription.count({
+      where: {
+        userId,
+        isActive: true
+      }
+    });
+    console.log('📺 YouTube subscriptions:', youtubeCount);
+
+    // User has content if they have subscriptions or newsletter content or YouTube subscriptions
+    const hasContent = newsletterCount > 0 || contentCount > 0 || youtubeCount > 0;
+    console.log('✅ Final content check result:', hasContent);
+    return hasContent;
   } catch (error) {
-    console.error('Error checking user content:', error);
+    console.error('❌ Error checking user content:', error);
+    console.error('Stack trace:', error.stack);
     return false;
   }
 }
@@ -2115,6 +2189,288 @@ app.post('/api/newsletters/unsubscribe', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to unsubscribe from newsletter',
+    });
+  }
+});
+
+// =================
+// YOUTUBE API ROUTES
+// =================
+
+// Get user's YouTube subscriptions
+app.get('/api/youtube/subscriptions', requireAuth, async (req, res) => {
+  try {
+    const youtubeTokens = req.session.youtubeTokens;
+    if (!youtubeTokens) {
+      return res.json({
+        success: false,
+        message: 'YouTube account not connected'
+      });
+    }
+
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${process.env.APP_URL}/auth/youtube/callback`
+    );
+
+    oauth2Client.setCredentials(youtubeTokens);
+
+    const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+
+    // Get user's subscriptions
+    const subscriptionsResponse = await youtube.subscriptions.list({
+      part: ['snippet'],
+      mine: true,
+      maxResults: 50
+    });
+
+    const subscriptions = subscriptionsResponse.data.items.map(item => ({
+      id: item.snippet.resourceId.channelId,
+      name: item.snippet.title,
+      description: item.snippet.description,
+      thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      subscriberCount: 'Unknown', // Would need separate API call
+      channelUrl: `https://youtube.com/channel/${item.snippet.resourceId.channelId}`
+    }));
+
+    res.json({
+      success: true,
+      subscriptions
+    });
+  } catch (error) {
+    console.error('Error fetching YouTube subscriptions:', error);
+    res.json({
+      success: false,
+      message: 'Failed to fetch YouTube subscriptions'
+    });
+  }
+});
+
+// Save selected YouTube channels
+app.post('/api/youtube/save-subscriptions', requireAuth, async (req, res) => {
+  try {
+    const { channels } = req.body;
+    const userId = req.user.id;
+
+    if (!channels || !Array.isArray(channels)) {
+      return res.json({
+        success: false,
+        message: 'Invalid channels data'
+      });
+    }
+
+    // Create or update YouTube channels and user subscriptions
+    for (const channelData of channels) {
+      // Find or create YouTube channel
+      let [youtubeChannel] = await YouTubeChannel.findOrCreate({
+        where: { channelId: channelData.id },
+        defaults: {
+          channelId: channelData.id,
+          name: channelData.name,
+          description: channelData.description || '',
+          thumbnail: channelData.thumbnail,
+          subscriberCount: channelData.subscriberCount,
+          channelUrl: channelData.channelUrl,
+        }
+      });
+
+      // Create user subscription
+      await UserYouTubeSubscription.findOrCreate({
+        where: {
+          userId,
+          youtubeChannelId: youtubeChannel.id
+        },
+        defaults: {
+          userId,
+          youtubeChannelId: youtubeChannel.id,
+          sourceType: 'oauth',
+          isActive: true
+        }
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Successfully saved ${channels.length} YouTube channels`
+    });
+  } catch (error) {
+    console.error('Error saving YouTube subscriptions:', error);
+    res.json({
+      success: false,
+      message: 'Failed to save YouTube subscriptions'
+    });
+  }
+});
+
+// Add YouTube channel manually
+app.post('/api/youtube/add-channel', requireAuth, async (req, res) => {
+  try {
+    const { channelInput } = req.body;
+    const userId = req.user.id;
+
+    if (!channelInput) {
+      return res.json({
+        success: false,
+        message: 'Channel input is required'
+      });
+    }
+
+    // Extract channel ID from URL or use as-is
+    let channelId;
+    const input = channelInput.trim();
+    
+    console.log('🔍 Processing channel input:', input);
+    
+    // Handle different YouTube URL formats
+    if (input.includes('youtube.com/channel/')) {
+      const match = input.match(/youtube\.com\/channel\/([a-zA-Z0-9_-]+)/);
+      channelId = match ? match[1] : null;
+      console.log('📺 Extracted channel ID from /channel/ URL:', channelId);
+    } else if (input.includes('youtube.com/@')) {
+      // For @username format, extract the username but we'll need to search differently
+      const match = input.match(/youtube\.com\/@([a-zA-Z0-9_.-]+)/);
+      const username = match ? match[1] : null;
+      console.log('👤 Extracted username from @ URL:', username);
+      
+      if (username) {
+        // We'll try to find this channel by searching
+        channelId = `@${username}`; // Mark it as a username search
+      }
+    } else if (input.includes('youtube.com/c/')) {
+      // Custom URL format
+      const match = input.match(/youtube\.com\/c\/([a-zA-Z0-9_-]+)/);
+      channelId = match ? match[1] : null;
+      console.log('🔗 Extracted from /c/ URL:', channelId);
+    } else if (input.startsWith('@')) {
+      // Direct @username
+      channelId = input;
+      console.log('👤 Direct username:', channelId);
+    } else {
+      // Assume it's a direct channel ID
+      channelId = input;
+      console.log('🆔 Direct channel ID:', channelId);
+    }
+    
+    if (!channelId) {
+      return res.json({
+        success: false,
+        message: 'Could not extract channel ID from input'
+      });
+    }
+
+    // Use API key for public channel information
+    console.log('🔑 Using API key:', process.env.GOOGLE_API_KEY ? 'Key set' : 'Key missing');
+    
+    const youtube = google.youtube({ 
+      version: 'v3', 
+      auth: process.env.GOOGLE_API_KEY 
+    });
+
+    // Get channel information
+    let channelResponse;
+    
+    try {
+      if (channelId.startsWith('@')) {
+        // Handle username search - try forHandle first (new YouTube API)
+        const username = channelId.substring(1);
+        console.log('🔍 Searching for username:', username);
+        
+        try {
+          channelResponse = await youtube.channels.list({
+            part: ['snippet', 'statistics'],
+            forHandle: username,
+            key: process.env.GOOGLE_API_KEY
+          });
+        } catch (error) {
+          console.log('forHandle failed, trying forUsername:', error.message);
+          // Fallback to forUsername (legacy)
+          channelResponse = await youtube.channels.list({
+            part: ['snippet', 'statistics'],
+            forUsername: username,
+            key: process.env.GOOGLE_API_KEY
+          });
+        }
+      } else {
+        // Direct channel ID lookup
+        console.log('🔍 Looking up channel ID:', channelId);
+        channelResponse = await youtube.channels.list({
+          part: ['snippet', 'statistics'],
+          id: channelId,
+          key: process.env.GOOGLE_API_KEY
+        });
+      }
+      
+      console.log('📊 API Response items:', channelResponse.data.items?.length || 0);
+    } catch (error) {
+      console.error('❌ YouTube API error:', error);
+      return res.json({
+        success: false,
+        message: `YouTube API error: ${error.message}`
+      });
+    }
+
+    if (!channelResponse.data.items || channelResponse.data.items.length === 0) {
+      return res.json({
+        success: false,
+        message: 'YouTube channel not found. Try using the full channel URL like: https://youtube.com/channel/UC...'
+      });
+    }
+
+    const channelInfo = channelResponse.data.items[0];
+    const channelData = {
+      id: channelInfo.id,
+      name: channelInfo.snippet.title,
+      description: channelInfo.snippet.description || '',
+      thumbnail: channelInfo.snippet.thumbnails?.medium?.url || channelInfo.snippet.thumbnails?.default?.url,
+      subscriberCount: channelInfo.statistics?.subscriberCount || 'Unknown',
+      channelUrl: `https://youtube.com/channel/${channelInfo.id}`
+    };
+
+    // Find or create YouTube channel
+    let [youtubeChannel] = await YouTubeChannel.findOrCreate({
+      where: { channelId: channelData.id },
+      defaults: {
+        channelId: channelData.id,
+        name: channelData.name,
+        description: channelData.description,
+        thumbnail: channelData.thumbnail,
+        subscriberCount: channelData.subscriberCount,
+        channelUrl: channelData.channelUrl,
+      }
+    });
+
+    // Create user subscription
+    const [subscription, created] = await UserYouTubeSubscription.findOrCreate({
+      where: {
+        userId,
+        youtubeChannelId: youtubeChannel.id
+      },
+      defaults: {
+        userId,
+        youtubeChannelId: youtubeChannel.id,
+        sourceType: 'manual',
+        isActive: true
+      }
+    });
+
+    if (!created) {
+      return res.json({
+        success: false,
+        message: 'You are already subscribed to this channel'
+      });
+    }
+
+    res.json({
+      success: true,
+      channel: channelData,
+      message: `Successfully added ${channelData.name}`
+    });
+  } catch (error) {
+    console.error('Error adding YouTube channel:', error);
+    res.json({
+      success: false,
+      message: 'Failed to add YouTube channel'
     });
   }
 });

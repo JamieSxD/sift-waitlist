@@ -21,6 +21,7 @@
     "express-rate-limit": "^7.1.5",
     "express-session": "^1.18.2",
     "express-validator": "^7.0.1",
+    "googleapis": "^155.0.1",
     "helmet": "^7.1.0",
     "imap": "^0.8.19",
     "loops": "^5.0.1",

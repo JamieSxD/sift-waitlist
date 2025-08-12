@@ -328,8 +328,27 @@
             window.location.href = '/dashboard';
         }
 
+        // Check completion status and update buttons
+        function checkCompletionStatus() {
+            // Check inbox setup completion
+            const inboxComplete = localStorage.getItem('inboxSetupComplete') === 'true';
+            const inboxCard = document.querySelector('[data-type="inbox"]');
+            const inboxButton = inboxCard.querySelector('.add-sources-btn');
+            
+            if (inboxComplete) {
+                inboxButton.textContent = '✅ Completed';
+                inboxButton.style.backgroundColor = '#10B981';
+                inboxButton.style.color = 'white';
+            }
+            
+            // Add other completion checks here for youtube, newsletters, etc.
+        }
+
         // Handle card clicks for better UX
         document.addEventListener('DOMContentLoaded', () => {
+            // Check completion status on page load
+            checkCompletionStatus();
+            
             // Prevent button clicks from bubbling up to card
             document.querySelectorAll('.add-sources-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {

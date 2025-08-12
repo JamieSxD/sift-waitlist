@@ -10,7 +10,7 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const { User, NewsletterSource, NewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction } = require('./models');
+const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction } = require('./models');
 
 const contentExtractionService = require('./services/contentExtraction');
 
@@ -1465,6 +1465,7 @@ app.post('/api/content/:contentId/read', requireAuth, async (req, res) => {
 
 async function checkUserHasContent(userId) {
   try {
+    // Check for active newsletter subscriptions
     const newsletterCount = await UserNewsletterSubscription.count({
       where: {
         userId,
@@ -1472,22 +1473,14 @@ async function checkUserHasContent(userId) {
       }
     });
 
-    // Also check if user has any newsletter content
+    // Check for any newsletter content directly assigned to user
     const contentCount = await NewsletterContent.count({
-      include: [{
-        model: NewsletterSource,
-        as: 'source',
-        include: [{
-          model: UserNewsletterSubscription,
-          as: 'subscriptions',
-          where: {
-            userId,
-            isActive: true
-          }
-        }]
-      }]
+      where: {
+        userId
+      }
     });
 
+    // User has content if they have subscriptions or newsletter content
     return newsletterCount > 0 || contentCount > 0;
   } catch (error) {
     console.error('Error checking user content:', error);
@@ -2236,22 +2229,6 @@ function generateForwardingEmail(userId, newsletterId) {
   return `nl-${hash}@${domain}`;
 }
 
-async function checkUserHasContent(userId) {
-  try {
-    const newsletterCount = await UserNewsletterSubscription.count({
-      where: {
-        userId,
-        isActive: true
-      }
-    });
-
-    // TODO: Check other content types when implemented
-    return newsletterCount > 0;
-  } catch (error) {
-    console.error('Error checking user content:', error);
-    return false;
-  }
-}
 
 async function getUserContentFeed(userId) {
   try {

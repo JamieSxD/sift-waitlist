@@ -359,6 +359,38 @@
                         This is your unique inbox address where you'll forward all newsletters. We'll organize and approve them for you.
                     </p>
                     
+                    <!-- Custom Inbox Form -->
+                    <div class="custom-inbox-form" style="background: #F8F9FF; border: 1px solid #6C7BFF; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1E1E1E; margin-bottom: 8px;">
+                                Customize your inbox address (optional):
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input 
+                                    type="text" 
+                                    id="custom-prefix" 
+                                    placeholder="your-name" 
+                                    style="flex: 1; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 14px;"
+                                    maxlength="20"
+                                    pattern="[a-z0-9-]+"
+                                    onkeyup="updateInboxPreview()"
+                                />
+                                <span style="color: #71717A; font-size: 14px;">@inbox.siftly.space</span>
+                            </div>
+                            <div style="font-size: 12px; color: #71717A; margin-top: 4px;">
+                                Letters, numbers, and dashes only. Leave empty for auto-generated address.
+                            </div>
+                        </div>
+                        <button 
+                            id="update-inbox-btn"
+                            onclick="updateInboxEmail()" 
+                            style="padding: 8px 16px; background: #6C7BFF; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;"
+                            disabled
+                        >
+                            Update Address
+                        </button>
+                    </div>
+
                     <div class="inbox-email-display">
                         <div class="inbox-email" id="inbox-email">Loading...</div>
                         <div class="inbox-email-label">Your Sift Inbox Address</div>
@@ -504,6 +536,9 @@
                             We'll send a test email to check if your forwarding setup is working
                         </div>
                         <button class="test-email-btn" onclick="sendTestEmail()">Send Test Email</button>
+                        <button class="test-email-btn" id="view-inbox-btn" onclick="viewInbox()" style="display: none; background: #10B981; margin-left: 16px;">
+                            📥 View Inbox
+                        </button>
                     </div>
                 </div>
             </div>
@@ -572,11 +607,78 @@
         // Copy inbox email to clipboard
         function copyInboxEmail() {
             const inboxEmail = document.getElementById('inbox-email').textContent;
+            if (inboxEmail === 'Error loading inbox email' || inboxEmail === 'Loading...') {
+                toastManager.show('No email address to copy', 'warning');
+                return;
+            }
+            
             navigator.clipboard.writeText(inboxEmail).then(() => {
                 toastManager.show('Email address copied to clipboard!', 'success');
             }).catch(() => {
                 toastManager.show('Failed to copy email address', 'error');
             });
+        }
+
+        // Update inbox preview as user types
+        function updateInboxPreview() {
+            const customPrefix = document.getElementById('custom-prefix').value;
+            const updateBtn = document.getElementById('update-inbox-btn');
+            
+            // Clean the input to only allow valid characters
+            const cleanPrefix = customPrefix.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            if (cleanPrefix !== customPrefix) {
+                document.getElementById('custom-prefix').value = cleanPrefix;
+            }
+            
+            // Enable/disable update button
+            updateBtn.disabled = cleanPrefix.length < 3;
+            
+            if (cleanPrefix.length >= 3) {
+                updateBtn.style.opacity = '1';
+                updateBtn.style.cursor = 'pointer';
+            } else {
+                updateBtn.style.opacity = '0.6';
+                updateBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // Update user's inbox email
+        async function updateInboxEmail() {
+            const customPrefix = document.getElementById('custom-prefix').value.trim();
+            
+            if (customPrefix.length < 3) {
+                toastManager.show('Inbox prefix must be at least 3 characters', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/user/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        customInboxPrefix: customPrefix
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update the display
+                    document.getElementById('inbox-email').textContent = data.user.inboxEmail;
+                    toastManager.show('Inbox address updated successfully!', 'success');
+                    
+                    // Clear the input and disable button
+                    document.getElementById('custom-prefix').value = '';
+                    document.getElementById('update-inbox-btn').disabled = true;
+                } else {
+                    toastManager.show(data.message || 'Failed to update inbox address', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating inbox email:', error);
+                toastManager.show('Failed to update inbox address', 'error');
+            }
         }
 
         // Select email platform
@@ -627,7 +729,10 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    toastManager.show('Test email sent! Check your inbox and Sift dashboard.', 'success', 5000);
+                    toastManager.show('Test email sent! Check your inbox to approve it.', 'success', 5000);
+                    
+                    // Show the "View Inbox" button
+                    document.getElementById('view-inbox-btn').style.display = 'inline-block';
                 } else {
                     toastManager.show('Failed to send test email', 'error');
                 }
@@ -637,22 +742,24 @@
             }
         }
 
+        // View inbox
+        function viewInbox() {
+            window.location.href = '/inbox';
+        }
+
         // Complete setup
         function completeSetup() {
-            if (!selectedPlatform) {
-                toastManager.show('Please select your email platform first', 'warning');
-                return;
-            }
-            
             // Save setup completion status
             localStorage.setItem('inboxSetupComplete', 'true');
-            localStorage.setItem('emailPlatform', selectedPlatform);
+            if (selectedPlatform) {
+                localStorage.setItem('emailPlatform', selectedPlatform);
+            }
             
             toastManager.show('Inbox setup completed!', 'success');
             
-            // Redirect to dashboard after a short delay
+            // Redirect back to onboarding to continue with other setup steps
             setTimeout(() => {
-                window.location.href = '/dashboard';
+                window.location.href = '/onboarding';
             }, 1500);
         }
 

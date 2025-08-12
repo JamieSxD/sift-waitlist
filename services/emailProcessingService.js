@@ -540,12 +540,13 @@ class EmailProcessingService {
     try {
       const { Op } = require('sequelize');
 
-      // Look for newsletter source with matching metadata
+      // Simplified search - just look for matching name or website
+      // For test emails, we'll create a new source each time
       const source = await NewsletterSource.findOne({
         where: {
           [Op.or]: [
-            { 'metadata.senderEmails': { [Op.contains]: [fromEmail] } },
-            { 'metadata.senderDomains': { [Op.contains]: [senderDomain] } }
+            { name: { [Op.iLike]: `%${senderDomain.split('.')[0]}%` } },
+            { website: { [Op.iLike]: `%${senderDomain}%` } }
           ]
         }
       });

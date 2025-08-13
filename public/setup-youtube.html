@@ -397,17 +397,21 @@
                         <h2 class="option-title">Add Channels Manually</h2>
                     </div>
                     <p class="option-description">
-                        Enter YouTube channel URLs or IDs to add specific channels without connecting your account.
+                        Add specific YouTube channels by entering their @username (the modern YouTube format).
                     </p>
                     <div class="manual-form">
                         <div class="form-group">
-                            <label class="form-label" for="channel-input">YouTube Channel URL or ID</label>
+                            <label class="form-label" for="channel-input">YouTube Channel Username</label>
                             <input 
                                 type="text" 
                                 id="channel-input" 
                                 class="form-input"
-                                placeholder="https://youtube.com/channel/UC... or channel ID"
+                                placeholder="@channelname or youtube.com/@channelname"
+                                onkeypress="handleEnterKey(event)"
                             >
+                            <div style="font-size: 12px; color: #71717A; margin-top: 4px;">
+                                Examples: <code>@mkbhd</code> or <code>youtube.com/@veritasium</code>
+                            </div>
                         </div>
                         <button class="add-channel-btn" onclick="addChannelManually()">Add Channel</button>
                     </div>
@@ -653,15 +657,29 @@
             }
         }
 
+        // Handle Enter key in channel input
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addChannelManually();
+            }
+        }
+
         // Add channel manually
         async function addChannelManually() {
             const input = document.getElementById('channel-input');
+            const addBtn = document.querySelector('.add-channel-btn');
             const channelInput = input.value.trim();
 
             if (!channelInput) {
-                toastManager.show('Please enter a YouTube channel URL or ID', 'warning');
+                toastManager.show('Please enter a YouTube channel @username', 'warning');
                 return;
             }
+
+            // Show loading state
+            const originalText = addBtn.textContent;
+            addBtn.textContent = 'Adding...';
+            addBtn.disabled = true;
 
             try {
                 const response = await fetch('/api/youtube/add-channel', {
@@ -684,6 +702,17 @@
                     userSubscriptions.push(data.channel);
                     displaySubscriptions();
                     
+                    // Automatically select the newly added channel
+                    selectedChannels.add(data.channel.id);
+                    setTimeout(() => {
+                        const card = document.querySelector(`[data-channel-id="${data.channel.id}"]`);
+                        if (card) {
+                            card.classList.add('selected');
+                            card.querySelector('.channel-checkbox').checked = true;
+                        }
+                        updateSaveButton();
+                    }, 100);
+                    
                     if (!document.getElementById('subscriptions-section').classList.contains('active')) {
                         document.getElementById('subscriptions-section').classList.add('active');
                     }
@@ -692,18 +721,96 @@
                 }
             } catch (error) {
                 console.error('Error adding channel:', error);
-                toastManager.show('Failed to add channel', 'error');
+                toastManager.show('Network error - please check your connection', 'error');
+            } finally {
+                // Reset button state
+                addBtn.textContent = originalText;
+                addBtn.disabled = false;
             }
         }
 
-        // Check if user came back from OAuth
-        document.addEventListener('DOMContentLoaded', () => {
+        // Check if user came back from OAuth or already has subscriptions
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('connected') === 'true') {
                 toastManager.show('Successfully connected to YouTube!', 'success');
                 loadSubscriptions();
+            } else {
+                // Check if user already has YouTube subscriptions
+                await checkExistingConnection();
             }
         });
+
+        // Check if user already has YouTube connection/subscriptions
+        async function checkExistingConnection() {
+            try {
+                const response = await fetch('/api/youtube/check-connection');
+                const data = await response.json();
+                
+                if (data.hasConnection) {
+                    // User already has YouTube subscriptions, show update mode
+                    updateConnectButtonToUpdate();
+                    
+                    if (data.subscriptions && data.subscriptions.length > 0) {
+                        // Show existing subscriptions
+                        userSubscriptions = data.subscriptions;
+                        displaySubscriptions();
+                        document.getElementById('subscriptions-section').classList.add('active');
+                        
+                        // Pre-select already subscribed channels
+                        data.userSubscriptions.forEach(sub => {
+                            const channelId = sub.youtubeChannel.channelId;
+                            selectedChannels.add(channelId);
+                            const card = document.querySelector(`[data-channel-id="${channelId}"]`);
+                            if (card) {
+                                card.classList.add('selected');
+                                card.querySelector('.channel-checkbox').checked = true;
+                            }
+                        });
+                        updateSaveButton();
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking existing connection:', error);
+            }
+        }
+
+        // Update connect button to show "Update" instead
+        function updateConnectButtonToUpdate() {
+            const connectBtn = document.getElementById('connect-youtube-btn');
+            const connectText = document.getElementById('connect-btn-text');
+            
+            connectText.textContent = '🔄 Update YouTube Subscriptions';
+            connectBtn.onclick = updateYouTubeSubscriptions;
+        }
+
+        // Handle update mode (re-fetch subscriptions)
+        async function updateYouTubeSubscriptions() {
+            const connectBtn = document.getElementById('connect-youtube-btn');
+            const connectText = document.getElementById('connect-btn-text');
+            const connectLoading = document.getElementById('connect-loading');
+
+            // Show loading state
+            connectBtn.disabled = true;
+            connectText.textContent = 'Updating...';
+            connectLoading.style.display = 'inline-block';
+
+            try {
+                // Clear current selections
+                selectedChannels.clear();
+                
+                // Re-initiate YouTube OAuth flow to get fresh data
+                window.location.href = '/auth/youtube';
+            } catch (error) {
+                console.error('Error updating YouTube subscriptions:', error);
+                toastManager.show('Failed to update YouTube subscriptions', 'error');
+                
+                // Reset button state
+                connectBtn.disabled = false;
+                connectText.textContent = '🔄 Update YouTube Subscriptions';
+                connectLoading.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

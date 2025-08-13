@@ -15,8 +15,7 @@
 
     <style>
         .dashboard-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            display: flex;
             min-height: 100vh;
             background: #FDFCFB;
         }
@@ -25,24 +24,27 @@
             background: white;
             border-right: 1px solid #E0E0E0;
             padding: 24px;
-            position: fixed;
             width: 280px;
+            min-width: 280px;
             height: 100vh;
             overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
         }
 
-        /* FIXED: Added max-width and centered content */
         .main-content {
+            flex: 1;
             margin-left: 280px;
             padding: 24px;
-            max-width: 1200px; /* Prevent content from spreading too wide */
-            width: 100%;
+            min-width: 0; /* Allow content to shrink */
+            max-width: calc(100vw - 280px); /* Use remaining viewport width */
         }
 
-        /* FIXED: Better content feed centering */
         .content-feed {
-            max-width: 800px;
-            margin: 0 auto; /* Center the content feed */
+            width: 100%;
+            max-width: none; /* Remove width restriction */
         }
 
         .sidebar-header {
@@ -307,7 +309,8 @@
         }
 
         /* ===== IMPROVED NEWSLETTER CONTENT STYLING ===== */
-        .newsletter-content-card {
+        .newsletter-content-card,
+        .youtube-content-card {
             background: white;
             border-radius: 16px;
             padding: 32px;
@@ -317,8 +320,73 @@
             transition: all 0.2s ease-out;
         }
 
-        .newsletter-content-card:hover {
+        .newsletter-content-card:hover,
+        .youtube-content-card:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== YOUTUBE SPECIFIC STYLING ===== */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 24px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        .video-description {
+            margin: 16px 0;
+            padding: 16px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            color: #4A5568;
+            line-height: 1.6;
+        }
+
+        .video-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #FF0000;
+            color: white;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .youtube-external-btn {
+            background: #FF0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .youtube-external-btn:hover {
+            background: #CC0000;
+            transform: translateY(-1px);
+        }
+
+        .duration,
+        .view-count {
+            color: #71717A;
+            font-size: 14px;
         }
 
         .content-header {
@@ -632,20 +700,20 @@
 
         @media (max-width: 1024px) {
             .main-content {
-                max-width: 100%;
                 padding: 20px;
             }
         }
 
         @media (max-width: 768px) {
             .dashboard-layout {
-                grid-template-columns: 1fr;
+                flex-direction: column;
             }
 
             .sidebar {
                 position: relative;
                 width: 100%;
                 height: auto;
+                min-width: auto;
             }
 
             .main-content {
@@ -684,6 +752,107 @@
                 align-items: flex-start;
             }
         }
+
+        /* Filter dropdown styling */
+        .filter-option:hover {
+            background-color: #F8F9FA !important;
+        }
+
+        /* Caught Up button styling */
+        .caught-up-btn {
+            padding: 8px 16px;
+            border: 1px solid #22C55E;
+            border-radius: 6px;
+            background: #22C55E;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+
+        .caught-up-btn:hover {
+            background: #16A34A;
+            border-color: #16A34A;
+            transform: translateY(-1px);
+        }
+
+        /* Minimized card styling */
+        .newsletter-content-card.minimized,
+        .youtube-content-card.minimized {
+            background: #F8F9FA;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+        }
+
+        .newsletter-content-card.minimized:hover,
+        .youtube-content-card.minimized:hover {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .minimized-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .minimized-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .minimized-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .minimized-title {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .minimized-meta {
+            display: block;
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            color: #6B7280;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease-out;
+        }
+
+        .expand-btn:hover {
+            background: #E5E7EB;
+            color: #374151;
+        }
     </style>
 </head>
 <body>
@@ -718,6 +887,11 @@
                         <span class="category-icon">📧</span>
                         <span class="category-name">Newsletters</span>
                         <span class="category-count" id="newsletter-count">0</span>
+                    </li>
+                    <li class="category-item">
+                        <span class="category-icon">📺</span>
+                        <span class="category-name">YouTube</span>
+                        <span class="category-count" id="youtube-count">0</span>
                     </li>
                 </ul>
             </div>
@@ -761,7 +935,18 @@
                 <h1 class="header-title">Your Content</h1>
                 <div class="header-actions">
                     <button class="header-btn">Mark all read</button>
-                    <button class="header-btn">Filter</button>
+                    <div class="filter-dropdown" style="position: relative; display: inline-block;">
+                        <button class="header-btn" id="filter-btn" onclick="toggleFilterDropdown()">Filter</button>
+                        <div id="filter-dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #E0E0E0; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); min-width: 160px; z-index: 1000; margin-top: 4px;">
+                            <div style="padding: 8px 0;">
+                                <button onclick="filterByVideoType('all')" style="width: 100%; padding: 8px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; color: #1E1E1E;" class="filter-option" data-type="all">All Videos</button>
+                                <button onclick="filterByVideoType('regular')" style="width: 100%; padding: 8px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; color: #1E1E1E;" class="filter-option" data-type="regular">Regular</button>
+                                <button onclick="filterByVideoType('short')" style="width: 100%; padding: 8px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; color: #1E1E1E;" class="filter-option" data-type="short">Shorts</button>
+                                <button onclick="filterByVideoType('live')" style="width: 100%; padding: 8px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; color: #1E1E1E;" class="filter-option" data-type="live">Live</button>
+                                <button onclick="filterByVideoType('premiere')" style="width: 100%; padding: 8px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; color: #1E1E1E;" class="filter-option" data-type="premiere">Premiere</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -848,11 +1033,19 @@
             }
         }
 
+        // Current filter state
+        let currentFilter = 'all';
+        let currentVideoTypeFilter = 'all';
+
         // Load and display content
-        async function loadContent() {
+        async function loadContent(filterType = 'all', videoTypeFilter = null) {
             try {
                 const contentFeed = document.getElementById('content-feed');
                 const emptyState = document.getElementById('empty-state');
+                currentFilter = filterType;
+                if (videoTypeFilter) {
+                    currentVideoTypeFilter = videoTypeFilter;
+                }
 
                 // Show loading
                 contentFeed.innerHTML = `
@@ -863,7 +1056,21 @@
                 `;
                 emptyState.style.display = 'none';
 
-                const response = await fetch('/api/content/feed');
+                // Determine API endpoint based on filter
+                let apiUrl = '/api/content/feed';
+                if (filterType === 'newsletters') {
+                    apiUrl = '/api/content/feed?type=newsletters';
+                } else if (filterType === 'youtube') {
+                    apiUrl = '/api/content/feed?type=youtube';
+                    // Add video type filter for YouTube content
+                    if (currentVideoTypeFilter && currentVideoTypeFilter !== 'all') {
+                        apiUrl += `&videoType=${currentVideoTypeFilter}`;
+                    }
+                }
+                
+                console.log('🌐 API URL:', apiUrl, 'filterType:', filterType, 'videoTypeFilter:', currentVideoTypeFilter);
+
+                const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (!data.success) {
@@ -878,9 +1085,11 @@
                 } else {
                     contentFeed.style.display = 'block';
                     emptyState.style.display = 'none';
-                    renderContent(contentData);
-                    updateCategoryCounts();
+                    renderContent(contentData, filterType);
                 }
+
+                // Always refresh the total counts from all content
+                await loadContentCounts();
 
             } catch (error) {
                 console.error('Error loading content:', error);
@@ -896,7 +1105,7 @@
         }
 
         // Render content to the feed
-        function renderContent(content) {
+        function renderContent(content, filterType = 'all') {
             const contentFeed = document.getElementById('content-feed');
 
             if (content.length === 0) {
@@ -911,15 +1120,50 @@
                 return;
             }
 
-            contentFeed.innerHTML = content.map(item => renderNewsletterCard(item)).join('');
+            // Render content based on type
+            if (filterType === 'youtube') {
+                contentFeed.innerHTML = content.map(item => renderYouTubeCard(item)).join('');
+            } else {
+                // For 'all' and 'newsletters', render appropriate cards
+                contentFeed.innerHTML = content.map(item => {
+                    if (item.type === 'youtube') {
+                        return renderYouTubeCard(item);
+                    } else {
+                        return renderNewsletterCard(item);
+                    }
+                }).join('');
+            }
         }
 
         // Render a single newsletter content card
         function renderNewsletterCard(content) {
             const brandColor = content.metadata?.brandColors?.primary || '#6C7BFF';
+            const isCaughtUp = content.caughtUp || false;
+
+            if (isCaughtUp) {
+                return `
+                    <div class="newsletter-content-card minimized" onclick="expandCard('${content.id}', '${content.type || 'newsletter'}', this)">
+                        <div class="minimized-content">
+                            <div class="minimized-icon" style="background-color: ${brandColor}">
+                                ${content.source?.logo ?
+                                    `<img src="${content.source.logo}" alt="${content.source?.name || 'Newsletter'}" style="width: 100%; height: 100%; border-radius: 4px;">` :
+                                    (content.source?.name || 'Newsletter').charAt(0).toUpperCase()
+                                }
+                            </div>
+                            <div class="minimized-info">
+                                <span class="minimized-title">${content.metadata?.title || 'Newsletter Content'}</span>
+                                <span class="minimized-meta">${content.source?.name || 'Newsletter'} • Caught Up ✅</span>
+                            </div>
+                            <button class="expand-btn" onclick="event.stopPropagation(); expandCard('${content.id}', '${content.type || 'newsletter'}', this.parentElement.parentElement)">
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
 
             return `
-                <div class="newsletter-content-card">
+                <div class="newsletter-content-card" data-content-id="${content.id}">
                     <!-- Header -->
                     <div class="content-header">
                         <div class="source-info">
@@ -949,6 +1193,9 @@
                                 ${content.isSaved ? '📌 Saved' : '📌 Save'}
                             </button>
                             <button class="share-btn" onclick="shareContent('${content.id}')">🔗 Share</button>
+                            <button class="caught-up-btn" onclick="markCaughtUp('${content.id}', '${content.type}', this)">
+                                ✅ Caught Up
+                            </button>
                         </div>
                     </div>
 
@@ -988,6 +1235,107 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Render a YouTube video card with embedded player
+        function renderYouTubeCard(video) {
+            const videoId = video.metadata?.videoId || extractVideoId(video.url);
+            const isCaughtUp = video.caughtUp || false;
+
+            if (isCaughtUp) {
+                return `
+                    <div class="youtube-content-card minimized" onclick="expandCard('${video.id}', 'youtube', this)">
+                        <div class="minimized-content">
+                            <div class="minimized-icon" style="background-color: #FF0000">
+                                📺
+                            </div>
+                            <div class="minimized-info">
+                                <span class="minimized-title">${video.title}</span>
+                                <span class="minimized-meta">${video.source?.name || 'YouTube Channel'} • Caught Up ✅</span>
+                            </div>
+                            <button class="expand-btn" onclick="event.stopPropagation(); expandCard('${video.id}', 'youtube', this.parentElement.parentElement)">
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="youtube-content-card" data-content-id="${video.id}">
+                    <!-- Header -->
+                    <div class="content-header">
+                        <div class="source-info">
+                            <div class="source-logo" style="background-color: #FF0000">
+                                ${video.source?.logo ?
+                                    `<img src="${video.source.logo}" alt="${video.source?.name || 'YouTube Channel'}" onerror="this.style.display='none'; this.parentNode.textContent='📺'">` :
+                                    '📺'
+                                }
+                            </div>
+                            <div class="source-details">
+                                <h3 class="source-name">${video.source?.name || 'YouTube Channel'}</h3>
+                                <div class="content-meta">
+                                    <span class="publish-date">
+                                        ${new Date(video.publishedAt || Date.now()).toLocaleDateString()}
+                                    </span>
+                                    ${video.duration ? `<span class="duration">⏱️ ${video.duration}</span>` : ''}
+                                    ${video.viewCount ? `<span class="view-count">👁️ ${formatNumber(video.viewCount)} views</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-actions">
+                            <button class="youtube-external-btn" onclick="window.open('${video.url}', '_blank')">
+                                📺 Watch on YouTube
+                            </button>
+                            <button class="caught-up-btn" onclick="markCaughtUp('${video.id}', 'youtube', this)">
+                                ✅ Caught Up
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="content-title">${video.title}</h2>
+
+                    <!-- Video Player -->
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1"
+                            frameborder="0"
+                            allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        ></iframe>
+                    </div>
+
+                    <!-- Description -->
+                    ${video.excerpt ? `
+                        <div class="video-description">
+                            <p>${video.excerpt}</p>
+                        </div>
+                    ` : ''}
+
+                    <!-- Video Type Badge -->
+                    ${video.videoType && video.videoType !== 'video' ? `
+                        <div class="video-badge">
+                            ${video.videoType === 'short' ? '🔥 Short' : 
+                              video.videoType === 'live' ? '🔴 Live' : 
+                              video.videoType === 'premiere' ? '🎬 Premiere' : video.videoType}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Extract YouTube video ID from URL
+        function extractVideoId(url) {
+            const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+            return match ? match[1] : '';
+        }
+
+        // Format large numbers (e.g., 1.2K, 1.2M)
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
         }
 
         // Render individual content sections
@@ -1146,10 +1494,124 @@
             console.log('Link clicked:', href);
         }
 
+        // Mark content as caught up
+        async function markCaughtUp(contentId, contentType, buttonElement) {
+            try {
+                const response = await fetch('/api/content/caught-up', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contentId: contentId,
+                        contentType: contentType,
+                        caughtUp: true
+                    }),
+                });
+
+                if (response.ok) {
+                    // Show success toast
+                    toastManager.show('Marked as caught up! 🎉', 'success');
+                    
+                    // Find the card and minimize it with animation
+                    const card = buttonElement.closest('.newsletter-content-card, .youtube-content-card');
+                    if (card) {
+                        // Add minimizing animation
+                        card.style.transform = 'scale(0.98)';
+                        card.style.opacity = '0.5';
+                        
+                        setTimeout(() => {
+                            // Update the content data
+                            const contentIndex = contentData.findIndex(item => item.id === contentId);
+                            if (contentIndex !== -1) {
+                                contentData[contentIndex].caughtUp = true;
+                            }
+                            
+                            // Re-render the content to show minimized state
+                            renderContent(contentData, currentFilter);
+                        }, 300);
+                    }
+                } else {
+                    toastManager.show('Failed to mark as caught up', 'error');
+                }
+            } catch (error) {
+                console.error('Error marking content as caught up:', error);
+                toastManager.show('Something went wrong', 'error');
+            }
+        }
+
+        // Expand a minimized card
+        async function expandCard(contentId, contentType, cardElement) {
+            try {
+                const response = await fetch('/api/content/caught-up', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contentId: contentId,
+                        contentType: contentType,
+                        caughtUp: false
+                    }),
+                });
+
+                if (response.ok) {
+                    // Update the content data
+                    const contentIndex = contentData.findIndex(item => item.id === contentId);
+                    if (contentIndex !== -1) {
+                        contentData[contentIndex].caughtUp = false;
+                    }
+                    
+                    // Add expanding animation
+                    cardElement.style.transform = 'scale(1.02)';
+                    
+                    setTimeout(() => {
+                        // Re-render the content to show full card
+                        renderContent(contentData, currentFilter);
+                    }, 150);
+                } else {
+                    toastManager.show('Failed to expand content', 'error');
+                }
+            } catch (error) {
+                console.error('Error expanding content:', error);
+                toastManager.show('Something went wrong', 'error');
+            }
+        }
+
         // Update category counts
         function updateCategoryCounts() {
+            if (!contentData || contentData.length === 0) {
+                document.getElementById('total-count').textContent = '0';
+                document.getElementById('newsletter-count').textContent = '0';
+                document.getElementById('youtube-count').textContent = '0';
+                return;
+            }
+
+            const newsletterCount = contentData.filter(item => item.type === 'newsletter' || !item.type).length;
+            const youtubeCount = contentData.filter(item => item.type === 'youtube').length;
+            
             document.getElementById('total-count').textContent = contentData.length;
-            document.getElementById('newsletter-count').textContent = contentData.length;
+            document.getElementById('newsletter-count').textContent = newsletterCount;
+            document.getElementById('youtube-count').textContent = youtubeCount;
+        }
+
+        // Load content counts from all feed data
+        async function loadContentCounts() {
+            try {
+                const response = await fetch('/api/content/feed');
+                const data = await response.json();
+                
+                if (data.success && data.content) {
+                    const newsletterCount = data.content.filter(item => item.type === 'newsletter' || !item.type).length;
+                    const youtubeCount = data.content.filter(item => item.type === 'youtube').length;
+                    
+                    document.getElementById('total-count').textContent = data.content.length;
+                    document.getElementById('newsletter-count').textContent = newsletterCount;
+                    document.getElementById('youtube-count').textContent = youtubeCount;
+                }
+            } catch (error) {
+                console.error('Error loading content counts:', error);
+            }
         }
 
         // Load and display inbox pending count
@@ -1169,6 +1631,77 @@
                 }
             } catch (error) {
                 console.error('Error loading pending count:', error);
+            }
+        }
+
+        // Video type filtering functions
+        function toggleFilterDropdown() {
+            const dropdown = document.getElementById('filter-dropdown-menu');
+            const filterBtn = document.getElementById('filter-btn');
+            
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function filterByVideoType(videoType) {
+            console.log('🎬 filterByVideoType called with:', videoType, 'currentFilter:', currentFilter);
+            
+            currentVideoTypeFilter = videoType;
+            
+            // Load content with video type filter
+            if (currentFilter === 'youtube') {
+                loadContent('youtube', videoType);
+            } else {
+                // Force YouTube section for testing
+                loadContent('youtube', videoType);
+            }
+            
+            // Update button text to show active filter
+            const filterBtn = document.getElementById('filter-btn');
+            if (videoType === 'all') {
+                filterBtn.textContent = 'Filter';
+            } else {
+                const displayName = videoType === 'regular' ? 'Regular' : 
+                                   videoType === 'short' ? 'Shorts' :
+                                   videoType === 'live' ? 'Live' :
+                                   videoType === 'premiere' ? 'Premiere' : videoType;
+                filterBtn.textContent = `Filter: ${displayName}`;
+            }
+            
+            // Update active state for filter options
+            document.querySelectorAll('.filter-option').forEach(option => {
+                if (option.dataset.type === videoType) {
+                    option.style.backgroundColor = '#F3F4F6';
+                    option.style.fontWeight = '600';
+                } else {
+                    option.style.backgroundColor = 'white';
+                    option.style.fontWeight = '400';
+                }
+            });
+            
+            // Close dropdown
+            document.getElementById('filter-dropdown-menu').style.display = 'none';
+        }
+
+        function updateFilterButtonVisibility() {
+            const filterBtn = document.getElementById('filter-btn');
+            const filterDropdown = document.querySelector('.filter-dropdown');
+            
+            if (currentFilter === 'youtube') {
+                filterDropdown.style.display = 'inline-block';
+                // Reset filter text when switching to YouTube
+                if (currentVideoTypeFilter === 'all') {
+                    filterBtn.textContent = 'Filter';
+                } else {
+                    const displayName = currentVideoTypeFilter === 'regular' ? 'Regular' : 
+                                       currentVideoTypeFilter === 'short' ? 'Shorts' :
+                                       currentVideoTypeFilter === 'live' ? 'Live' :
+                                       currentVideoTypeFilter === 'premiere' ? 'Premiere' : currentVideoTypeFilter;
+                    filterBtn.textContent = `Filter: ${displayName}`;
+                }
+            } else {
+                filterDropdown.style.display = 'none';
+                // Reset video type filter when leaving YouTube section
+                currentVideoTypeFilter = 'all';
             }
         }
 
@@ -1214,21 +1747,40 @@
                     // Add active class to clicked item
                     item.classList.add('active');
 
-                    // TODO: Filter content based on category
+                    // Filter content based on category
+                    const categoryName = item.querySelector('.category-name').textContent.trim();
+                    let filterType = 'all';
+                    
+                    if (categoryName === 'Newsletters') {
+                        filterType = 'newsletters';
+                    } else if (categoryName === 'YouTube') {
+                        filterType = 'youtube';
+                    }
+                    
+                    loadContent(filterType);
+                    updateFilterButtonVisibility();
                 });
             });
 
-            // Close user dropdown when clicking outside
+            // Close dropdowns when clicking outside
             document.addEventListener('click', (e) => {
+                // Close user dropdown
                 if (!e.target.closest('.user-profile') && !e.target.closest('#user-dropdown')) {
                     document.getElementById('user-dropdown').style.display = 'none';
+                }
+                
+                // Close filter dropdown
+                if (!e.target.closest('.filter-dropdown')) {
+                    document.getElementById('filter-dropdown-menu').style.display = 'none';
                 }
             });
 
             // Initialize
             loadUserInfo();
             loadContent();
+            loadContentCounts();
             loadInboxPendingCount();
+            updateFilterButtonVisibility();
             
             // Refresh pending count every 30 seconds
             setInterval(loadInboxPendingCount, 30000);

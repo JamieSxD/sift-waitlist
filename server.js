@@ -10,7 +10,7 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction, YouTubeChannel, UserYouTubeSubscription, YouTubeVideo } = require('./models');
+const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction, YouTubeChannel, UserYouTubeSubscription, YouTubeVideo, UserYouTubeVideoInteraction } = require('./models');
 
 // Import YouTube API
 const { google } = require('googleapis');
@@ -18,6 +18,9 @@ const { google } = require('googleapis');
 const contentExtractionService = require('./services/contentExtraction');
 
 const emailProcessingService = require('./services/emailProcessingService');
+
+// Import YouTube service
+const youtubeService = require('./services/youtubeService');
 
 // Import authentication
 const passport = require('./config/passport');
@@ -490,15 +493,139 @@ app.post('/api/content/process', requireAuth, async (req, res) => {
   }
 });
 
+// Combined content feed (newsletters + YouTube videos)
 app.get('/api/content/feed', requireAuth, async (req, res) => {
+  try {
+    const { limit = 20, offset = 0, type = 'all', videoType = 'all' } = req.query;
+    console.log(`🎯 Content feed request: type=${type}, videoType=${videoType}, limit=${limit}, user=${req.user.id}`);
+    
+    let allContent = [];
+    
+    // Get newsletter content if requested
+    if (type === 'all' || type === 'newsletters') {
+      const newsletters = await NewsletterContent.findAll({
+        where: {
+          userId: req.user.id,
+          approvalStatus: { [require('sequelize').Op.in]: ['approved', 'auto_approved'] }, // Show both manually approved and auto-approved content
+          processingStatus: 'completed'
+        },
+        include: [
+          {
+            model: NewsletterSource,
+            as: 'source',
+            attributes: ['id', 'name', 'logo', 'category'],
+            required: false
+          },
+          {
+            model: UserContentInteraction,
+            as: 'interactions',
+            where: { userId: req.user.id },
+            required: false
+          }
+        ],
+        order: [['receivedAt', 'DESC']],
+        limit: type === 'newsletters' ? parseInt(limit) : 50 // Get more if combining
+      });
+      
+      // Format newsletter content
+      newsletters.forEach(item => {
+        allContent.push({
+          id: item.id,
+          type: 'newsletter',
+          source: item.source ? {
+            id: item.source.id,
+            name: item.source.name,
+            logo: item.source.logo,
+            category: item.source.category
+          } : {
+            id: null,
+            name: item.detectedNewsletterName || 'Newsletter',
+            logo: null,
+            category: 'unknown'
+          },
+          title: item.metadata?.title || item.originalSubject,
+          excerpt: item.metadata?.summary || item.metadata?.excerpt,
+          publishedAt: item.receivedAt,
+          readAt: item.interactions?.[0]?.readAt || null,
+          isSaved: item.interactions?.[0]?.isSaved || false,
+          caughtUp: item.interactions?.[0]?.caughtUp || false,
+          url: `/content/${item.id}`,
+          metadata: item.metadata
+        });
+      });
+    }
+    
+    // Get YouTube videos if requested
+    if (type === 'all' || type === 'youtube') {
+      const videos = await youtubeService.getApprovedVideosForUser(
+        req.user.id, 
+        type === 'youtube' ? parseInt(limit) : 50,
+        videoType // Pass the video type filter
+      );
+      
+      // Format YouTube content
+      videos.forEach(video => {
+        allContent.push({
+          id: video.id,
+          type: 'youtube',
+          source: {
+            id: video.youtubeChannelId,
+            name: video.channelName,
+            logo: video.channelThumbnail,
+            category: 'youtube'
+          },
+          title: video.title,
+          excerpt: video.description?.substring(0, 200) + '...',
+          publishedAt: video.publishedAt,
+          readAt: null, // YouTube videos don't have read status yet
+          isSaved: false, // YouTube videos don't have saved status yet
+          caughtUp: video.userInteractions?.[0]?.caughtUp || false, // Check database for caught up status
+          url: video.videoUrl,
+          thumbnail: video.thumbnail,
+          duration: video.duration,
+          viewCount: video.viewCount,
+          videoType: video.videoType,
+          metadata: {
+            platform: 'youtube',
+            videoId: video.videoId,
+            channelName: video.channelName
+          }
+        });
+      });
+    }
+    
+    // Sort all content by publication date (newest first)
+    allContent.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    
+    // Apply pagination
+    const paginatedContent = allContent.slice(parseInt(offset), parseInt(offset) + parseInt(limit));
+    
+    res.json({
+      success: true,
+      content: paginatedContent,
+      total: allContent.length,
+      hasMore: allContent.length > (parseInt(offset) + parseInt(limit))
+    });
+
+  } catch (error) {
+    console.error('Error fetching content feed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch content feed'
+    });
+  }
+});
+
+// Legacy newsletter-only feed (kept for backward compatibility)
+app.get('/api/content/newsletters', requireAuth, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
 
-    // Only show approved content for single inbox approach
+    // Show approved content only for now
     const content = await NewsletterContent.findAndCountAll({
       where: {
         userId: req.user.id,
-        approvalStatus: 'approved',
+        approvalStatus: { [require('sequelize').Op.in]: ['approved', 'auto_approved'] }, // Show both manually approved and auto-approved content
         processingStatus: 'completed'
       },
       include: [
@@ -1198,6 +1325,104 @@ app.post('/api/content/:contentId/read', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to mark content as read'
+    });
+  }
+});
+
+// Mark content as caught up/uncaught up
+app.post('/api/content/caught-up', requireAuth, async (req, res) => {
+  try {
+    const { contentId, contentType, caughtUp } = req.body;
+
+    if (contentType === 'youtube') {
+      // Handle YouTube content - store caught up status in database for permanent persistence
+      
+      // Verify user has access to this video
+      const userChannelIds = await UserYouTubeSubscription.findAll({
+        where: { userId: req.user.id },
+        attributes: ['youtubeChannelId']
+      }).then(subs => subs.map(s => s.youtubeChannelId));
+
+      const video = await YouTubeVideo.findOne({
+        where: {
+          id: contentId,
+          youtubeChannelId: {
+            [require('sequelize').Op.in]: userChannelIds
+          }
+        }
+      });
+
+      if (!video) {
+        return res.status(404).json({
+          success: false,
+          message: 'Video not found'
+        });
+      }
+
+      // Find or create YouTube video interaction record
+      let interaction = await UserYouTubeVideoInteraction.findOne({
+        where: {
+          userId: req.user.id,
+          youtubeVideoId: contentId
+        }
+      });
+
+      if (interaction) {
+        // Update existing interaction
+        await interaction.update({
+          caughtUp: caughtUp,
+          caughtUpAt: caughtUp ? new Date() : null
+        });
+      } else {
+        // Create new interaction
+        interaction = await UserYouTubeVideoInteraction.create({
+          userId: req.user.id,
+          youtubeVideoId: contentId,
+          caughtUp: caughtUp,
+          caughtUpAt: caughtUp ? new Date() : null
+        });
+      }
+
+      res.json({
+        success: true,
+        message: caughtUp ? 'Video marked as caught up' : 'Video unmarked as caught up'
+      });
+
+    } else {
+      // Handle newsletter content
+      // Find or create interaction record
+      let interaction = await UserContentInteraction.findOne({
+        where: {
+          userId: req.user.id,
+          newsletterContentId: contentId
+        }
+      });
+
+      if (interaction) {
+        // Update existing interaction
+        await interaction.update({
+          caughtUp: caughtUp
+        });
+      } else {
+        // Create new interaction
+        interaction = await UserContentInteraction.create({
+          userId: req.user.id,
+          newsletterContentId: contentId,
+          caughtUp: caughtUp
+        });
+      }
+
+      res.json({
+        success: true,
+        message: caughtUp ? 'Content marked as caught up' : 'Content unmarked as caught up'
+      });
+    }
+
+  } catch (error) {
+    console.error('Error updating caught up status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update caught up status'
     });
   }
 });
@@ -2197,6 +2422,81 @@ app.post('/api/newsletters/unsubscribe', requireAuth, async (req, res) => {
 // YOUTUBE API ROUTES
 // =================
 
+// Check if user has existing YouTube connection
+app.get('/api/youtube/check-connection', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Check if user has any YouTube subscriptions
+    const userSubscriptions = await UserYouTubeSubscription.findAll({
+      where: { 
+        userId,
+        isActive: true 
+      },
+      include: [{
+        model: YouTubeChannel,
+        as: 'youtubeChannel'
+      }]
+    });
+
+    const hasConnection = userSubscriptions.length > 0;
+    
+    if (hasConnection) {
+      // Get all channels the user could potentially subscribe to (from OAuth)
+      const youtubeTokens = req.session.youtubeTokens;
+      let allSubscriptions = [];
+      
+      if (youtubeTokens) {
+        try {
+          const oauth2Client = new google.auth.OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            `${process.env.APP_URL}/auth/youtube/callback`
+          );
+
+          oauth2Client.setCredentials(youtubeTokens);
+          const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+
+          const subscriptionsResponse = await youtube.subscriptions.list({
+            part: ['snippet'],
+            mine: true,
+            maxResults: 50
+          });
+
+          allSubscriptions = subscriptionsResponse.data.items.map(item => ({
+            id: item.snippet.resourceId.channelId,
+            name: item.snippet.title,
+            description: item.snippet.description,
+            thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+            subscriberCount: 'Unknown',
+            channelUrl: `https://youtube.com/channel/${item.snippet.resourceId.channelId}`
+          }));
+        } catch (error) {
+          console.log('Could not fetch fresh subscriptions:', error.message);
+        }
+      }
+
+      res.json({
+        success: true,
+        hasConnection: true,
+        subscriptions: allSubscriptions,
+        userSubscriptions: userSubscriptions
+      });
+    } else {
+      res.json({
+        success: true,
+        hasConnection: false
+      });
+    }
+  } catch (error) {
+    console.error('Error checking YouTube connection:', error);
+    res.json({
+      success: false,
+      message: 'Failed to check YouTube connection'
+    });
+  }
+});
+
 // Get user's YouTube subscriptions
 app.get('/api/youtube/subscriptions', requireAuth, async (req, res) => {
   try {
@@ -2316,97 +2616,84 @@ app.post('/api/youtube/add-channel', requireAuth, async (req, res) => {
       });
     }
 
-    // Extract channel ID from URL or use as-is
-    let channelId;
+    // Extract @username from input (simplified)
+    let username;
     const input = channelInput.trim();
     
     console.log('🔍 Processing channel input:', input);
     
-    // Handle different YouTube URL formats
-    if (input.includes('youtube.com/channel/')) {
-      const match = input.match(/youtube\.com\/channel\/([a-zA-Z0-9_-]+)/);
-      channelId = match ? match[1] : null;
-      console.log('📺 Extracted channel ID from /channel/ URL:', channelId);
-    } else if (input.includes('youtube.com/@')) {
-      // For @username format, extract the username but we'll need to search differently
+    if (input.includes('youtube.com/@')) {
+      // Extract from youtube.com/@username
       const match = input.match(/youtube\.com\/@([a-zA-Z0-9_.-]+)/);
-      const username = match ? match[1] : null;
-      console.log('👤 Extracted username from @ URL:', username);
-      
-      if (username) {
-        // We'll try to find this channel by searching
-        channelId = `@${username}`; // Mark it as a username search
-      }
-    } else if (input.includes('youtube.com/c/')) {
-      // Custom URL format
-      const match = input.match(/youtube\.com\/c\/([a-zA-Z0-9_-]+)/);
-      channelId = match ? match[1] : null;
-      console.log('🔗 Extracted from /c/ URL:', channelId);
+      username = match ? match[1] : null;
+      console.log('👤 Extracted username from URL:', username);
     } else if (input.startsWith('@')) {
-      // Direct @username
-      channelId = input;
-      console.log('👤 Direct username:', channelId);
+      // Direct @username (remove the @)
+      username = input.substring(1);
+      console.log('👤 Extracted username from @:', username);
     } else {
-      // Assume it's a direct channel ID
-      channelId = input;
-      console.log('🆔 Direct channel ID:', channelId);
-    }
-    
-    if (!channelId) {
       return res.json({
         success: false,
-        message: 'Could not extract channel ID from input'
+        message: 'Please enter a YouTube channel in the format: @channelname or youtube.com/@channelname'
+      });
+    }
+    
+    if (!username || username.length === 0) {
+      return res.json({
+        success: false,
+        message: 'Could not extract channel username from input'
       });
     }
 
     // Use API key for public channel information
     console.log('🔑 Using API key:', process.env.GOOGLE_API_KEY ? 'Key set' : 'Key missing');
-    
-    const youtube = google.youtube({ 
-      version: 'v3', 
-      auth: process.env.GOOGLE_API_KEY 
-    });
+    console.log('🔍 Searching for username:', username);
 
-    // Get channel information
+    // Get channel information using search API (more reliable for @usernames)
     let channelResponse;
     
     try {
-      if (channelId.startsWith('@')) {
-        // Handle username search - try forHandle first (new YouTube API)
-        const username = channelId.substring(1);
-        console.log('🔍 Searching for username:', username);
-        
-        try {
-          channelResponse = await youtube.channels.list({
-            part: ['snippet', 'statistics'],
-            forHandle: username,
-            key: process.env.GOOGLE_API_KEY
-          });
-        } catch (error) {
-          console.log('forHandle failed, trying forUsername:', error.message);
-          // Fallback to forUsername (legacy)
-          channelResponse = await youtube.channels.list({
-            part: ['snippet', 'statistics'],
-            forUsername: username,
-            key: process.env.GOOGLE_API_KEY
-          });
-        }
-      } else {
-        // Direct channel ID lookup
-        console.log('🔍 Looking up channel ID:', channelId);
-        channelResponse = await youtube.channels.list({
-          part: ['snippet', 'statistics'],
-          id: channelId,
-          key: process.env.GOOGLE_API_KEY
+      // Use search API to find channels by name/handle
+      const searchResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(username)}&key=${process.env.GOOGLE_API_KEY}`,
+        { method: 'GET' }
+      );
+      
+      if (!searchResponse.ok) {
+        throw new Error(`YouTube API returned ${searchResponse.status}: ${searchResponse.statusText}`);
+      }
+      
+      const searchData = await searchResponse.json();
+      console.log('🔍 Search results:', searchData.items?.length || 0);
+      
+      if (!searchData.items || searchData.items.length === 0) {
+        return res.json({
+          success: false,
+          message: `No YouTube channel found with username "@${username}"`
         });
       }
       
-      console.log('📊 API Response items:', channelResponse.data.items?.length || 0);
+      // Get the first matching channel's full details
+      const channelId = searchData.items[0].id.channelId;
+      console.log('📺 Found channel ID:', channelId);
+      
+      const channelDetailsResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${process.env.GOOGLE_API_KEY}`,
+        { method: 'GET' }
+      );
+      
+      if (!channelDetailsResponse.ok) {
+        throw new Error(`YouTube API returned ${channelDetailsResponse.status}: ${channelDetailsResponse.statusText}`);
+      }
+      
+      channelResponse = { data: await channelDetailsResponse.json() };
+      console.log('📊 Channel details found:', channelResponse.data.items?.length || 0);
+      
     } catch (error) {
       console.error('❌ YouTube API error:', error);
       return res.json({
         success: false,
-        message: `YouTube API error: ${error.message}`
+        message: `Failed to find YouTube channel: ${error.message}`
       });
     }
 
@@ -2471,6 +2758,113 @@ app.post('/api/youtube/add-channel', requireAuth, async (req, res) => {
     res.json({
       success: false,
       message: 'Failed to add YouTube channel'
+    });
+  }
+});
+
+// Get pending YouTube videos for approval
+app.get('/api/youtube/pending-videos', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const pendingVideos = await youtubeService.getPendingVideosForUser(userId);
+    
+    res.json({
+      success: true,
+      videos: pendingVideos,
+      count: pendingVideos.length
+    });
+  } catch (error) {
+    console.error('Error fetching pending YouTube videos:', error);
+    res.json({
+      success: false,
+      message: 'Failed to fetch pending videos'
+    });
+  }
+});
+
+// Get approved YouTube videos for dashboard
+app.get('/api/youtube/approved-videos', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const limit = parseInt(req.query.limit) || 20;
+    const videoType = req.query.videoType || 'all';
+    const approvedVideos = await youtubeService.getApprovedVideosForUser(userId, limit, videoType);
+    
+    res.json({
+      success: true,
+      videos: approvedVideos,
+      count: approvedVideos.length
+    });
+  } catch (error) {
+    console.error('Error fetching approved YouTube videos:', error);
+    res.json({
+      success: false,
+      message: 'Failed to fetch approved videos'
+    });
+  }
+});
+
+// Approve/reject YouTube video
+app.post('/api/youtube/videos/:videoId/approve', requireAuth, async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const { action } = req.body; // 'approve' or 'reject'
+    
+    if (!['approve', 'reject'].includes(action)) {
+      return res.json({
+        success: false,
+        message: 'Invalid action. Use "approve" or "reject"'
+      });
+    }
+
+    const video = await YouTubeVideo.findOne({
+      where: { id: videoId }
+    });
+
+    if (!video) {
+      return res.json({
+        success: false,
+        message: 'Video not found'
+      });
+    }
+
+    await video.update({
+      approvalStatus: action === 'approve' ? 'approved' : 'rejected'
+    });
+
+    res.json({
+      success: true,
+      message: `Video ${action}d successfully`
+    });
+
+  } catch (error) {
+    console.error('Error approving/rejecting YouTube video:', error);
+    res.json({
+      success: false,
+      message: 'Failed to update video status'
+    });
+  }
+});
+
+// Fetch new videos manually (for testing)
+app.post('/api/youtube/fetch-videos', requireAuth, async (req, res) => {
+  try {
+    console.log('🎬 Manual video fetch triggered by user:', req.user.email);
+    
+    // Run the video fetch in the background
+    youtubeService.fetchNewVideosForAllChannels().catch(error => {
+      console.error('Background video fetch error:', error);
+    });
+
+    res.json({
+      success: true,
+      message: 'Video fetch started in background'
+    });
+  } catch (error) {
+    console.error('Error starting video fetch:', error);
+    res.json({
+      success: false,
+      message: 'Failed to start video fetch'
     });
   }
 });
@@ -2679,6 +3073,32 @@ app.use((req, res) => {
 });
 
 // =================
+// BACKGROUND JOBS
+// =================
+
+function startYouTubeVideoFetching() {
+  console.log('🎬 Starting YouTube video background fetching...');
+  
+  // Fetch videos immediately on startup (after 30 seconds)
+  setTimeout(() => {
+    console.log('🎬 Running initial YouTube video fetch...');
+    youtubeService.fetchNewVideosForAllChannels().catch(error => {
+      console.error('Initial YouTube video fetch error:', error);
+    });
+  }, 30000);
+  
+  // Then fetch videos every 30 minutes
+  setInterval(() => {
+    console.log('🎬 Running scheduled YouTube video fetch...');
+    youtubeService.fetchNewVideosForAllChannels().catch(error => {
+      console.error('Scheduled YouTube video fetch error:', error);
+    });
+  }, 30 * 60 * 1000); // 30 minutes
+  
+  console.log('✅ YouTube video fetching scheduled (every 30 minutes)');
+}
+
+// =================
 // SERVER STARTUP
 // =================
 
@@ -2698,6 +3118,9 @@ async function startServer() {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
       console.log(`🔐 Google OAuth configured: ${process.env.GOOGLE_CLIENT_ID ? '✅' : '❌'}`);
+      
+      // Start background YouTube video fetching
+      startYouTubeVideoFetching();
     });
 
   } catch (error) {

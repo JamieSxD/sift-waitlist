@@ -66,4 +66,52 @@ const YouTubeVideo = sequelize.define('YouTubeVideo', {
   },
 });
 
-module.exports = YouTubeVideo;
+// User-specific YouTube video interactions
+const UserYouTubeVideoInteraction = sequelize.define('UserYouTubeVideoInteraction', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id',
+    },
+  },
+  youtubeVideoId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'YouTubeVideos',
+      key: 'id',
+    },
+  },
+  caughtUp: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  caughtUpAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  isWatched: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  watchedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['userId', 'youtubeVideoId']
+    }
+  ]
+});
+
+module.exports = { YouTubeVideo, UserYouTubeVideoInteraction };

@@ -245,11 +245,25 @@ class EmailProcessingService {
         });
 
         if (subscription) {
-          return 'approved'; // Auto-approve
+          return 'approved'; // Auto-approve via subscription settings
         }
       }
 
-      // Default to pending approval for single inbox approach
+      // Check if user has previously approved content from this sender (new UX improvement)
+      const previouslyApproved = await NewsletterContent.findOne({
+        where: {
+          userId,
+          originalFrom: fromEmail,
+          approvalStatus: ['approved', 'auto_approved']
+        }
+      });
+
+      if (previouslyApproved) {
+        console.log(`✅ Auto-approving from previously approved sender: ${fromEmail}`);
+        return 'auto_approved'; // Auto-approve since sender was approved before
+      }
+
+      // Default to pending approval for new/unknown senders
       return 'pending';
     } catch (error) {
       console.error('Error determining approval status:', error);

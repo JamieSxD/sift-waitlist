@@ -7,7 +7,7 @@ const UserBlockList = require('./UserBlockList');
 const { NewsletterContent, UserContentInteraction } = require('./NewsletterContent');
 const YouTubeChannel = require('./YouTubeChannel');
 const UserYouTubeSubscription = require('./UserYouTubeSubscription');
-const YouTubeVideo = require('./YouTubeVideo');
+const { YouTubeVideo, UserYouTubeVideoInteraction } = require('./YouTubeVideo');
 
 // Define associations
 
@@ -138,6 +138,27 @@ YouTubeVideo.belongsTo(YouTubeChannel, {
   as: 'youtubeChannel'
 });
 
+// YouTube Video Interaction associations
+User.hasMany(UserYouTubeVideoInteraction, {
+  foreignKey: 'userId',
+  as: 'youtubeVideoInteractions'
+});
+
+UserYouTubeVideoInteraction.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+YouTubeVideo.hasMany(UserYouTubeVideoInteraction, {
+  foreignKey: 'youtubeVideoId',
+  as: 'userInteractions'
+});
+
+UserYouTubeVideoInteraction.belongsTo(YouTubeVideo, {
+  foreignKey: 'youtubeVideoId',
+  as: 'video'
+});
+
 module.exports = {
   sequelize,
   User,
@@ -150,4 +171,5 @@ module.exports = {
   YouTubeChannel,
   UserYouTubeSubscription,
   YouTubeVideo,
+  UserYouTubeVideoInteraction,
 };

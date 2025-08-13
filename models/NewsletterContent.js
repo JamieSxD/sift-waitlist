@@ -24,7 +24,7 @@ const NewsletterContent = sequelize.define('NewsletterContent', {
     },
   },
   approvalStatus: {
-    type: DataTypes.ENUM('pending', 'approved', 'blocked'),
+    type: DataTypes.ENUM('pending', 'approved', 'auto_approved', 'blocked'),
     defaultValue: 'pending',
   },
   approvedAt: {
@@ -144,6 +144,10 @@ const UserContentInteraction = sequelize.define('UserContentInteraction', {
     allowNull: true,
   },
   isArchived: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  caughtUp: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },

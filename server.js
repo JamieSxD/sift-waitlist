@@ -18,6 +18,7 @@ const { google } = require('googleapis');
 const contentExtractionService = require('./services/contentExtraction');
 
 const emailProcessingService = require('./services/emailProcessingService');
+const mailgunService = require('./services/mailgunService');
 
 // Import YouTube service
 const youtubeService = require('./services/youtubeService');
@@ -29,6 +30,10 @@ const { requireAuth } = require('./middleware/auth');
 // Import existing services
 const loopsService = require('./services/loopsService');
 const posthogService = require('./services/posthogService');
+
+// For parsing Mailgun webhook form data
+const multer = require('multer');
+const upload = multer();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -320,20 +325,43 @@ app.get('/feedback', (req, res) => {
 // EMAIL PROCESSING ROUTES
 // =================
 
-// Webhook endpoint for incoming emails
-app.post('/api/webhooks/email', express.raw({type: 'application/json'}), async (req, res) => {
+// Mailgun webhook endpoint for incoming emails  
+app.post('/api/webhooks/email', upload.none(), async (req, res) => {
   try {
-    const result = await emailProcessingService.processWebhookEmail(req.body);
+    console.log('📧 Received Mailgun webhook');
+    
+    // Verify webhook signature for security
+    const signature = req.body.signature;
+    const timestamp = req.body.timestamp;
+    const token = req.body.token;
+    
+    if (!mailgunService.verifyWebhookSignature(signature, timestamp, token)) {
+      console.log('❌ Invalid webhook signature');
+      return res.status(401).json({ success: false, message: 'Invalid signature' });
+    }
+
+    // Parse Mailgun webhook data
+    const emailData = mailgunService.parseMailgunWebhook(req.body);
+    console.log(`📧 Processing email: ${emailData.subject} → ${emailData.to}`);
+
+    // Process the email using existing service
+    const result = await emailProcessingService.processWebhookEmail(emailData);
 
     if (result.success) {
+      console.log(`✅ Email processed successfully: ${result.contentId || 'N/A'}`);
       res.status(200).json(result);
     } else {
+      console.log(`❌ Email processing failed: ${result.error}`);
       res.status(400).json(result);
     }
 
   } catch (error) {
     console.error('❌ Email webhook error:', error);
-    res.status(500).json({ success: false, message: 'Processing failed' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Processing failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
@@ -370,6 +398,129 @@ app.post('/api/test/email', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to process test email'
+    });
+  }
+});
+
+// =================
+// MAILGUN ADMIN ENDPOINTS
+// =================
+
+// Get Mailgun domain configuration and DNS records
+app.get('/api/admin/mailgun/domain', requireAuth, async (req, res) => {
+  try {
+    const domainInfo = await mailgunService.getDomainInfo();
+    res.json({
+      success: true,
+      domain: domainInfo
+    });
+  } catch (error) {
+    console.error('❌ Error getting domain info:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Setup Mailgun domain (first-time configuration)
+app.post('/api/admin/mailgun/setup-domain', requireAuth, async (req, res) => {
+  try {
+    await mailgunService.setupDomain();
+    res.json({
+      success: true,
+      message: 'Domain setup completed'
+    });
+  } catch (error) {
+    console.error('❌ Error setting up domain:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Setup Mailgun webhooks
+app.post('/api/admin/mailgun/setup-webhooks', requireAuth, async (req, res) => {
+  try {
+    const webhookUrl = `${process.env.APP_URL}/api/webhooks/email`;
+    await mailgunService.setupWebhooks(webhookUrl);
+    res.json({
+      success: true,
+      message: 'Webhooks setup completed',
+      webhookUrl
+    });
+  } catch (error) {
+    console.error('❌ Error setting up webhooks:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Send test email via Mailgun
+app.post('/api/admin/mailgun/send-test', requireAuth, async (req, res) => {
+  try {
+    const { to } = req.body;
+    if (!to) {
+      return res.status(400).json({
+        success: false,
+        message: 'Recipient email required'
+      });
+    }
+
+    const result = await mailgunService.sendTestEmail(to);
+    res.json({
+      success: true,
+      message: 'Test email sent successfully',
+      messageId: result.id
+    });
+  } catch (error) {
+    console.error('❌ Error sending test email:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Test the complete email processing flow
+app.post('/api/admin/test/newsletter-flow', requireAuth, async (req, res) => {
+  try {
+    const { userInboxEmail, newsletterContent } = req.body;
+    
+    if (!userInboxEmail || !newsletterContent) {
+      return res.status(400).json({
+        success: false,
+        message: 'User inbox email and newsletter content required'
+      });
+    }
+
+    // Simulate incoming newsletter email
+    const testEmailData = {
+      to: userInboxEmail,
+      from: 'newsletter@example.com',
+      subject: 'Test Newsletter - Newsletter Processing Flow',
+      html: newsletterContent,
+      text: newsletterContent.replace(/<[^>]*>/g, ''),
+      timestamp: new Date()
+    };
+
+    // Process using the existing email processing service
+    const result = await emailProcessingService.processWebhookEmail(testEmailData);
+
+    res.json({
+      success: true,
+      message: 'Newsletter processing flow test completed',
+      result
+    });
+
+  } catch (error) {
+    console.error('❌ Error testing newsletter flow:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
     });
   }
 });

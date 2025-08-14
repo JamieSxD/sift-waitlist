@@ -28,6 +28,7 @@ const { requireAuth } = require('./middleware/auth');
 
 // Import existing services
 const loopsService = require('./services/loopsService');
+const posthogService = require('./services/posthogService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,15 +72,30 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
+    // Track successful login
+    if (req.user) {
+      posthogService.trackAuth(req.user.id.toString(), 'login_success', {
+        provider: 'google',
+        email: req.user.email
+      });
+    }
     res.redirect('/dashboard');
   }
 );
 
 app.post('/auth/logout', (req, res) => {
+  const userId = req.user?.id;
+  
   req.logout((err) => {
     if (err) {
       return res.status(500).json({ success: false });
     }
+    
+    // Track logout
+    if (userId) {
+      posthogService.trackAuth(userId.toString(), 'logout');
+    }
+    
     res.redirect('/');
   });
 });
@@ -124,6 +140,11 @@ app.get('/auth/youtube/callback', requireAuth, async (req, res) => {
     
     // Store tokens in user session or database
     req.session.youtubeTokens = tokens;
+    
+    // Track YouTube connection
+    posthogService.trackYouTube(req.user.id.toString(), 'account_connected', {
+      oauth_provider: 'google'
+    });
     
     res.redirect('/setup/youtube?connected=true');
   } catch (error) {
@@ -2350,6 +2371,14 @@ app.post('/api/newsletters/subscribe', requireAuth, async (req, res) => {
 
     console.log(`✅ User ${req.user.email} subscribed to ${newsletter.name} (${subscriptionMethod})`);
 
+    // Track newsletter subscription
+    posthogService.trackSubscription(req.user.id.toString(), 'subscribe', 'newsletter', {
+      newsletter_name: newsletter.name,
+      newsletter_id: newsletterId,
+      subscription_method: subscriptionMethod,
+      category: newsletter.category
+    });
+
     const responseData = {
       success: true,
       subscriptionMethod,
@@ -2404,6 +2433,15 @@ app.post('/api/newsletters/unsubscribe', requireAuth, async (req, res) => {
 
     const newsletter = await NewsletterSource.findByPk(newsletterId);
     console.log(`❌ User ${req.user.email} unsubscribed from ${newsletter?.name}`);
+
+    // Track newsletter unsubscription
+    if (newsletter) {
+      posthogService.trackSubscription(req.user.id.toString(), 'unsubscribe', 'newsletter', {
+        newsletter_name: newsletter.name,
+        newsletter_id: newsletterId,
+        category: newsletter.category
+      });
+    }
 
     res.json({
       success: true,
@@ -3055,6 +3093,28 @@ async function saveEmail(email) {
 // =================
 
 app.use(express.static('public'));
+
+// Serve PostHog config to frontend
+app.get('/api/config/posthog', (req, res) => {
+  res.json({
+    apiKey: process.env.POSTHOG_API_KEY,
+    host: process.env.POSTHOG_HOST || 'https://app.posthog.com'
+  });
+});
+
+// Test endpoint to manually trigger PostHog event
+app.post('/api/test/posthog', (req, res) => {
+  console.log('🧪 Manual PostHog test triggered');
+  
+  // Send a test event
+  posthogService.track('test-user-backend', 'manual_backend_test', {
+    test: true,
+    timestamp: new Date(),
+    source: 'manual_test_endpoint'
+  });
+  
+  res.json({ success: true, message: 'PostHog test event sent' });
+});
 
 // =================
 // ERROR HANDLING

@@ -29,6 +29,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
 
 </head>
 <body>
@@ -87,12 +92,65 @@
     
     <script src="script.js"></script>
     <script>
+        // Initialize PostHog with config from server
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    console.log('🔧 Initializing PostHog with:', config.apiKey, config.host);
+                    posthog.init(config.apiKey, {
+                        api_host: config.host,
+                        debug: true, // Enable debug mode
+                        loaded: function(posthog) {
+                            console.log('✅ PostHog loaded successfully');
+                            console.log('PostHog config:', posthog.config);
+                        }
+                    });
+                    console.log('✅ PostHog initialized on frontend');
+                } else {
+                    console.warn('⚠️ PostHog not initialized:', { 
+                        posthogExists: typeof posthog !== 'undefined',
+                        apiKey: config.apiKey,
+                        isValidKey: config.apiKey !== 'YOUR_POSTHOG_API_KEY'
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to initialize PostHog:', error);
+            }
+        }
+        
+        initPostHog();
+        
         function signUp() {
+            // Track sign up attempt
+            console.log('🎯 SignUp clicked, PostHog available:', typeof posthog !== 'undefined');
+            if (typeof posthog !== 'undefined') {
+                console.log('📊 Tracking signup_clicked event');
+                posthog.capture('signup_clicked', {
+                    page: 'landing'
+                });
+                console.log('✅ Event sent to PostHog');
+            }
             window.location.href = '/auth/google';
         }
 
         function signIn() {
+            // Track sign in attempt
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('signin_clicked', {
+                    page: 'landing'
+                });
+            }
             window.location.href = '/auth/google';
+        }
+        
+        // Track page view
+        if (typeof posthog !== 'undefined') {
+            posthog.capture('$pageview', {
+                page: 'landing'
+            });
         }
     </script>
 </body>

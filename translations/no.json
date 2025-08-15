@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Laster...",
+    "error": "Feil",
+    "success": "Suksess",
+    "cancel": "Avbryt",
+    "save": "Lagre",
+    "delete": "Slett",
+    "edit": "Rediger",
+    "add": "Legg til",
+    "back": "Tilbake",
+    "next": "Neste",
+    "previous": "Forrige",
+    "close": "Lukk",
+    "confirm": "Bekreft",
+    "yes": "Ja",
+    "no": "Nei",
+    "or": "eller",
+    "and": "og"
+  },
+  "navigation": {
+    "home": "Hjem",
+    "dashboard": "Dashboard",
+    "newsletters": "Nyhetsbrev",
+    "settings": "Innstillinger",
+    "inbox": "Innboks",
+    "logout": "Logg ut",
+    "login": "Logg inn",
+    "signup": "Registrer"
+  },
+  "auth": {
+    "sign_in_with_google": "Logg inn med Google",
+    "welcome_back": "Velkommen tilbake",
+    "authentication_required": "Autentisering påkrevd",
+    "please_sign_in": "Logg inn for å fortsette",
+    "sign_out": "Logg ut",
+    "account": "Konto"
+  },
+  "waitlist": {
+    "title": "En roligere måte å holde seg oppdatert",
+    "subtitle": "Bli med på Ventelisten",
+    "description": "Et nytt rom for innhold som betyr noe – uten støyen.",
+    "join_waitlist": "Bli med på Ventelisten",
+    "email_placeholder": "Skriv inn e-postadressen din",
+    "thank_you": "Takk for at du ble med!",
+    "already_registered": "Du står allerede på ventelisten",
+    "invalid_email": "Skriv inn en gyldig e-postadresse",
+    "position_info": "Du er #{{position}} på ventelisten"
+  },
+  "dashboard": {
+    "welcome": "Velkommen til dashboardet ditt",
+    "recent_content": "Nytt Innhold",
+    "no_content": "Ingen innhold tilgjengelig ennå",
+    "setup_required": "Oppsett påkrevd",
+    "setup_newsletters": "Sett opp nyhetsbrev",
+    "setup_youtube": "Sett opp YouTube",
+    "setup_inbox": "Sett opp innboks"
+  },
+  "newsletters": {
+    "title": "Nyhetsbrev",
+    "add_newsletter": "Legg til Nyhetsbrev",
+    "url_placeholder": "Skriv inn nyhetsbrev URL",
+    "detect_newsletter": "Oppdag Nyhetsbrev",
+    "subscribe": "Abonner",
+    "unsubscribe": "Avslutt abonnement",
+    "no_newsletters": "Ingen nyhetsbrev funnet",
+    "detection_failed": "Feilet å oppdage nyhetsbrev",
+    "subscription_successful": "Abonnement vellykket",
+    "unsubscription_successful": "Avslutning av abonnement vellykket"
+  },
+  "settings": {
+    "title": "Innstillinger",
+    "language": "Språk",
+    "preferences": "Preferanser",
+    "account_settings": "Kontoinnstillinger",
+    "notification_settings": "Varslingsinnstillinger",
+    "privacy_settings": "Personverninnstillinger",
+    "language_preference": "Språkpreferanse",
+    "language_help": "Velg ditt foretrukne språk for grensesnittet",
+    "auto_detect": "Oppdag automatisk",
+    "save_preferences": "Lagre Preferanser",
+    "preferences_saved": "Preferanser lagret vellykket"
+  },
+  "inbox": {
+    "title": "Innboks",
+    "no_messages": "Ingen meldinger",
+    "mark_as_read": "Marker som lest",
+    "mark_as_unread": "Marker som ulest",
+    "delete_message": "Slett melding",
+    "filter_by": "Filtrer etter",
+    "all": "Alle",
+    "unread": "Uleste",
+    "read": "Leste"
+  },
+  "errors": {
+    "generic": "Noe gikk galt. Prøv igjen.",
+    "network": "Nettverksfeil. Sjekk tilkoblingen din.",
+    "not_found": "Side ikke funnet",
+    "unauthorized": "Du har ikke tillatelse til å få tilgang til denne siden",
+    "server_error": "Serverfeil. Prøv igjen senere.",
+    "validation_error": "Sjekk inndataene dine og prøv igjen"
+  },
+  "success": {
+    "saved": "Lagret vellykket",
+    "updated": "Oppdatert vellykket",
+    "deleted": "Slettet vellykket",
+    "subscribed": "Abonnement vellykket",
+    "unsubscribed": "Avslutning av abonnement vellykket"
+  },
+  "onboarding": {
+    "welcome": "Velkommen til Sift",
+    "step1_title": "Sett opp nyhetsbrevene dine",
+    "step1_description": "Legg til favoritnyhetsbrevene dine for å komme i gang",
+    "step2_title": "Konfigurer innboksen din",
+    "step2_description": "Sett opp e-post videresending for å sentralisere innholdet ditt",
+    "step3_title": "Koble til YouTube",
+    "step3_description": "Følg favorittkaналene og skaperne dine",
+    "get_started": "Kom i gang",
+    "skip_for_now": "Hopp over for nå",
+    "continue": "Fortsett"
+  },
+  "languages": {
+    "en": "Engelsk",
+    "es": "Spansk",
+    "fr": "Fransk",
+    "de": "Tysk",
+    "pt": "Portugisisk",
+    "it": "Italiensk",
+    "nl": "Nederlandsk",
+    "sv": "Svensk",
+    "da": "Dansk",
+    "no": "Norsk"
+  }
+}

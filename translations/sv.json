@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Laddar...",
+    "error": "Fel",
+    "success": "Framgång",
+    "cancel": "Avbryt",
+    "save": "Spara",
+    "delete": "Radera",
+    "edit": "Redigera",
+    "add": "Lägg till",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "previous": "Föregående",
+    "close": "Stäng",
+    "confirm": "Bekräfta",
+    "yes": "Ja",
+    "no": "Nej",
+    "or": "eller",
+    "and": "och"
+  },
+  "navigation": {
+    "home": "Hem",
+    "dashboard": "Dashboard",
+    "newsletters": "Nyhetsbrev",
+    "settings": "Inställningar",
+    "inbox": "Inkorg",
+    "logout": "Logga ut",
+    "login": "Logga in",
+    "signup": "Registrera"
+  },
+  "auth": {
+    "sign_in_with_google": "Logga in med Google",
+    "welcome_back": "Välkommen tillbaka",
+    "authentication_required": "Autentisering krävs",
+    "please_sign_in": "Logga in för att fortsätta",
+    "sign_out": "Logga ut",
+    "account": "Konto"
+  },
+  "waitlist": {
+    "title": "Ett lugnare sätt att hålla sig uppdaterad",
+    "subtitle": "Gå med i Väntelistan",
+    "description": "Ett nytt utrymme för innehåll som betyder något – utan bruset.",
+    "join_waitlist": "Gå med i Väntelistan",
+    "email_placeholder": "Ange din e-postadress",
+    "thank_you": "Tack för att du gick med!",
+    "already_registered": "Du står redan på väntelistan",
+    "invalid_email": "Ange en giltig e-postadress",
+    "position_info": "Du är #{{position}} på väntelistan"
+  },
+  "dashboard": {
+    "welcome": "Välkommen till din dashboard",
+    "recent_content": "Senaste Innehåll",
+    "no_content": "Inget innehåll tillgängligt ännu",
+    "setup_required": "Installation krävs",
+    "setup_newsletters": "Konfigurera nyhetsbrev",
+    "setup_youtube": "Konfigurera YouTube",
+    "setup_inbox": "Konfigurera inkorg"
+  },
+  "newsletters": {
+    "title": "Nyhetsbrev",
+    "add_newsletter": "Lägg till Nyhetsbrev",
+    "url_placeholder": "Ange nyhetsbrevets URL",
+    "detect_newsletter": "Upptäck Nyhetsbrev",
+    "subscribe": "Prenumerera",
+    "unsubscribe": "Avsluta prenumeration",
+    "no_newsletters": "Inga nyhetsbrev hittades",
+    "detection_failed": "Misslyckades med att upptäcka nyhetsbrev",
+    "subscription_successful": "Prenumeration lyckades",
+    "unsubscription_successful": "Avslutning av prenumeration lyckades"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "language": "Språk",
+    "preferences": "Preferenser",
+    "account_settings": "Kontoinställningar",
+    "notification_settings": "Aviseringsinställningar",
+    "privacy_settings": "Integritetsinställningar",
+    "language_preference": "Språkpreferens",
+    "language_help": "Välj ditt föredragna språk för gränssnittet",
+    "auto_detect": "Upptäck automatiskt",
+    "save_preferences": "Spara Preferenser",
+    "preferences_saved": "Preferenser sparade framgångsrikt"
+  },
+  "inbox": {
+    "title": "Inkorg",
+    "no_messages": "Inga meddelanden",
+    "mark_as_read": "Markera som läst",
+    "mark_as_unread": "Markera som oläst",
+    "delete_message": "Ta bort meddelande",
+    "filter_by": "Filtrera efter",
+    "all": "Alla",
+    "unread": "Olästa",
+    "read": "Lästa"
+  },
+  "errors": {
+    "generic": "Något gick fel. Försök igen.",
+    "network": "Nätverksfel. Kontrollera din anslutning.",
+    "not_found": "Sidan hittades inte",
+    "unauthorized": "Du har inte behörighet att komma åt denna sida",
+    "server_error": "Serverfel. Försök igen senare.",
+    "validation_error": "Kontrollera din inmatning och försök igen"
+  },
+  "success": {
+    "saved": "Sparat framgångsrikt",
+    "updated": "Uppdaterat framgångsrikt",
+    "deleted": "Raderat framgångsrikt",
+    "subscribed": "Prenumeration lyckades",
+    "unsubscribed": "Avslutning av prenumeration lyckades"
+  },
+  "onboarding": {
+    "welcome": "Välkommen till Sift",
+    "step1_title": "Konfigurera dina nyhetsbrev",
+    "step1_description": "Lägg till dina favoritnyhetsbrev för att komma igång",
+    "step2_title": "Konfigurera din inkorg",
+    "step2_description": "Konfigurera e-postvidarekoppling för att centralisera ditt innehåll",
+    "step3_title": "Anslut YouTube",
+    "step3_description": "Följ dina favoritkanaler och skapare",
+    "get_started": "Kom igång",
+    "skip_for_now": "Hoppa över för nu",
+    "continue": "Fortsätt"
+  },
+  "languages": {
+    "en": "Engelska",
+    "es": "Spanska",
+    "fr": "Franska",
+    "de": "Tyska",
+    "pt": "Portugisiska",
+    "it": "Italienska",
+    "nl": "Nederländska",
+    "sv": "Svenska",
+    "da": "Danska",
+    "no": "Norska"
+  }
+}

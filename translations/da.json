@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Indlæser...",
+    "error": "Fejl",
+    "success": "Succes",
+    "cancel": "Annuller",
+    "save": "Gem",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "add": "Tilføj",
+    "back": "Tilbage",
+    "next": "Næste",
+    "previous": "Forrige",
+    "close": "Luk",
+    "confirm": "Bekræft",
+    "yes": "Ja",
+    "no": "Nej",
+    "or": "eller",
+    "and": "og"
+  },
+  "navigation": {
+    "home": "Hjem",
+    "dashboard": "Dashboard",
+    "newsletters": "Nyhedsbreve",
+    "settings": "Indstillinger",
+    "inbox": "Indbakke",
+    "logout": "Log ud",
+    "login": "Log ind",
+    "signup": "Tilmeld"
+  },
+  "auth": {
+    "sign_in_with_google": "Log ind med Google",
+    "welcome_back": "Velkommen tilbage",
+    "authentication_required": "Godkendelse påkrævet",
+    "please_sign_in": "Log ind for at fortsætte",
+    "sign_out": "Log ud",
+    "account": "Konto"
+  },
+  "waitlist": {
+    "title": "En mere rolig måde at holde sig opdateret",
+    "subtitle": "Tilmeld dig Ventelisten",
+    "description": "Et nyt rum for indhold, der betyder noget – uden støjen.",
+    "join_waitlist": "Tilmeld dig Ventelisten",
+    "email_placeholder": "Indtast din e-mailadresse",
+    "thank_you": "Tak for at tilmelde dig!",
+    "already_registered": "Du er allerede på ventelisten",
+    "invalid_email": "Indtast en gyldig e-mailadresse",
+    "position_info": "Du er #{{position}} på ventelisten"
+  },
+  "dashboard": {
+    "welcome": "Velkommen til dit dashboard",
+    "recent_content": "Seneste Indhold",
+    "no_content": "Intet indhold tilgængeligt endnu",
+    "setup_required": "Opsætning påkrævet",
+    "setup_newsletters": "Opsæt nyhedsbreve",
+    "setup_youtube": "Opsæt YouTube",
+    "setup_inbox": "Opsæt indbakke"
+  },
+  "newsletters": {
+    "title": "Nyhedsbreve",
+    "add_newsletter": "Tilføj Nyhedsbrev",
+    "url_placeholder": "Indtast nyhedsbrevs URL",
+    "detect_newsletter": "Opdag Nyhedsbrev",
+    "subscribe": "Abonner",
+    "unsubscribe": "Afmeld",
+    "no_newsletters": "Ingen nyhedsbreve fundet",
+    "detection_failed": "Fejlede at opdage nyhedsbrev",
+    "subscription_successful": "Abonnement lykkedes",
+    "unsubscription_successful": "Afmelding lykkedes"
+  },
+  "settings": {
+    "title": "Indstillinger",
+    "language": "Sprog",
+    "preferences": "Præferencer",
+    "account_settings": "Kontoindstillinger",
+    "notification_settings": "Beskedindstillinger",
+    "privacy_settings": "Privatlivsindstillinger",
+    "language_preference": "Sprogpræference",
+    "language_help": "Vælg dit foretrukne sprog til grænsefladen",
+    "auto_detect": "Opdag automatisk",
+    "save_preferences": "Gem Præferencer",
+    "preferences_saved": "Præferencer gemt succesfuldt"
+  },
+  "inbox": {
+    "title": "Indbakke",
+    "no_messages": "Ingen beskeder",
+    "mark_as_read": "Marker som læst",
+    "mark_as_unread": "Marker som ulæst",
+    "delete_message": "Slet besked",
+    "filter_by": "Filtrer efter",
+    "all": "Alle",
+    "unread": "Ulæste",
+    "read": "Læste"
+  },
+  "errors": {
+    "generic": "Noget gik galt. Prøv igen.",
+    "network": "Netværksfejl. Tjek din forbindelse.",
+    "not_found": "Side ikke fundet",
+    "unauthorized": "Du har ikke tilladelse til at tilgå denne side",
+    "server_error": "Serverfejl. Prøv igen senere.",
+    "validation_error": "Tjek din indtastning og prøv igen"
+  },
+  "success": {
+    "saved": "Gemt succesfuldt",
+    "updated": "Opdateret succesfuldt",
+    "deleted": "Slettet succesfuldt",
+    "subscribed": "Abonnement lykkedes",
+    "unsubscribed": "Afmelding lykkedes"
+  },
+  "onboarding": {
+    "welcome": "Velkommen til Sift",
+    "step1_title": "Opsæt dine nyhedsbreve",
+    "step1_description": "Tilføj dine foretrukne nyhedsbreve for at komme i gang",
+    "step2_title": "Konfigurer din indbakke",
+    "step2_description": "Opsæt e-mail videresendelse for at centralisere dit indhold",
+    "step3_title": "Forbind YouTube",
+    "step3_description": "Følg dine foretrukne kanaler og skabere",
+    "get_started": "Kom i gang",
+    "skip_for_now": "Spring over for nu",
+    "continue": "Fortsæt"
+  },
+  "languages": {
+    "en": "Engelsk",
+    "es": "Spansk",
+    "fr": "Fransk",
+    "de": "Tysk",
+    "pt": "Portugisisk",
+    "it": "Italiensk",
+    "nl": "Hollandsk",
+    "sv": "Svensk",
+    "da": "Dansk",
+    "no": "Norsk"
+  }
+}

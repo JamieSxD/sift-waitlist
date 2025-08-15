@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "or": "oder",
+    "and": "und"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "newsletters": "Newsletter",
+    "settings": "Einstellungen",
+    "inbox": "Posteingang",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "signup": "Registrieren"
+  },
+  "auth": {
+    "sign_in_with_google": "Mit Google anmelden",
+    "welcome_back": "Willkommen zurück",
+    "authentication_required": "Authentifizierung erforderlich",
+    "please_sign_in": "Bitte melden Sie sich an, um fortzufahren",
+    "sign_out": "Abmelden",
+    "account": "Konto"
+  },
+  "waitlist": {
+    "title": "Ein ruhigerer Weg, auf dem Laufenden zu bleiben",
+    "subtitle": "Der Warteliste beitreten",
+    "description": "Ein neuer Raum für Inhalte, die wichtig sind – ohne den Lärm.",
+    "join_waitlist": "Der Warteliste beitreten",
+    "email_placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
+    "thank_you": "Vielen Dank für Ihren Beitritt!",
+    "already_registered": "Sie stehen bereits auf der Warteliste",
+    "invalid_email": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "position_info": "Sie sind #{{position}} auf der Warteliste"
+  },
+  "dashboard": {
+    "welcome": "Willkommen zu Ihrem Dashboard",
+    "recent_content": "Neueste Inhalte",
+    "no_content": "Noch keine Inhalte verfügbar",
+    "setup_required": "Einrichtung erforderlich",
+    "setup_newsletters": "Newsletter einrichten",
+    "setup_youtube": "YouTube einrichten",
+    "setup_inbox": "Posteingang einrichten"
+  },
+  "newsletters": {
+    "title": "Newsletter",
+    "add_newsletter": "Newsletter hinzufügen",
+    "url_placeholder": "Newsletter-URL eingeben",
+    "detect_newsletter": "Newsletter erkennen",
+    "subscribe": "Abonnieren",
+    "unsubscribe": "Abbestellen",
+    "no_newsletters": "Keine Newsletter gefunden",
+    "detection_failed": "Newsletter-Erkennung fehlgeschlagen",
+    "subscription_successful": "Erfolgreich abonniert",
+    "unsubscription_successful": "Erfolgreich abbestellt"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "preferences": "Einstellungen",
+    "account_settings": "Kontoeinstellungen",
+    "notification_settings": "Benachrichtigungseinstellungen",
+    "privacy_settings": "Datenschutzeinstellungen",
+    "language_preference": "Spracheinstellung",
+    "language_help": "Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche",
+    "auto_detect": "Automatisch erkennen",
+    "save_preferences": "Einstellungen speichern",
+    "preferences_saved": "Einstellungen erfolgreich gespeichert"
+  },
+  "inbox": {
+    "title": "Posteingang",
+    "no_messages": "Keine Nachrichten",
+    "mark_as_read": "Als gelesen markieren",
+    "mark_as_unread": "Als ungelesen markieren",
+    "delete_message": "Nachricht löschen",
+    "filter_by": "Filtern nach",
+    "all": "Alle",
+    "unread": "Ungelesen",
+    "read": "Gelesen"
+  },
+  "errors": {
+    "generic": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
+    "network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+    "not_found": "Seite nicht gefunden",
+    "unauthorized": "Sie sind nicht berechtigt, auf diese Seite zuzugreifen",
+    "server_error": "Serverfehler. Bitte versuchen Sie es später erneut.",
+    "validation_error": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut"
+  },
+  "success": {
+    "saved": "Erfolgreich gespeichert",
+    "updated": "Erfolgreich aktualisiert",
+    "deleted": "Erfolgreich gelöscht",
+    "subscribed": "Erfolgreich abonniert",
+    "unsubscribed": "Erfolgreich abbestellt"
+  },
+  "onboarding": {
+    "welcome": "Willkommen bei Sift",
+    "step1_title": "Newsletter einrichten",
+    "step1_description": "Fügen Sie Ihre Lieblings-Newsletter hinzu, um zu beginnen",
+    "step2_title": "Posteingang konfigurieren",
+    "step2_description": "E-Mail-Weiterleitung einrichten, um Ihre Inhalte zu zentralisieren",
+    "step3_title": "YouTube verbinden",
+    "step3_description": "Folgen Sie Ihren Lieblings-Kanälen und Erstellern",
+    "get_started": "Loslegen",
+    "skip_for_now": "Vorerst überspringen",
+    "continue": "Weiter"
+  },
+  "languages": {
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "de": "Deutsch",
+    "pt": "Portugiesisch",
+    "it": "Italienisch",
+    "nl": "Niederländisch",
+    "sv": "Schwedisch",
+    "da": "Dänisch",
+    "no": "Norwegisch"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "add": "Toevoegen",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "close": "Sluiten",
+    "confirm": "Bevestigen",
+    "yes": "Ja",
+    "no": "Nee",
+    "or": "of",
+    "and": "en"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "newsletters": "Nieuwsbrieven",
+    "settings": "Instellingen",
+    "inbox": "Inbox",
+    "logout": "Uitloggen",
+    "login": "Inloggen",
+    "signup": "Registreren"
+  },
+  "auth": {
+    "sign_in_with_google": "Inloggen met Google",
+    "welcome_back": "Welkom terug",
+    "authentication_required": "Authenticatie vereist",
+    "please_sign_in": "Log in om door te gaan",
+    "sign_out": "Uitloggen",
+    "account": "Account"
+  },
+  "waitlist": {
+    "title": "Een rustiger manier om bij te blijven",
+    "subtitle": "Sluit je aan bij de Wachtlijst",
+    "description": "Een nieuwe ruimte voor inhoud die ertoe doet – zonder de ruis.",
+    "join_waitlist": "Sluit je aan bij de Wachtlijst",
+    "email_placeholder": "Voer je e-mailadres in",
+    "thank_you": "Bedankt voor je aanmelding!",
+    "already_registered": "Je staat al op de wachtlijst",
+    "invalid_email": "Voer een geldig e-mailadres in",
+    "position_info": "Je bent #{{position}} op de wachtlijst"
+  },
+  "dashboard": {
+    "welcome": "Welkom bij je dashboard",
+    "recent_content": "Recente Inhoud",
+    "no_content": "Nog geen inhoud beschikbaar",
+    "setup_required": "Installatie vereist",
+    "setup_newsletters": "Nieuwsbrieven instellen",
+    "setup_youtube": "YouTube instellen",
+    "setup_inbox": "Inbox instellen"
+  },
+  "newsletters": {
+    "title": "Nieuwsbrieven",
+    "add_newsletter": "Nieuwsbrief Toevoegen",
+    "url_placeholder": "Voer nieuwsbrief URL in",
+    "detect_newsletter": "Nieuwsbrief Detecteren",
+    "subscribe": "Abonneren",
+    "unsubscribe": "Afmelden",
+    "no_newsletters": "Geen nieuwsbrieven gevonden",
+    "detection_failed": "Nieuwsbrief detectie mislukt",
+    "subscription_successful": "Succesvol geabonneerd",
+    "unsubscription_successful": "Succesvol afgemeld"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "language": "Taal",
+    "preferences": "Voorkeuren",
+    "account_settings": "Accountinstellingen",
+    "notification_settings": "Meldingsinstellingen",
+    "privacy_settings": "Privacy-instellingen",
+    "language_preference": "Taalvoorkeur",
+    "language_help": "Kies je gewenste taal voor de interface",
+    "auto_detect": "Automatisch detecteren",
+    "save_preferences": "Voorkeuren Opslaan",
+    "preferences_saved": "Voorkeuren succesvol opgeslagen"
+  },
+  "inbox": {
+    "title": "Inbox",
+    "no_messages": "Geen berichten",
+    "mark_as_read": "Markeren als gelezen",
+    "mark_as_unread": "Markeren als ongelezen",
+    "delete_message": "Bericht verwijderen",
+    "filter_by": "Filteren op",
+    "all": "Alle",
+    "unread": "Ongelezen",
+    "read": "Gelezen"
+  },
+  "errors": {
+    "generic": "Er is iets misgegaan. Probeer het opnieuw.",
+    "network": "Netwerkfout. Controleer je verbinding.",
+    "not_found": "Pagina niet gevonden",
+    "unauthorized": "Je bent niet geautoriseerd om deze pagina te bekijken",
+    "server_error": "Serverfout. Probeer het later opnieuw.",
+    "validation_error": "Controleer je invoer en probeer het opnieuw"
+  },
+  "success": {
+    "saved": "Succesvol opgeslagen",
+    "updated": "Succesvol bijgewerkt",
+    "deleted": "Succesvol verwijderd",
+    "subscribed": "Succesvol geabonneerd",
+    "unsubscribed": "Succesvol afgemeld"
+  },
+  "onboarding": {
+    "welcome": "Welkom bij Sift",
+    "step1_title": "Stel je nieuwsbrieven in",
+    "step1_description": "Voeg je favoriete nieuwsbrieven toe om te beginnen",
+    "step2_title": "Configureer je inbox",
+    "step2_description": "Stel e-mail doorsturen in om je inhoud te centraliseren",
+    "step3_title": "Verbind YouTube",
+    "step3_description": "Volg je favoriete kanalen en makers",
+    "get_started": "Aan de slag",
+    "skip_for_now": "Nu overslaan",
+    "continue": "Doorgaan"
+  },
+  "languages": {
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "de": "Duits",
+    "pt": "Portugees",
+    "it": "Italiaans",
+    "nl": "Nederlands",
+    "sv": "Zweeds",
+    "da": "Deens",
+    "no": "Noors"
+  }
+}

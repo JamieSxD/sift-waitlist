@@ -31,6 +31,9 @@ const { requireAuth } = require('./middleware/auth');
 const loopsService = require('./services/loopsService');
 const posthogService = require('./services/posthogService');
 
+// Import i18n
+const i18n = require('./utils/i18n');
+
 // For parsing Mailgun webhook form data
 const multer = require('multer');
 const upload = multer();
@@ -65,6 +68,9 @@ app.use(session({
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Initialize i18n middleware
+app.use(i18n.middleware());
 
 // =================
 // AUTH ROUTES
@@ -171,14 +177,31 @@ app.get('/api/auth/status', (req, res) => {
   });
 });
 
+// Get available languages
+app.get('/api/languages', (req, res) => {
+  res.json({
+    success: true,
+    languages: i18n.getSupportedLanguages().map(code => ({
+      code,
+      name: i18n.translate(`languages.${code}`, req.language),
+      nativeName: i18n.translate(`languages.${code}`, code)
+    })),
+    current: req.language
+  });
+});
+
 // Update user settings
 app.post('/api/user/settings', requireAuth, async (req, res) => {
   try {
-    const { name, customInboxPrefix } = req.body;
+    const { name, customInboxPrefix, preferredLanguage } = req.body;
     const updates = {};
 
     if (name) {
       updates.name = name.trim();
+    }
+
+    if (preferredLanguage && i18n.isLanguageSupported(preferredLanguage)) {
+      updates.preferredLanguage = preferredLanguage;
     }
 
     if (customInboxPrefix) {
@@ -2160,6 +2183,14 @@ app.post('/api/newsletters/detect', requireAuth, async (req, res) => {
 
     // Use the newsletter detection service
     const newsletterDetectionService = require('./services/newsletterDetection');
+    
+    // Set user's preferred language for better detection
+    if (req.user && req.user.preferredLanguage) {
+      newsletterDetectionService.setUserLanguage(req.user.preferredLanguage);
+    } else if (req.language) {
+      newsletterDetectionService.setUserLanguage(req.language);
+    }
+    
     const detectionResult = await newsletterDetectionService.detectNewsletter(url);
 
     if (!detectionResult.success) {
@@ -3244,6 +3275,9 @@ async function saveEmail(email) {
 // =================
 
 app.use(express.static('public'));
+
+// Serve translation files
+app.use('/translations', express.static('translations'));
 
 // Serve PostHog config to frontend
 app.get('/api/config/posthog', (req, res) => {

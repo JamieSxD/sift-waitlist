@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "back": "Indietro",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "yes": "Sì",
+    "no": "No",
+    "or": "o",
+    "and": "e"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "newsletters": "Newsletter",
+    "settings": "Impostazioni",
+    "inbox": "Posta in arrivo",
+    "logout": "Disconnetti",
+    "login": "Accedi",
+    "signup": "Registrati"
+  },
+  "auth": {
+    "sign_in_with_google": "Accedi con Google",
+    "welcome_back": "Bentornato",
+    "authentication_required": "Autenticazione richiesta",
+    "please_sign_in": "Effettua l'accesso per continuare",
+    "sign_out": "Disconnetti",
+    "account": "Account"
+  },
+  "waitlist": {
+    "title": "Un modo più tranquillo per tenersi aggiornati",
+    "subtitle": "Unisciti alla Lista d'Attesa",
+    "description": "Un nuovo spazio per i contenuti che contano – senza rumore.",
+    "join_waitlist": "Unisciti alla Lista d'Attesa",
+    "email_placeholder": "Inserisci il tuo indirizzo email",
+    "thank_you": "Grazie per esserti unito!",
+    "already_registered": "Sei già nella lista d'attesa",
+    "invalid_email": "Inserisci un indirizzo email valido",
+    "position_info": "Sei il #{{position}} nella lista d'attesa"
+  },
+  "dashboard": {
+    "welcome": "Benvenuto nella tua dashboard",
+    "recent_content": "Contenuti Recenti",
+    "no_content": "Nessun contenuto ancora disponibile",
+    "setup_required": "Configurazione richiesta",
+    "setup_newsletters": "Configura newsletter",
+    "setup_youtube": "Configura YouTube",
+    "setup_inbox": "Configura posta in arrivo"
+  },
+  "newsletters": {
+    "title": "Newsletter",
+    "add_newsletter": "Aggiungi Newsletter",
+    "url_placeholder": "Inserisci URL della newsletter",
+    "detect_newsletter": "Rileva Newsletter",
+    "subscribe": "Iscriviti",
+    "unsubscribe": "Disiscriviti",
+    "no_newsletters": "Nessuna newsletter trovata",
+    "detection_failed": "Rilevamento newsletter fallito",
+    "subscription_successful": "Iscrizione avvenuta con successo",
+    "unsubscription_successful": "Disiscrizione avvenuta con successo"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": "Lingua",
+    "preferences": "Preferenze",
+    "account_settings": "Impostazioni Account",
+    "notification_settings": "Impostazioni Notifiche",
+    "privacy_settings": "Impostazioni Privacy",
+    "language_preference": "Preferenza Lingua",
+    "language_help": "Scegli la tua lingua preferita per l'interfaccia",
+    "auto_detect": "Rileva automaticamente",
+    "save_preferences": "Salva Preferenze",
+    "preferences_saved": "Preferenze salvate con successo"
+  },
+  "inbox": {
+    "title": "Posta in arrivo",
+    "no_messages": "Nessun messaggio",
+    "mark_as_read": "Segna come letto",
+    "mark_as_unread": "Segna come non letto",
+    "delete_message": "Elimina messaggio",
+    "filter_by": "Filtra per",
+    "all": "Tutti",
+    "unread": "Non letti",
+    "read": "Letti"
+  },
+  "errors": {
+    "generic": "Qualcosa è andato storto. Riprova.",
+    "network": "Errore di rete. Controlla la tua connessione.",
+    "not_found": "Pagina non trovata",
+    "unauthorized": "Non sei autorizzato ad accedere a questa pagina",
+    "server_error": "Errore del server. Riprova più tardi.",
+    "validation_error": "Controlla i tuoi dati e riprova"
+  },
+  "success": {
+    "saved": "Salvato con successo",
+    "updated": "Aggiornato con successo",
+    "deleted": "Eliminato con successo",
+    "subscribed": "Iscrizione avvenuta con successo",
+    "unsubscribed": "Disiscrizione avvenuta con successo"
+  },
+  "onboarding": {
+    "welcome": "Benvenuto in Sift",
+    "step1_title": "Configura le tue newsletter",
+    "step1_description": "Aggiungi le tue newsletter preferite per iniziare",
+    "step2_title": "Configura la tua posta in arrivo",
+    "step2_description": "Configura l'inoltro email per centralizzare i tuoi contenuti",
+    "step3_title": "Connetti YouTube",
+    "step3_description": "Segui i tuoi canali e creatori preferiti",
+    "get_started": "Inizia",
+    "skip_for_now": "Salta per ora",
+    "continue": "Continua"
+  },
+  "languages": {
+    "en": "Inglese",
+    "es": "Spagnolo",
+    "fr": "Francese",
+    "de": "Tedesco",
+    "pt": "Portoghese",
+    "it": "Italiano",
+    "nl": "Olandese",
+    "sv": "Svedese",
+    "da": "Danese",
+    "no": "Norvegese"
+  }
+}

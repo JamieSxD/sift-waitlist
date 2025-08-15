@@ -5,6 +5,9 @@ const url = require('url');
 
 class NewsletterDetectionService {
   constructor() {
+    this.supportedLanguages = ['en', 'es', 'fr', 'de', 'pt', 'it', 'nl', 'sv', 'da', 'no'];
+    this.userLanguage = 'en'; // Default language
+    
     // Common newsletter platforms and their patterns
     this.platformPatterns = {
       substack: {
@@ -45,6 +48,29 @@ class NewsletterDetectionService {
     };
 
     this.timeout = 10000; // 10 seconds
+  }
+
+  setUserLanguage(language) {
+    if (this.supportedLanguages.includes(language)) {
+      this.userLanguage = language;
+    }
+  }
+
+  getAcceptLanguageHeader() {
+    // Generate Accept-Language header based on user's preferred language
+    const langMap = {
+      'en': 'en-US,en;q=0.9',
+      'es': 'es-ES,es;q=0.9,en;q=0.8',
+      'fr': 'fr-FR,fr;q=0.9,en;q=0.8',
+      'de': 'de-DE,de;q=0.9,en;q=0.8',
+      'pt': 'pt-PT,pt;q=0.9,en;q=0.8',
+      'it': 'it-IT,it;q=0.9,en;q=0.8',
+      'nl': 'nl-NL,nl;q=0.9,en;q=0.8',
+      'sv': 'sv-SE,sv;q=0.9,en;q=0.8',
+      'da': 'da-DK,da;q=0.9,en;q=0.8',
+      'no': 'no-NO,no;q=0.9,en;q=0.8'
+    };
+    return langMap[this.userLanguage] || langMap['en'];
   }
 
   async detectNewsletter(inputUrl) {
@@ -113,7 +139,7 @@ class NewsletterDetectionService {
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; SiftBot/1.0; +https://sift.example.com)',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Language': this.getAcceptLanguageHeader(),
           'Accept-Encoding': 'gzip, deflate',
           'Connection': 'keep-alive'
         },

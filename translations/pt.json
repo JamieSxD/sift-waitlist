@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "yes": "Sim",
+    "no": "Não",
+    "or": "ou",
+    "and": "e"
+  },
+  "navigation": {
+    "home": "Início",
+    "dashboard": "Painel",
+    "newsletters": "Newsletters",
+    "settings": "Configurações",
+    "inbox": "Caixa de entrada",
+    "logout": "Sair",
+    "login": "Entrar",
+    "signup": "Cadastrar"
+  },
+  "auth": {
+    "sign_in_with_google": "Entrar com Google",
+    "welcome_back": "Bem-vindo de volta",
+    "authentication_required": "Autenticação necessária",
+    "please_sign_in": "Por favor, faça login para continuar",
+    "sign_out": "Sair",
+    "account": "Conta"
+  },
+  "waitlist": {
+    "title": "Uma forma mais calma de se manter atualizado",
+    "subtitle": "Juntar-se à Lista de Espera",
+    "description": "Um novo espaço para o conteúdo que importa – sem o ruído.",
+    "join_waitlist": "Juntar-se à Lista de Espera",
+    "email_placeholder": "Digite seu endereço de e-mail",
+    "thank_you": "Obrigado por se juntar!",
+    "already_registered": "Você já está na lista de espera",
+    "invalid_email": "Por favor, digite um endereço de e-mail válido",
+    "position_info": "Você é o #{{position}} na lista de espera"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo ao seu painel",
+    "recent_content": "Conteúdo Recente",
+    "no_content": "Ainda não há conteúdo disponível",
+    "setup_required": "Configuração necessária",
+    "setup_newsletters": "Configurar newsletters",
+    "setup_youtube": "Configurar YouTube",
+    "setup_inbox": "Configurar caixa de entrada"
+  },
+  "newsletters": {
+    "title": "Newsletters",
+    "add_newsletter": "Adicionar Newsletter",
+    "url_placeholder": "Digite a URL da newsletter",
+    "detect_newsletter": "Detectar Newsletter",
+    "subscribe": "Inscrever-se",
+    "unsubscribe": "Cancelar inscrição",
+    "no_newsletters": "Nenhuma newsletter encontrada",
+    "detection_failed": "Falha ao detectar newsletter",
+    "subscription_successful": "Inscrição bem-sucedida",
+    "unsubscription_successful": "Cancelamento bem-sucedido"
+  },
+  "settings": {
+    "title": "Configurações",
+    "language": "Idioma",
+    "preferences": "Preferências",
+    "account_settings": "Configurações da Conta",
+    "notification_settings": "Configurações de Notificação",
+    "privacy_settings": "Configurações de Privacidade",
+    "language_preference": "Preferência de Idioma",
+    "language_help": "Escolha seu idioma preferido para a interface",
+    "auto_detect": "Detectar automaticamente",
+    "save_preferences": "Salvar Preferências",
+    "preferences_saved": "Preferências salvas com sucesso"
+  },
+  "inbox": {
+    "title": "Caixa de entrada",
+    "no_messages": "Sem mensagens",
+    "mark_as_read": "Marcar como lida",
+    "mark_as_unread": "Marcar como não lida",
+    "delete_message": "Excluir mensagem",
+    "filter_by": "Filtrar por",
+    "all": "Todas",
+    "unread": "Não lidas",
+    "read": "Lidas"
+  },
+  "errors": {
+    "generic": "Algo deu errado. Por favor, tente novamente.",
+    "network": "Erro de rede. Por favor, verifique sua conexão.",
+    "not_found": "Página não encontrada",
+    "unauthorized": "Você não tem autorização para acessar esta página",
+    "server_error": "Erro do servidor. Por favor, tente novamente mais tarde.",
+    "validation_error": "Por favor, verifique sua entrada e tente novamente"
+  },
+  "success": {
+    "saved": "Salvo com sucesso",
+    "updated": "Atualizado com sucesso",
+    "deleted": "Excluído com sucesso",
+    "subscribed": "Inscrição bem-sucedida",
+    "unsubscribed": "Cancelamento bem-sucedido"
+  },
+  "onboarding": {
+    "welcome": "Bem-vindo ao Sift",
+    "step1_title": "Configure suas newsletters",
+    "step1_description": "Adicione suas newsletters favoritas para começar",
+    "step2_title": "Configure sua caixa de entrada",
+    "step2_description": "Configure o encaminhamento de e-mail para centralizar seu conteúdo",
+    "step3_title": "Conecte o YouTube",
+    "step3_description": "Siga seus canais e criadores favoritos",
+    "get_started": "Começar",
+    "skip_for_now": "Pular por agora",
+    "continue": "Continuar"
+  },
+  "languages": {
+    "en": "Inglês",
+    "es": "Espanhol",
+    "fr": "Francês",
+    "de": "Alemão",
+    "pt": "Português",
+    "it": "Italiano",
+    "nl": "Holandês",
+    "sv": "Sueco",
+    "da": "Dinamarquês",
+    "no": "Norueguês"
+  }
+}

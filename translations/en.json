@@ -1,0 +1,135 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "newsletters": "Newsletters",
+    "settings": "Settings",
+    "inbox": "Inbox",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "auth": {
+    "sign_in_with_google": "Sign in with Google",
+    "welcome_back": "Welcome back",
+    "authentication_required": "Authentication required",
+    "please_sign_in": "Please sign in to continue",
+    "sign_out": "Sign out",
+    "account": "Account"
+  },
+  "waitlist": {
+    "title": "A calmer way to keep up",
+    "subtitle": "Join the Waitlist",
+    "description": "A new space for the content that matters – minus the noise.",
+    "join_waitlist": "Join Waitlist",
+    "email_placeholder": "Enter your email address",
+    "thank_you": "Thank you for joining!",
+    "already_registered": "You're already on the waitlist",
+    "invalid_email": "Please enter a valid email address",
+    "position_info": "You're #{{position}} on the waitlist"
+  },
+  "dashboard": {
+    "welcome": "Welcome to your dashboard",
+    "recent_content": "Recent Content",
+    "no_content": "No content available yet",
+    "setup_required": "Setup required",
+    "setup_newsletters": "Set up newsletters",
+    "setup_youtube": "Set up YouTube",
+    "setup_inbox": "Set up inbox"
+  },
+  "newsletters": {
+    "title": "Newsletters",
+    "add_newsletter": "Add Newsletter",
+    "url_placeholder": "Enter newsletter URL",
+    "detect_newsletter": "Detect Newsletter",
+    "subscribe": "Subscribe",
+    "unsubscribe": "Unsubscribe",
+    "no_newsletters": "No newsletters found",
+    "detection_failed": "Failed to detect newsletter",
+    "subscription_successful": "Successfully subscribed",
+    "unsubscription_successful": "Successfully unsubscribed"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "preferences": "Preferences",
+    "account_settings": "Account Settings",
+    "notification_settings": "Notification Settings",
+    "privacy_settings": "Privacy Settings",
+    "language_preference": "Language Preference",
+    "language_help": "Choose your preferred language for the interface",
+    "auto_detect": "Auto-detect",
+    "save_preferences": "Save Preferences",
+    "preferences_saved": "Preferences saved successfully"
+  },
+  "inbox": {
+    "title": "Inbox",
+    "no_messages": "No messages",
+    "mark_as_read": "Mark as read",
+    "mark_as_unread": "Mark as unread",
+    "delete_message": "Delete message",
+    "filter_by": "Filter by",
+    "all": "All",
+    "unread": "Unread",
+    "read": "Read"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "not_found": "Page not found",
+    "unauthorized": "You are not authorized to access this page",
+    "server_error": "Server error. Please try again later.",
+    "validation_error": "Please check your input and try again"
+  },
+  "success": {
+    "saved": "Successfully saved",
+    "updated": "Successfully updated",
+    "deleted": "Successfully deleted",
+    "subscribed": "Successfully subscribed",
+    "unsubscribed": "Successfully unsubscribed"
+  },
+  "onboarding": {
+    "welcome": "Welcome to Sift",
+    "step1_title": "Set up your newsletters",
+    "step1_description": "Add your favorite newsletters to get started",
+    "step2_title": "Configure your inbox",
+    "step2_description": "Set up email forwarding to centralize your content",
+    "step3_title": "Connect YouTube",
+    "step3_description": "Follow your favorite channels and creators",
+    "get_started": "Get Started",
+    "skip_for_now": "Skip for now",
+    "continue": "Continue"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German",
+    "pt": "Portuguese",
+    "it": "Italian",
+    "nl": "Dutch",
+    "sv": "Swedish",
+    "da": "Danish",
+    "no": "Norwegian"
+  }
+}

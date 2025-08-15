@@ -1,0 +1,134 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "or": "ou",
+    "and": "et"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "newsletters": "Newsletters",
+    "settings": "Paramètres",
+    "inbox": "Boîte de réception",
+    "logout": "Se déconnecter",
+    "login": "Se connecter",
+    "signup": "S'inscrire"
+  },
+  "auth": {
+    "sign_in_with_google": "Se connecter avec Google",
+    "welcome_back": "Bon retour",
+    "authentication_required": "Authentification requise",
+    "please_sign_in": "Veuillez vous connecter pour continuer",
+    "sign_out": "Se déconnecter",
+    "account": "Compte"
+  },
+  "waitlist": {
+    "title": "Une façon plus calme de rester informé",
+    "subtitle": "Rejoindre la Liste d'Attente",
+    "description": "Un nouvel espace pour le contenu qui compte – sans le bruit.",
+    "join_waitlist": "Rejoindre la Liste d'Attente",
+    "email_placeholder": "Entrez votre adresse e-mail",
+    "thank_you": "Merci de nous avoir rejoint !",
+    "already_registered": "Vous êtes déjà sur la liste d'attente",
+    "invalid_email": "Veuillez entrer une adresse e-mail valide",
+    "position_info": "Vous êtes #{{position}} sur la liste d'attente"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur votre tableau de bord",
+    "recent_content": "Contenu Récent",
+    "no_content": "Aucun contenu disponible pour le moment",
+    "setup_required": "Configuration requise",
+    "setup_newsletters": "Configurer les newsletters",
+    "setup_youtube": "Configurer YouTube",
+    "setup_inbox": "Configurer la boîte de réception"
+  },
+  "newsletters": {
+    "title": "Newsletters",
+    "add_newsletter": "Ajouter une Newsletter",
+    "url_placeholder": "Entrez l'URL de la newsletter",
+    "detect_newsletter": "Détecter la Newsletter",
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "no_newsletters": "Aucune newsletter trouvée",
+    "detection_failed": "Échec de la détection de la newsletter",
+    "subscription_successful": "Abonnement réussi",
+    "unsubscription_successful": "Désabonnement réussi"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "preferences": "Préférences",
+    "account_settings": "Paramètres du Compte",
+    "notification_settings": "Paramètres de Notification",
+    "privacy_settings": "Paramètres de Confidentialité",
+    "language_preference": "Préférence de Langue",
+    "auto_detect": "Détection automatique",
+    "save_preferences": "Enregistrer les Préférences",
+    "preferences_saved": "Préférences enregistrées avec succès"
+  },
+  "inbox": {
+    "title": "Boîte de réception",
+    "no_messages": "Aucun message",
+    "mark_as_read": "Marquer comme lu",
+    "mark_as_unread": "Marquer comme non lu",
+    "delete_message": "Supprimer le message",
+    "filter_by": "Filtrer par",
+    "all": "Tous",
+    "unread": "Non lus",
+    "read": "Lus"
+  },
+  "errors": {
+    "generic": "Quelque chose a mal tourné. Veuillez réessayer.",
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "not_found": "Page non trouvée",
+    "unauthorized": "Vous n'êtes pas autorisé à accéder à cette page",
+    "server_error": "Erreur serveur. Veuillez réessayer plus tard.",
+    "validation_error": "Veuillez vérifier votre saisie et réessayer"
+  },
+  "success": {
+    "saved": "Enregistré avec succès",
+    "updated": "Mis à jour avec succès",
+    "deleted": "Supprimé avec succès",
+    "subscribed": "Abonnement réussi",
+    "unsubscribed": "Désabonnement réussi"
+  },
+  "onboarding": {
+    "welcome": "Bienvenue sur Sift",
+    "step1_title": "Configurez vos newsletters",
+    "step1_description": "Ajoutez vos newsletters préférées pour commencer",
+    "step2_title": "Configurez votre boîte de réception",
+    "step2_description": "Configurez le transfert d'e-mails pour centraliser votre contenu",
+    "step3_title": "Connectez YouTube",
+    "step3_description": "Suivez vos chaînes et créateurs préférés",
+    "get_started": "Commencer",
+    "skip_for_now": "Ignorer pour l'instant",
+    "continue": "Continuer"
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français",
+    "de": "Allemand",
+    "pt": "Portugais",
+    "it": "Italien",
+    "nl": "Néerlandais",
+    "sv": "Suédois",
+    "da": "Danois",
+    "no": "Norvégien"
+  }
+}

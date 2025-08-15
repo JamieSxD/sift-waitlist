@@ -8,6 +8,7 @@
     "build": "echo 'No build step required'",
     "dev": "nodemon server.js",
     "db:migrate": "node scripts/migrate.js",
+    "db:add-language": "node scripts/add-language-preference.js",
     "seed:newsletters": "node scripts/seed-newsletters.js"
   },
   "dependencies": {

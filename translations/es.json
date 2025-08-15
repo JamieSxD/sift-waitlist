@@ -1,0 +1,134 @@
+{
+  "common": {
+    "app_name": "Sift",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "or": "o",
+    "and": "y"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "newsletters": "Boletines",
+    "settings": "Configuración",
+    "inbox": "Bandeja de entrada",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse"
+  },
+  "auth": {
+    "sign_in_with_google": "Iniciar sesión con Google",
+    "welcome_back": "Bienvenido de nuevo",
+    "authentication_required": "Autenticación requerida",
+    "please_sign_in": "Por favor inicia sesión para continuar",
+    "sign_out": "Cerrar sesión",
+    "account": "Cuenta"
+  },
+  "waitlist": {
+    "title": "Una forma más tranquila de mantenerse al día",
+    "subtitle": "Únete a la Lista de Espera",
+    "description": "Un nuevo espacio para el contenido que importa, sin el ruido.",
+    "join_waitlist": "Unirse a la Lista de Espera",
+    "email_placeholder": "Ingresa tu dirección de correo electrónico",
+    "thank_you": "¡Gracias por unirte!",
+    "already_registered": "Ya estás en la lista de espera",
+    "invalid_email": "Por favor ingresa una dirección de correo válida",
+    "position_info": "Eres el #{{position}} en la lista de espera"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a tu panel",
+    "recent_content": "Contenido Reciente",
+    "no_content": "Aún no hay contenido disponible",
+    "setup_required": "Configuración requerida",
+    "setup_newsletters": "Configurar boletines",
+    "setup_youtube": "Configurar YouTube",
+    "setup_inbox": "Configurar bandeja de entrada"
+  },
+  "newsletters": {
+    "title": "Boletines",
+    "add_newsletter": "Agregar Boletín",
+    "url_placeholder": "Ingresa la URL del boletín",
+    "detect_newsletter": "Detectar Boletín",
+    "subscribe": "Suscribirse",
+    "unsubscribe": "Cancelar suscripción",
+    "no_newsletters": "No se encontraron boletines",
+    "detection_failed": "Error al detectar boletín",
+    "subscription_successful": "Suscripción exitosa",
+    "unsubscription_successful": "Cancelación exitosa"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "preferences": "Preferencias",
+    "account_settings": "Configuración de Cuenta",
+    "notification_settings": "Configuración de Notificaciones",
+    "privacy_settings": "Configuración de Privacidad",
+    "language_preference": "Preferencia de Idioma",
+    "auto_detect": "Detectar automáticamente",
+    "save_preferences": "Guardar Preferencias",
+    "preferences_saved": "Preferencias guardadas exitosamente"
+  },
+  "inbox": {
+    "title": "Bandeja de entrada",
+    "no_messages": "Sin mensajes",
+    "mark_as_read": "Marcar como leído",
+    "mark_as_unread": "Marcar como no leído",
+    "delete_message": "Eliminar mensaje",
+    "filter_by": "Filtrar por",
+    "all": "Todos",
+    "unread": "No leídos",
+    "read": "Leídos"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intenta de nuevo.",
+    "network": "Error de red. Por favor verifica tu conexión.",
+    "not_found": "Página no encontrada",
+    "unauthorized": "No tienes autorización para acceder a esta página",
+    "server_error": "Error del servidor. Por favor intenta más tarde.",
+    "validation_error": "Por favor verifica tu entrada e intenta de nuevo"
+  },
+  "success": {
+    "saved": "Guardado exitosamente",
+    "updated": "Actualizado exitosamente",
+    "deleted": "Eliminado exitosamente",
+    "subscribed": "Suscripción exitosa",
+    "unsubscribed": "Cancelación exitosa"
+  },
+  "onboarding": {
+    "welcome": "Bienvenido a Sift",
+    "step1_title": "Configura tus boletines",
+    "step1_description": "Agrega tus boletines favoritos para comenzar",
+    "step2_title": "Configura tu bandeja de entrada",
+    "step2_description": "Configura el reenvío de correos para centralizar tu contenido",
+    "step3_title": "Conecta YouTube",
+    "step3_description": "Sigue tus canales y creadores favoritos",
+    "get_started": "Comenzar",
+    "skip_for_now": "Omitir por ahora",
+    "continue": "Continuar"
+  },
+  "languages": {
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "de": "Alemán",
+    "pt": "Portugués",
+    "it": "Italiano",
+    "nl": "Holandés",
+    "sv": "Sueco",
+    "da": "Danés",
+    "no": "Noruego"
+  }
+}

@@ -181,6 +181,21 @@
             </form>
         </div>
 
+        <!-- Language Settings -->
+        <div class="settings-section">
+            <h2 class="section-title" data-i18n="settings.language_preference">Language Preference</h2>
+            <form id="language-form">
+                <div class="form-group">
+                    <label class="form-label" for="language" data-i18n="settings.language">Language</label>
+                    <select id="language" name="preferredLanguage" class="form-input">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <div class="form-help" data-i18n="settings.language_help">Choose your preferred language for the interface</div>
+                </div>
+                <button type="submit" class="btn-primary" data-i18n="settings.save_preferences">Save Preferences</button>
+            </form>
+        </div>
+
         <!-- Inbox Settings -->
         <div class="settings-section">
             <h2 class="section-title">Inbox Settings</h2>
@@ -373,6 +388,66 @@
             } catch (error) { console.warn('Failed to initialize PostHog:', error); }
         }
         document.addEventListener('DOMContentLoaded', initPostHog);
+
+        // Language form handler
+        document.getElementById('language-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const preferredLanguage = formData.get('preferredLanguage');
+
+            try {
+                form.classList.add('loading');
+                
+                const response = await fetch('/api/user/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ preferredLanguage })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toastManager.show('Language preference updated successfully', 'success');
+                    // Change language immediately
+                    if (window.i18n) {
+                        await window.i18n.changeLanguage(preferredLanguage);
+                    }
+                } else {
+                    toastManager.show(data.message || 'Failed to update language preference', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating language preference:', error);
+                toastManager.show('Failed to update language preference', 'error');
+            } finally {
+                form.classList.remove('loading');
+            }
+        });
+
+        // Initialize language selector when i18n is ready
+        window.addEventListener('i18nInitialized', async () => {
+            const response = await fetch('/api/languages');
+            const data = await response.json();
+            
+            if (data.success) {
+                const select = document.getElementById('language');
+                select.innerHTML = '';
+                
+                data.languages.forEach(lang => {
+                    const option = document.createElement('option');
+                    option.value = lang.code;
+                    option.textContent = `${lang.nativeName} (${lang.name})`;
+                    if (lang.code === data.current) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            }
+        });
     </script>
+    <script src="/i18n-client.js"></script>
 </body>
 </html>

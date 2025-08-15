@@ -30,6 +30,14 @@ const User = sequelize.define('User', {
     allowNull: true,
     unique: true,
   },
+  preferredLanguage: {
+    type: DataTypes.STRING(5),
+    allowNull: true,
+    defaultValue: 'en',
+    validate: {
+      isIn: [['en', 'es', 'fr', 'de', 'pt', 'it', 'nl', 'sv', 'da', 'no']]
+    }
+  },
 });
 
 module.exports = User;

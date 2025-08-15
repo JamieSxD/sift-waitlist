@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Intentional Internet Manifesto - Sift</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Join the movement toward mindful technology use. Break free from endless scrolling and reclaim your digital attention.">
+    <meta name="keywords" content="intentional internet, mindful technology, digital minimalism, attention economy, mindful consumption">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="The Intentional Internet Manifesto - Sift">
+    <meta property="og:description" content="Join the movement toward mindful technology use. Break free from endless scrolling and reclaim your digital attention.">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Intentional Internet Manifesto - Sift">
+    <meta name="twitter:description" content="Join the movement toward mindful technology use.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+    <style>
+        :root {
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #6b7280;
+            --accent: #6C7BFF;
+            --background: #fefefe;
+            --section-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .manifesto-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .manifesto-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .manifesto-title {
+            font-size: 56px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .manifesto-subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .manifesto-date {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .manifesto-content {
+            font-size: 20px;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .manifesto-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            font-family: 'Inter', sans-serif;
+            border-left: 4px solid var(--accent);
+            padding-left: 24px;
+        }
+
+        .section-content p {
+            margin-bottom: 28px;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, var(--accent) 0%, var(--accent) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.3em;
+            background-position: 0 88%;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .quote-section {
+            background: var(--section-bg);
+            border-radius: 16px;
+            padding: 48px;
+            margin: 60px 0;
+            border-left: 6px solid var(--accent);
+            position: relative;
+        }
+
+        .quote-text {
+            font-size: 28px;
+            font-style: italic;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+
+        .quote-author {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin: 48px 0;
+        }
+
+        .principle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(108, 123, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .principle-number {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .principle-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .principle-description {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .call-to-action {
+            background: linear-gradient(135deg, var(--accent), #8B5DFF);
+            border-radius: 20px;
+            padding: 60px 48px;
+            text-align: center;
+            margin: 80px 0 60px 0;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cta-subtitle {
+            font-size: 20px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--accent);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            margin: 0 8px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background: white;
+            color: var(--accent);
+        }
+
+        .stats-section {
+            background: var(--section-bg);
+            border-radius: 16px;
+            padding: 48px;
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navigation */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .nav-logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        /* Offset for fixed header */
+        #problem, #principles, #movement, #join {
+            scroll-margin-top: 100px;
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            background: #5a6bef;
+            transform: translateY(-1px);
+        }
+
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .manifesto-container {
+                padding: 60px 16px;
+            }
+
+            .manifesto-title {
+                font-size: 40px;
+            }
+
+            .manifesto-subtitle {
+                font-size: 20px;
+            }
+
+            .manifesto-content {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .quote-section {
+                padding: 32px 24px;
+            }
+
+            .quote-text {
+                font-size: 24px;
+            }
+
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .call-to-action {
+                padding: 40px 24px;
+            }
+
+            .cta-title {
+                font-size: 28px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .manifesto-container {
+                margin-top: 80px;
+            }
+
+            .cta-button {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">🌱</div>
+                <div class="nav-logo-text">Sift</div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="#problem" class="nav-link">The Problem</a>
+                <a href="#principles" class="nav-link">Principles</a>
+                <a href="#movement" class="nav-link">Movement</a>
+                <a href="#join" class="nav-cta">Join</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="manifesto-container">
+        <!-- Header -->
+        <div class="manifesto-header">
+            <h1 class="manifesto-title">The Intentional Internet</h1>
+            <p class="manifesto-subtitle">A manifesto for mindful technology use in an age of infinite distraction</p>
+            <div class="manifesto-date">Published January 2025</div>
+        </div>
+
+        <!-- Opening -->
+        <div class="manifesto-content">
+            <div class="manifesto-section">
+                <p>We live in an age of <span class="highlight">infinite scroll</span>. Every morning, millions of us reach for our phones before our feet touch the floor. We swim in an ocean of notifications, recommendations, and "content" designed not to inform, but to capture.</p>
+                
+                <p>The internet promised to democratize information. Instead, we've built an attention economy that <span class="highlight">commodifies our focus</span> and fragments our ability to think deeply.</p>
+                
+                <p>But it doesn't have to be this way.</p>
+            </div>
+
+            <!-- Problem Section -->
+            <div class="manifesto-section" id="problem">
+                <h2 class="section-title">The Problem</h2>
+                <div class="section-content">
+                    <p>We check our phones 96 times per day. We consume 34 GB of information daily—enough to crash a laptop from the 1990s. We follow hundreds of newsletters, YouTube channels, and social accounts, yet feel less informed than ever.</p>
+                    
+                    <p>The platforms we use aren't neutral tools. They're <span class="highlight">engagement machines</span> designed to maximize time-on-site, not value-to-user. They fragment our attention, scatter our interests, and leave us feeling simultaneously overstimulated and unfulfilled.</p>
+                    
+                    <p>We've forgotten what it feels like to consume content with intention—to choose what deserves our attention instead of letting algorithms choose for us.</p>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-family: 'Inter', sans-serif;">The Cost of Distraction</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 0;">How the attention economy is reshaping our minds</p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">23</div>
+                        <div class="stat-label">minutes to refocus after interruption</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">11</div>
+                        <div class="stat-label">seconds average attention span</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2.5</div>
+                        <div class="stat-label">hours daily on social media</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">40%</div>
+                        <div class="stat-label">decrease in deep work ability</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vision Section -->
+            <div class="manifesto-section">
+                <h2 class="section-title">A Different Way</h2>
+                <div class="section-content">
+                    <p>Imagine an internet that serves you, not the other way around. Where your curiosity drives discovery, not an algorithm's hunger for engagement. Where content comes to you because you chose it, not because it chose you.</p>
+                    
+                    <p>This is the <span class="highlight">Intentional Internet</span>—a way of engaging with digital information that prioritizes quality over quantity, depth over breadth, and meaning over mere stimulation.</p>
+                    
+                    <p>It's not about consuming less; it's about consuming deliberately. It's about creating space between you and the noise, so the signal can finally get through.</p>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="quote-section">
+                <div class="quote-text">"The art of being wise is knowing what to overlook."</div>
+                <div class="quote-author">— William James</div>
+            </div>
+
+            <!-- Principles -->
+            <div class="manifesto-section" id="principles">
+                <h2 class="section-title">The Principles</h2>
+                
+                <div class="principles-grid">
+                    <div class="principle-card">
+                        <div class="principle-number">1</div>
+                        <h3 class="principle-title">Intention Over Algorithm</h3>
+                        <p class="principle-description">You decide what deserves your attention. No recommendation engine knows better than you what will serve your goals, interests, and growth.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-number">2</div>
+                        <h3 class="principle-title">Signal Over Noise</h3>
+                        <p class="principle-description">Quality trumps quantity. One piece of meaningful content is worth more than a hundred pieces of digital junk food.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-number">3</div>
+                        <h3 class="principle-title">Context Over Fragments</h3>
+                        <p class="principle-description">Information without context is just noise. Seek understanding, not just updates. Depth over speed.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-number">4</div>
+                        <h3 class="principle-title">Calm Over Chaos</h3>
+                        <p class="principle-description">Your digital environment should create peace, not anxiety. Design your information diet to nourish, not overwhelm.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-number">5</div>
+                        <h3 class="principle-title">Purpose Over Habit</h3>
+                        <p class="principle-description">Every piece of content you consume should serve a purpose. Break the cycle of mindless scrolling and reactive consumption.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-number">6</div>
+                        <h3 class="principle-title">Time Over Attention</h3>
+                        <p class="principle-description">Respect your finite attention as your most valuable resource. Spend it consciously, not carelessly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movement Section -->
+            <div class="manifesto-section" id="movement">
+                <h2 class="section-title">The Movement</h2>
+                <div class="section-content">
+                    <p>The Intentional Internet isn't just a philosophy—it's a practice. It's the teacher who curates their learning instead of drowning in every education blog. It's the entrepreneur who follows five quality sources instead of fifty mediocre ones. It's the parent who models thoughtful consumption for their children.</p>
+                    
+                    <p>It's people who understand that <span class="highlight">less can be more</span>, that curation is an act of self-respect, and that our attention is too precious to give away for free.</p>
+                    
+                    <p>We believe technology should amplify human potential, not diminish it. We believe in tools that serve our intentions, not platforms that harvest our distraction.</p>
+                    
+                    <p>This is our declaration of independence from the attention economy. This is our commitment to digital minimalism with purpose.</p>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="call-to-action" id="join">
+                <h2 class="cta-title">Join the Movement</h2>
+                <p class="cta-subtitle">Take back control of your digital attention. Start practicing intentional consumption today.</p>
+                <a href="/auth/google" class="cta-button">Try Sift Free</a>
+                <a href="/pricing" class="cta-button secondary">See Pricing</a>
+            </div>
+
+
+            <!-- Closing -->
+            <div class="manifesto-section">
+                <div class="section-content">
+                    <p style="text-align: center; font-style: italic; font-size: 22px; color: var(--text-secondary);">The internet is what we make it. Let's make it intentional.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">🌱</div>
+                    <p class="footer-tagline">A calmer way to keep up</p>
+                </div>
+                
+                <div class="footer-nav">
+                    <h4 class="footer-heading">Navigate</h4>
+                    <div class="footer-links">
+                        <a href="/" class="footer-link">Home</a>
+                        <a href="/manifesto.html" class="footer-link">Manifesto</a>
+                        <a href="/pricing.html" class="footer-link">Pricing</a>
+                        <a href="/blog.html" class="footer-link">Blog</a>
+                    </div>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="footer-heading">Stay Updated</h4>
+                    <p class="newsletter-description">Get updates on our progress toward a calmer internet</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSignup(event)">
+                        <div class="newsletter-input-group">
+                            <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                            <button type="submit" class="newsletter-btn">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 A calmer way to keep up. Building something peaceful.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize PostHog
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, { api_host: config.host });
+                    posthog.capture('$pageview', { page: 'manifesto' });
+                }
+            } catch (error) { console.warn('Failed to initialize PostHog:', error); }
+        }
+        document.addEventListener('DOMContentLoaded', initPostHog);
+
+        // Track reading progress
+        let maxScroll = 0;
+        window.addEventListener('scroll', () => {
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            if (scrollPercent > maxScroll) {
+                maxScroll = scrollPercent;
+                
+                // Track reading milestones
+                if (typeof posthog !== 'undefined') {
+                    if (maxScroll >= 25 && !window.tracked25) {
+                        posthog.capture('manifesto_read_25');
+                        window.tracked25 = true;
+                    }
+                    if (maxScroll >= 50 && !window.tracked50) {
+                        posthog.capture('manifesto_read_50');
+                        window.tracked50 = true;
+                    }
+                    if (maxScroll >= 75 && !window.tracked75) {
+                        posthog.capture('manifesto_read_75');
+                        window.tracked75 = true;
+                    }
+                    if (maxScroll >= 90 && !window.tracked90) {
+                        posthog.capture('manifesto_read_complete');
+                        window.tracked90 = true;
+                    }
+                }
+            }
+        });
+
+        // Track CTA clicks
+        document.querySelectorAll('.cta-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('manifesto_cta_clicked', { 
+                        button_text: this.textContent,
+                        button_type: this.classList.contains('secondary') ? 'secondary' : 'primary'
+                    });
+                }
+            });
+        });
+
+
+        // Track time spent on page
+        let startTime = Date.now();
+        window.addEventListener('beforeunload', () => {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            if (typeof posthog !== 'undefined' && timeSpent > 10) {
+                posthog.capture('manifesto_time_spent', { seconds: timeSpent });
+            }
+        });
+
+        // Navigation highlighting based on scroll position
+        function updateActiveNavLink() {
+            const sections = ['problem', 'principles', 'movement', 'join'];
+            const scrollPos = window.scrollY + 150; // Offset for header
+            
+            let currentSection = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section && scrollPos >= section.offsetTop) {
+                    currentSection = sectionId;
+                }
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNavLink);
+        document.addEventListener('DOMContentLoaded', updateActiveNavLink);
+        
+        function handleNewsletterSignup(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('.newsletter-input').value;
+            
+            // Track newsletter signup
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('newsletter_signup', {
+                    page: 'manifesto',
+                    email: email
+                });
+            }
+            
+            // You can integrate with your email service here
+            console.log('Newsletter signup:', email);
+            
+            // Show success message
+            alert('Thank you for subscribing! We\'ll keep you updated on our progress.');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Sift</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Simple, transparent pricing for Sift. Start free and upgrade as you grow. No hidden fees, cancel anytime.">
+    <meta name="keywords" content="sift pricing, newsletter management pricing, content aggregation cost">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Pricing - Sift">
+    <meta property="og:description" content="Simple, transparent pricing for Sift. Start free and upgrade as you grow.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+    <style>
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .pricing-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .pricing-subtitle {
+            font-size: 20px;
+            color: #71717A;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .billing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .toggle-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #F8F9FA;
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .toggle-option {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #71717A;
+        }
+
+        .toggle-option.active {
+            background: #1E1E1E;
+            color: white;
+        }
+
+        .save-badge {
+            background: #22C55E;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-bottom: 100px;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: #6C7BFF;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            border-color: #6C7BFF;
+            box-shadow: 0 20px 60px rgba(108, 123, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6C7BFF, #8B5DFF);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 8px;
+        }
+
+        .plan-description {
+            color: #71717A;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .price-container {
+            margin-bottom: 32px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1E1E1E;
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 16px;
+            color: #71717A;
+            margin-left: 4px;
+        }
+
+        .price-note {
+            font-size: 14px;
+            color: #71717A;
+            margin-top: 4px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 32px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #22C55E;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .feature-icon.limited {
+            background: #F59E0B;
+        }
+
+        .feature-icon.unavailable {
+            background: #E5E7EB;
+            color: #9CA3AF;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 16px 24px;
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+
+        .cta-button.secondary {
+            background: white;
+            color: #1E1E1E;
+            border: 2px solid #E5E7EB;
+        }
+
+        .cta-button.secondary:hover {
+            border-color: #6C7BFF;
+            color: #6C7BFF;
+        }
+
+        .cta-button.featured {
+            background: linear-gradient(135deg, #6C7BFF, #8B5DFF);
+        }
+
+        .cta-button.featured:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(108, 123, 255, 0.3);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-top: 100px;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .faq-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+        }
+
+        .faq-subtitle {
+            font-size: 18px;
+            color: #71717A;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #6C7BFF;
+        }
+
+        .faq-question {
+            padding: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 0;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .faq-toggle {
+            font-size: 20px;
+            color: #71717A;
+            transition: transform 0.2s ease;
+        }
+
+        .faq-item.open .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 24px 24px 24px;
+            color: #4B5563;
+            line-height: 1.7;
+            display: none;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        /* Navigation */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E5E7EB;
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #1E1E1E;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #6C7BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .nav-logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            color: #71717A;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #1E1E1E;
+        }
+
+        .nav-cta {
+            background: #1E1E1E;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            background: #374151;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .pricing-container {
+                padding: 60px 16px;
+            }
+
+            .pricing-title {
+                font-size: 36px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-container {
+                margin-top: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">🌱</div>
+                <div class="nav-logo-text">Sift</div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/manifesto" class="nav-link">Manifesto</a>
+                <a href="/auth/google" class="nav-cta">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pricing-container">
+        <!-- Header -->
+        <div class="pricing-header">
+            <h1 class="pricing-title">Simple, transparent pricing</h1>
+            <p class="pricing-subtitle">Start free and upgrade as you grow. No hidden fees, cancel anytime.</p>
+            
+            <!-- Billing Toggle -->
+            <div class="billing-toggle">
+                <div class="toggle-container">
+                    <div class="toggle-option active" onclick="toggleBilling('monthly')">Monthly</div>
+                    <div class="toggle-option" onclick="toggleBilling('yearly')">Yearly</div>
+                </div>
+                <div class="save-badge">Save 20%</div>
+            </div>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-description">Perfect for trying out Sift and light usage</div>
+                
+                <div class="price-container">
+                    <div class="price">$0<span class="price-period">/month</span></div>
+                    <div class="price-note">Forever free</div>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Up to 5 newsletter sources</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Up to 3 YouTube channels</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Basic content extraction</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>7-day content history</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon unavailable">✗</div>
+                        <div>Advanced filtering</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon unavailable">✗</div>
+                        <div>Content search</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon unavailable">✗</div>
+                        <div>Export features</div>
+                    </li>
+                </ul>
+
+                <a href="/auth/google" class="cta-button secondary">Start Free</a>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">Most Popular</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-description">For power users who want the full Sift experience</div>
+                
+                <div class="price-container">
+                    <div class="price" data-monthly="$8" data-yearly="$6">$8<span class="price-period">/month</span></div>
+                    <div class="price-note" data-monthly="Billed monthly" data-yearly="$72 billed yearly">Billed monthly</div>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Unlimited newsletter sources</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Unlimited YouTube channels</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Advanced content extraction</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Unlimited content history</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Advanced filtering & categorization</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Full-text search</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Export to PDF, Markdown, Notion</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Priority support</div>
+                    </li>
+                </ul>
+
+                <a href="/auth/google" class="cta-button featured">Start Pro Trial</a>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-description">For teams and organizations with custom needs</div>
+                
+                <div class="price-container">
+                    <div class="price">Custom</div>
+                    <div class="price-note">Contact us for pricing</div>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Everything in Pro</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Team collaboration features</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Advanced admin controls</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Custom integrations</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>SSO & advanced security</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>Dedicated account manager</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div>SLA guarantee</div>
+                    </li>
+                </ul>
+
+                <a href="mailto:hello@siftly.space?subject=Enterprise%20Inquiry" class="cta-button secondary">Contact Sales</a>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <div class="faq-header">
+                <h2 class="faq-title">Frequently Asked Questions</h2>
+                <p class="faq-subtitle">Everything you need to know about Sift pricing and features</p>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Can I change plans later?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate the billing accordingly. If you downgrade, you'll keep your current features until the next billing cycle.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What happens when I cancel?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        You can cancel anytime with no penalties. Your account will remain active until the end of your current billing period, and you can export all your data. After cancellation, you'll be moved to the free plan with access to recent content.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Do you offer refunds?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        We offer a 30-day money-back guarantee. If you're not satisfied with Sift Pro within the first 30 days, contact us for a full refund. We also provide a 7-day free trial so you can test everything before committing.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How does the free trial work?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        The Pro trial gives you full access to all Pro features for 7 days. No credit card required to start. You can cancel anytime during the trial. If you don't cancel, you'll be automatically enrolled in the Pro plan.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What payment methods do you accept?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. Enterprise customers can also pay via invoice with NET 30 terms.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Is my data secure?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Absolutely. We use enterprise-grade security including AES-256 encryption, secure data centers, and regular security audits. We never sell your data or use it for advertising. You own your content and can export it anytime.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Do you offer student discounts?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! Students with a valid .edu email address get 50% off the Pro plan. Contact us with your student email to get set up with the discount.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Can I use Sift for my team?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Currently, Sift is designed for individual use. However, we're working on team features for sharing and collaboration. Enterprise customers can discuss custom team solutions with our sales team.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">🌱</div>
+                    <p class="footer-tagline">A calmer way to keep up</p>
+                </div>
+                
+                <div class="footer-nav">
+                    <h4 class="footer-heading">Navigate</h4>
+                    <div class="footer-links">
+                        <a href="/" class="footer-link">Home</a>
+                        <a href="/manifesto.html" class="footer-link">Manifesto</a>
+                        <a href="/pricing.html" class="footer-link">Pricing</a>
+                        <a href="/blog.html" class="footer-link">Blog</a>
+                    </div>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="footer-heading">Stay Updated</h4>
+                    <p class="newsletter-description">Get updates on our progress toward a calmer internet</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSignup(event)">
+                        <div class="newsletter-input-group">
+                            <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                            <button type="submit" class="newsletter-btn">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 A calmer way to keep up. Building something peaceful.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize PostHog
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, { api_host: config.host });
+                    posthog.capture('$pageview', { page: 'pricing' });
+                }
+            } catch (error) { console.warn('Failed to initialize PostHog:', error); }
+        }
+        document.addEventListener('DOMContentLoaded', initPostHog);
+
+        // Billing toggle
+        function toggleBilling(period) {
+            const toggles = document.querySelectorAll('.toggle-option');
+            const prices = document.querySelectorAll('[data-monthly]');
+            
+            toggles.forEach(toggle => {
+                toggle.classList.remove('active');
+                if (toggle.textContent.toLowerCase().includes(period)) {
+                    toggle.classList.add('active');
+                }
+            });
+
+            prices.forEach(priceEl => {
+                const monthlyPrice = priceEl.getAttribute('data-monthly');
+                const yearlyPrice = priceEl.getAttribute('data-yearly');
+                
+                if (period === 'yearly' && yearlyPrice) {
+                    priceEl.textContent = yearlyPrice;
+                } else if (monthlyPrice) {
+                    priceEl.textContent = monthlyPrice;
+                }
+            });
+
+            // Update price notes
+            const priceNotes = document.querySelectorAll('[data-monthly]');
+            priceNotes.forEach(note => {
+                if (note.classList.contains('price-note')) {
+                    const monthlyNote = note.getAttribute('data-monthly');
+                    const yearlyNote = note.getAttribute('data-yearly');
+                    
+                    if (period === 'yearly' && yearlyNote) {
+                        note.textContent = yearlyNote;
+                    } else if (monthlyNote) {
+                        note.textContent = monthlyNote;
+                    }
+                }
+            });
+
+            // Track billing toggle
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('pricing_billing_toggled', { period });
+            }
+        }
+
+        // FAQ toggle
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const isOpen = faqItem.classList.contains('open');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('open');
+            });
+            
+            // Toggle current FAQ
+            if (!isOpen) {
+                faqItem.classList.add('open');
+                
+                // Track FAQ interaction
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('faq_question_opened', {
+                        question: button.textContent.replace('+', '').trim()
+                    });
+                }
+            }
+        }
+
+        // Track CTA clicks
+        document.querySelectorAll('.cta-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (typeof posthog !== 'undefined') {
+                    const plan = this.closest('.pricing-card').querySelector('.plan-name').textContent;
+                    posthog.capture('pricing_cta_clicked', { 
+                        plan: plan.toLowerCase(),
+                        button_text: this.textContent
+                    });
+                }
+            });
+        });
+        
+        function handleNewsletterSignup(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('.newsletter-input').value;
+            
+            // Track newsletter signup
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('newsletter_signup', {
+                    page: 'pricing',
+                    email: email
+                });
+            }
+            
+            // You can integrate with your email service here
+            console.log('Newsletter signup:', email);
+            
+            // Show success message
+            alert('Thank you for subscribing! We\'ll keep you updated on our progress.');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>

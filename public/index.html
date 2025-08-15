@@ -90,6 +90,43 @@
         </section>
     </main>
     
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">🌱</div>
+                    <p class="footer-tagline">A calmer way to keep up</p>
+                </div>
+                
+                <div class="footer-nav">
+                    <h4 class="footer-heading">Navigate</h4>
+                    <div class="footer-links">
+                        <a href="/" class="footer-link">Home</a>
+                        <a href="/manifesto.html" class="footer-link">Manifesto</a>
+                        <a href="/pricing.html" class="footer-link">Pricing</a>
+                        <a href="/blog.html" class="footer-link">Blog</a>
+                    </div>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="footer-heading">Stay Updated</h4>
+                    <p class="newsletter-description">Get updates on our progress toward a calmer internet</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSignup(event)">
+                        <div class="newsletter-input-group">
+                            <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                            <button type="submit" class="newsletter-btn">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 A calmer way to keep up. Building something peaceful.</p>
+            </div>
+        </div>
+    </footer>
+    
     <script src="script.js"></script>
     <script>
         // Initialize PostHog with config from server
@@ -151,6 +188,26 @@
             posthog.capture('$pageview', {
                 page: 'landing'
             });
+        }
+        
+        function handleNewsletterSignup(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('.newsletter-input').value;
+            
+            // Track newsletter signup
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('newsletter_signup', {
+                    page: 'landing',
+                    email: email
+                });
+            }
+            
+            // You can integrate with your email service here
+            console.log('Newsletter signup:', email);
+            
+            // Show success message
+            alert('Thank you for subscribing! We\'ll keep you updated on our progress.');
+            event.target.reset();
         }
     </script>
 </body>

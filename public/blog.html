@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - A calmer way to keep up</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Insights and updates on building a calmer way to manage your digital content. Thoughts on intentional consumption and peaceful technology.">
+    <meta name="keywords" content="blog, content management, digital organization, productivity, peaceful technology">
+    <meta name="author" content="Content Management App">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Blog - A calmer way to keep up">
+    <meta property="og:description" content="Insights and updates on building a calmer way to manage your digital content.">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog - A calmer way to keep up">
+    <meta name="twitter:description" content="Insights and updates on building a calmer way to manage your digital content.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+</head>
+<body>
+    <!-- Reading Progress Bar -->
+    <div class="progress-bar" id="progress-bar"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Navigation -->
+    <nav class="blog-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="nav-logo">🌱</a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/manifesto.html" class="nav-link">Manifesto</a>
+                    <a href="/pricing.html" class="nav-link">Pricing</a>
+                    <a href="/blog.html" class="nav-link active">Blog</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <!-- Blog Header -->
+        <section class="blog-header">
+            <div class="container">
+                <div class="blog-header-content">
+                    <h1 class="blog-title">Thoughts on calmer content.</h1>
+                    <p class="blog-subtitle">Updates, insights, and ideas about building a more intentional way to consume digital content.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Blog Posts -->
+        <section class="blog-posts">
+            <div class="container">
+                <div class="posts-grid">
+                    
+                    <!-- Sample Blog Post 1 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">August 15, 2025</time>
+                            <span class="post-category">Product</span>
+                        </div>
+                        <h2 class="post-title">Building for intention, not addiction</h2>
+                        <p class="post-excerpt">How we're designing features that respect your time and attention, creating tools that help you engage with content purposefully rather than compulsively.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                    <!-- Sample Blog Post 2 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">August 10, 2025</time>
+                            <span class="post-category">Philosophy</span>
+                        </div>
+                        <h2 class="post-title">The cost of constant connectivity</h2>
+                        <p class="post-excerpt">Exploring the hidden mental load of managing multiple content streams and how consolidation can reduce decision fatigue in our digital lives.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                    <!-- Sample Blog Post 3 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">August 5, 2025</time>
+                            <span class="post-category">Updates</span>
+                        </div>
+                        <h2 class="post-title">Early access preview: What to expect</h2>
+                        <p class="post-excerpt">A sneak peek at the features launching with our early access release, from unified inbox management to intelligent content filtering.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                    <!-- Sample Blog Post 4 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">July 28, 2025</time>
+                            <span class="post-category">Design</span>
+                        </div>
+                        <h2 class="post-title">Designing for digital minimalism</h2>
+                        <p class="post-excerpt">The design principles guiding our interface: clean lines, meaningful interactions, and spaces that feel calm rather than chaotic.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                    <!-- Sample Blog Post 5 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">July 20, 2025</time>
+                            <span class="post-category">Story</span>
+                        </div>
+                        <h2 class="post-title">Why we started building this</h2>
+                        <p class="post-excerpt">The personal story behind creating a calmer way to keep up with the content that matters, and why we believe the current solutions aren't enough.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                    <!-- Sample Blog Post 6 -->
+                    <article class="blog-post">
+                        <div class="post-header">
+                            <time class="post-date">July 15, 2025</time>
+                            <span class="post-category">Technology</span>
+                        </div>
+                        <h2 class="post-title">The tech stack behind calm</h2>
+                        <p class="post-excerpt">A technical deep-dive into how we're building infrastructure that's fast, reliable, and privacy-focused to support thoughtful content consumption.</p>
+                        <a href="#" class="post-link">Read more →</a>
+                    </article>
+                    
+                </div>
+                
+                <!-- Newsletter Signup -->
+                <section class="blog-newsletter">
+                    <div class="newsletter-content">
+                        <h3 class="newsletter-title">Stay updated</h3>
+                        <p class="newsletter-subtitle">Get notified when we publish new thoughts on calmer content consumption.</p>
+                        <div style="display: flex; gap: 16px; justify-content: center; margin: 24px 0;">
+                            <button class="submit-btn" onclick="signUp()">Join Waitlist</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="blog-footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 A calmer way to keep up. Building something peaceful.</p>
+                <div class="footer-links">
+                    <a href="/manifesto.html" class="footer-link">Manifesto</a>
+                    <a href="/pricing.html" class="footer-link">Pricing</a>
+                    <a href="/blog.html" class="footer-link">Blog</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        // Initialize PostHog with config from server
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, {
+                        api_host: config.host,
+                        debug: true,
+                        loaded: function(posthog) {
+                            console.log('✅ PostHog loaded successfully');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to initialize PostHog:', error);
+            }
+        }
+        
+        initPostHog();
+        
+        function signUp() {
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('signup_clicked', {
+                    page: 'blog'
+                });
+            }
+            window.location.href = '/auth/google';
+        }
+        
+        // Track page view
+        if (typeof posthog !== 'undefined') {
+            posthog.capture('$pageview', {
+                page: 'blog'
+            });
+        }
+    </script>
+</body>
+</html>

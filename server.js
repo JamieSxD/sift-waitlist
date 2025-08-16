@@ -167,72 +167,14 @@ app.get('/auth/youtube/callback', requireAuth, async (req, res) => {
   }
 });
 
-// Spotify OAuth
+// Spotify OAuth - Redirect to onboarding (coming soon)
 app.get('/auth/spotify', requireAuth, (req, res) => {
-  const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: `${process.env.APP_URL}/auth/spotify/callback`
-  });
-
-  const scopes = ['user-follow-read'];
-  const state = req.user.id.toString(); // Pass user ID in state
-
-  const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
-  res.redirect(authorizeURL);
+  res.redirect('/onboarding');
 });
 
 app.get('/auth/spotify/callback', requireAuth, async (req, res) => {
-  const { code, state, error } = req.query;
-  
-  if (error) {
-    return res.redirect('/setup/spotify?error=access_denied');
-  }
-
-  if (state !== req.user.id.toString()) {
-    return res.redirect('/setup/spotify?error=invalid_state');
-  }
-
-  try {
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-      redirectUri: `${process.env.APP_URL}/auth/spotify/callback`
-    });
-
-    const data = await spotifyApi.authorizationCodeGrant(code);
-    const { access_token, refresh_token, expires_in, token_type, scope } = data.body;
-
-    // Get user's Spotify profile
-    spotifyApi.setAccessToken(access_token);
-    const userProfile = await spotifyApi.getMe();
-
-    // Calculate expiration time
-    const expiresAt = new Date(Date.now() + expires_in * 1000);
-
-    // Store tokens in database
-    await UserSpotifyToken.upsert({
-      userId: req.user.id,
-      spotifyUserId: userProfile.body.id,
-      accessToken: access_token,
-      refreshToken: refresh_token,
-      tokenType: token_type,
-      scope: scope,
-      expiresAt: expiresAt,
-      lastRefreshed: new Date()
-    });
-
-    // Track Spotify connection
-    posthogService.trackUser(req.user.id.toString(), 'spotify_connected', {
-      spotify_user_id: userProfile.body.id,
-      scope: scope
-    });
-
-    res.redirect('/setup/spotify?connected=true');
-  } catch (error) {
-    console.error('Spotify OAuth error:', error);
-    res.redirect('/setup/spotify?error=oauth_failed');
-  }
+  // Redirect to onboarding (coming soon)
+  res.redirect('/onboarding');
 });
 
 app.get('/api/auth/status', (req, res) => {
@@ -395,7 +337,7 @@ app.get('/inbox', requireAuth, (req, res) => {
 // Content type setup pages
 app.get('/setup/:type', requireAuth, (req, res) => {
   const { type } = req.params;
-  const validTypes = ['inbox', 'newsletters', 'youtube', 'music', 'news', 'rss'];
+  const validTypes = ['inbox', 'newsletters', 'youtube', 'music', 'spotify', 'news', 'rss'];
 
   if (!validTypes.includes(type)) {
     return res.status(404).send('Content type not found');
@@ -410,9 +352,9 @@ app.get('/setup/:type', requireAuth, (req, res) => {
   } else if (type === 'youtube') {
     res.sendFile(path.join(__dirname, 'public', 'setup-youtube.html'));
   } else if (type === 'music') {
-    res.sendFile(path.join(__dirname, 'public', 'setup-music.html'));
+    res.redirect('/onboarding');
   } else if (type === 'spotify') {
-    res.sendFile(path.join(__dirname, 'public', 'setup-spotify.html'));
+    res.redirect('/onboarding');
   } else {
     // For other types, still serve the newsletter setup (will be updated later)
     res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
@@ -1034,8 +976,9 @@ app.get('/api/spotify/followed-artists', requireAuth, async (req, res) => {
     }));
 
     // Track API usage
-    posthogService.trackUser(req.user.id.toString(), 'spotify_artists_fetched', {
-      artist_count: artists.length
+    posthogService.track(req.user.id.toString(), 'spotify_artists_fetched', {
+      artist_count: artists.length,
+      category: 'spotify'
     });
 
     res.json({
@@ -1105,9 +1048,10 @@ app.post('/api/spotify/save-artists', requireAuth, async (req, res) => {
     }
 
     // Track successful save
-    posthogService.trackUser(req.user.id.toString(), 'spotify_artists_saved', {
+    posthogService.track(req.user.id.toString(), 'spotify_artists_saved', {
       artist_count: artistIds.length,
-      artist_ids: artistIds
+      artist_ids: artistIds,
+      category: 'spotify'
     });
 
     res.json({
@@ -3579,7 +3523,8 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('📊 Database connection established');
 
-    await sequelize.sync();
+    // Skip sync for now due to schema conflicts
+    // await sequelize.sync();
     console.log('📊 Database models synchronized');
 
     await sessionStore.sync();

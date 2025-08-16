@@ -89,6 +89,17 @@
             background: #F8F9FF;
         }
 
+        .content-type-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .content-type-card.disabled:hover {
+            border-color: #E0E0E0;
+            transform: none;
+            box-shadow: none;
+        }
+
         .content-icon {
             width: 48px;
             height: 48px;
@@ -137,6 +148,19 @@
             border-color: #6C7BFF;
             color: #6C7BFF;
             background: white;
+        }
+
+        .add-sources-btn.disabled {
+            background: #F3F4F6;
+            color: #9CA3AF;
+            border-color: #E5E7EB;
+            cursor: not-allowed;
+        }
+
+        .content-type-card.disabled:hover .add-sources-btn.disabled {
+            border-color: #E5E7EB;
+            color: #9CA3AF;
+            background: #F3F4F6;
         }
 
         .onboarding-actions {
@@ -256,13 +280,13 @@
                 </div>
 
                 <!-- Music -->
-                <div class="content-type-card" data-type="music" onclick="selectContentType(this, 'music')">
+                <div class="content-type-card disabled" data-type="music">
                     <div>
                         <div class="content-icon music">🎵</div>
                         <h3 class="content-type-title">Music Releases</h3>
                         <p class="content-type-description">Track new releases from Spotify and Apple Music</p>
                     </div>
-                    <button class="add-sources-btn">Add Sources</button>
+                    <button class="add-sources-btn disabled">Coming Soon</button>
                 </div>
 
                 <!-- News & Blogs -->

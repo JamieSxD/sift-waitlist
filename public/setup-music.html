@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Setup - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+    <style>
+        .setup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #FDFCFB 0%, #F8F7F6 100%);
+        }
+
+        .setup-content {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 48px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .setup-header {
+            margin-bottom: 40px;
+        }
+
+        .music-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .setup-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .music-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .service-card:hover {
+            border-color: #6366F1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .service-card.available {
+            border-color: #10B981;
+            background: #F0FDF4;
+        }
+
+        .service-card.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: white;
+        }
+
+        .service-icon.spotify { background: #1DB954; }
+        .service-icon.apple { background: #FA4C56; }
+
+        .service-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 12px;
+        }
+
+        .service-description {
+            font-size: 14px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .service-features {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .feature-check {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .connect-button {
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .connect-button:hover {
+            background: #374151;
+        }
+
+        .connect-button.spotify {
+            background: #1DB954;
+        }
+
+        .connect-button.spotify:hover {
+            background: #1AAE4F;
+        }
+
+        .connect-button.coming-soon {
+            background: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #10B981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.coming-soon {
+            background: #F59E0B;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .nav-button {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button.secondary {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #E5E7EB;
+        }
+
+        .nav-button.secondary:hover {
+            color: #1E1E1E;
+            border-color: #6366F1;
+        }
+
+        @media (max-width: 768px) {
+            .setup-content {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+
+            .setup-title {
+                font-size: 24px;
+            }
+
+            .music-services {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-content">
+            <!-- Header -->
+            <div class="setup-header">
+                <div class="music-icon">🎵</div>
+                <h1 class="setup-title">Music Release Tracking</h1>
+                <p class="setup-subtitle">Connect your music streaming services to get notified about new releases from artists you follow</p>
+            </div>
+
+            <!-- Music Services -->
+            <div class="music-services">
+                <!-- Spotify Card -->
+                <div class="service-card available" onclick="connectSpotify()">
+                    <div class="status-badge">Available</div>
+                    <div class="service-icon spotify">🎵</div>
+                    <h3 class="service-title">Spotify</h3>
+                    <p class="service-description">Track new releases from artists you follow on Spotify</p>
+                    
+                    <div class="service-features">
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Import followed artists automatically</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>New albums and singles</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Daily release notifications</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Select specific artists to follow</span>
+                        </div>
+                    </div>
+
+                    <button class="connect-button spotify" onclick="connectSpotify(event)">
+                        Connect Spotify Account
+                    </button>
+                </div>
+
+                <!-- Apple Music Card -->
+                <div class="service-card coming-soon">
+                    <div class="status-badge coming-soon">Coming Soon</div>
+                    <div class="service-icon apple">🍎</div>
+                    <h3 class="service-title">Apple Music</h3>
+                    <p class="service-description">Track releases from Apple Music (coming in a future update)</p>
+                    
+                    <div class="service-features">
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Import library artists</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>New albums and singles</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Integration with Apple Music</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-check">✓</span>
+                            <span>Unified music dashboard</span>
+                        </div>
+                    </div>
+
+                    <button class="connect-button coming-soon" disabled>
+                        Coming Soon
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation-buttons">
+                <a href="/onboarding" class="nav-button secondary">← Back to Setup</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize PostHog
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, { api_host: config.host });
+                    posthog.capture('$pageview', { page: 'setup_music' });
+                }
+            } catch (error) { 
+                console.warn('Failed to initialize PostHog:', error); 
+            }
+        }
+
+        function connectSpotify(event) {
+            if (event) event.stopPropagation();
+            
+            // Track Spotify connection attempt
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('spotify_setup_started', {
+                    source: 'music_setup_page'
+                });
+            }
+
+            // Redirect to Spotify setup
+            window.location.href = '/setup/spotify';
+        }
+
+        // Check completion status
+        function checkCompletionStatus() {
+            const spotifyComplete = localStorage.getItem('spotifySetupComplete') === 'true';
+            const spotifyCard = document.querySelector('.service-card.available');
+            const spotifyButton = spotifyCard.querySelector('.connect-button');
+            
+            if (spotifyComplete) {
+                spotifyButton.textContent = '✅ Connected';
+                spotifyButton.style.backgroundColor = '#10B981';
+                spotifyCard.style.borderColor = '#10B981';
+                spotifyCard.style.background = '#F0FDF4';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initPostHog();
+            checkCompletionStatus();
+        });
+    </script>
+</body>
+</html>

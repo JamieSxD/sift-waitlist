@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Spotify - Sift</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+    <style>
+        .setup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #FDFCFB 0%, #F8F7F6 100%);
+        }
+
+        .setup-content {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 48px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .setup-header {
+            margin-bottom: 40px;
+        }
+
+        .spotify-icon {
+            width: 64px;
+            height: 64px;
+            background: #1DB954;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .setup-subtitle {
+            font-size: 16px;
+            color: #71717A;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .features-list {
+            text-align: left;
+            margin-bottom: 40px;
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .features-list h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #10B981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .connection-status {
+            background: #F3F4F6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+            display: none;
+        }
+
+        .connection-status.connected {
+            background: #ECFDF5;
+            border: 1px solid #D1FAE5;
+            display: block;
+        }
+
+        .connection-status.error {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            display: block;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 8px;
+            font-size: 20px;
+        }
+
+        .status-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .connection-status.connected .status-title {
+            color: #059669;
+        }
+
+        .connection-status.error .status-title {
+            color: #DC2626;
+        }
+
+        .status-message {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .connect-button {
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .connect-button:hover {
+            background: #1AAE4F;
+            transform: translateY(-1px);
+        }
+
+        .connect-button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .artist-selection {
+            display: none;
+            text-align: left;
+        }
+
+        .artist-selection.visible {
+            display: block;
+        }
+
+        .selection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .selection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E1E1E;
+        }
+
+        .select-all-toggle {
+            font-size: 14px;
+            color: #6366F1;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .select-all-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+
+        .artist-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .artist-card:hover {
+            border-color: #6366F1;
+            transform: translateY(-1px);
+        }
+
+        .artist-card.selected {
+            border-color: #6366F1;
+            background: #F8F9FF;
+        }
+
+        .artist-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #9CA3AF;
+        }
+
+        .artist-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .artist-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E1E1E;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .artist-followers {
+            font-size: 11px;
+            color: #71717A;
+        }
+
+        .save-button {
+            background: #1E1E1E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .save-button:hover {
+            background: #374151;
+        }
+
+        .save-button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .nav-button {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button.secondary {
+            background: transparent;
+            color: #71717A;
+            border: 1px solid #E5E7EB;
+        }
+
+        .nav-button.secondary:hover {
+            color: #1E1E1E;
+            border-color: #6366F1;
+        }
+
+        @media (max-width: 768px) {
+            .setup-content {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+
+            .setup-title {
+                font-size: 24px;
+            }
+
+            .artists-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 8px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-content">
+            <!-- Header -->
+            <div class="setup-header">
+                <div class="spotify-icon">🎵</div>
+                <h1 class="setup-title">Connect Your Spotify</h1>
+                <p class="setup-subtitle">Get notified about new releases from artists you follow on Spotify</p>
+            </div>
+
+            <!-- Features -->
+            <div class="features-list">
+                <h4>What you'll get:</h4>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Automatic notifications for new albums and singles</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Choose which artists to follow for releases</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Fresh releases delivered to your dashboard daily</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">No more missed releases from your favorite artists</div>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="connection-status" id="connectionStatus">
+                <div class="status-icon" id="statusIcon"></div>
+                <div class="status-title" id="statusTitle"></div>
+                <div class="status-message" id="statusMessage"></div>
+            </div>
+
+            <!-- Connect Button -->
+            <button class="connect-button" id="connectButton" onclick="connectSpotify()">
+                <span id="buttonText">Connect with Spotify</span>
+                <span class="loading-spinner" id="loadingSpinner" style="display: none;"></span>
+            </button>
+
+            <!-- Artist Selection -->
+            <div class="artist-selection" id="artistSelection">
+                <div class="selection-header">
+                    <h3 class="selection-title">Select Artists to Follow</h3>
+                    <span class="select-all-toggle" id="selectAllToggle" onclick="toggleSelectAll()">Select All</span>
+                </div>
+
+                <div class="artists-grid" id="artistsGrid">
+                    <!-- Artists will be populated here -->
+                </div>
+
+                <button class="save-button" id="saveButton" onclick="saveArtistSelection()" disabled>
+                    Save Selection (<span id="selectedCount">0</span> artists)
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation-buttons">
+                <a href="/onboarding" class="nav-button secondary">← Back to Setup</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let followedArtists = [];
+        let selectedArtists = new Set();
+        let allSelected = false;
+
+        // Initialize PostHog
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, { api_host: config.host });
+                    posthog.capture('$pageview', { page: 'setup_spotify' });
+                }
+            } catch (error) { 
+                console.warn('Failed to initialize PostHog:', error); 
+            }
+        }
+
+        async function connectSpotify() {
+            const connectButton = document.getElementById('connectButton');
+            const buttonText = document.getElementById('buttonText');
+            const spinner = document.getElementById('loadingSpinner');
+
+            // Show loading state
+            connectButton.disabled = true;
+            buttonText.textContent = 'Connecting...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                // Track connection attempt
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('spotify_connect_attempt');
+                }
+
+                // Redirect to Spotify OAuth
+                window.location.href = '/auth/spotify';
+            } catch (error) {
+                console.error('Error connecting to Spotify:', error);
+                showConnectionStatus('error', 'Connection Failed', 'Unable to connect to Spotify. Please try again.');
+                
+                // Reset button state
+                connectButton.disabled = false;
+                buttonText.textContent = 'Connect with Spotify';
+                spinner.style.display = 'none';
+            }
+        }
+
+        function showConnectionStatus(type, title, message) {
+            const statusContainer = document.getElementById('connectionStatus');
+            const statusIcon = document.getElementById('statusIcon');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+
+            statusContainer.className = `connection-status ${type}`;
+            statusIcon.textContent = type === 'connected' ? '✅' : '❌';
+            statusTitle.textContent = title;
+            statusMessage.textContent = message;
+        }
+
+        async function loadFollowedArtists() {
+            try {
+                const response = await fetch('/api/spotify/followed-artists');
+                if (!response.ok) throw new Error('Failed to load artists');
+                
+                const data = await response.json();
+                followedArtists = data.artists;
+                
+                displayArtists();
+                
+                // Show artist selection
+                document.getElementById('artistSelection').classList.add('visible');
+                document.getElementById('connectButton').style.display = 'none';
+                
+                showConnectionStatus('connected', 'Connected Successfully', 
+                    `Found ${followedArtists.length} artists you follow on Spotify`);
+
+            } catch (error) {
+                console.error('Error loading artists:', error);
+                showConnectionStatus('error', 'Failed to Load Artists', 
+                    'Unable to fetch your followed artists. Please try reconnecting.');
+            }
+        }
+
+        function displayArtists() {
+            const grid = document.getElementById('artistsGrid');
+            grid.innerHTML = '';
+
+            followedArtists.forEach(artist => {
+                const artistCard = document.createElement('div');
+                artistCard.className = 'artist-card';
+                artistCard.onclick = () => toggleArtistSelection(artist.id, artistCard);
+
+                const imageUrl = artist.images && artist.images.length > 0 
+                    ? artist.images[0].url 
+                    : null;
+
+                artistCard.innerHTML = `
+                    <div class="artist-image">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${artist.name}">` : '🎤'}
+                    </div>
+                    <div class="artist-name">${artist.name}</div>
+                    <div class="artist-followers">${formatFollowers(artist.followers?.total || 0)}</div>
+                `;
+
+                grid.appendChild(artistCard);
+            });
+        }
+
+        function toggleArtistSelection(artistId, cardElement) {
+            if (selectedArtists.has(artistId)) {
+                selectedArtists.delete(artistId);
+                cardElement.classList.remove('selected');
+            } else {
+                selectedArtists.add(artistId);
+                cardElement.classList.add('selected');
+            }
+
+            updateSelectionCount();
+            updateSelectAllToggle();
+        }
+
+        function toggleSelectAll() {
+            const grid = document.getElementById('artistsGrid');
+            const cards = grid.querySelectorAll('.artist-card');
+
+            if (allSelected) {
+                // Deselect all
+                selectedArtists.clear();
+                cards.forEach(card => card.classList.remove('selected'));
+            } else {
+                // Select all
+                followedArtists.forEach(artist => selectedArtists.add(artist.id));
+                cards.forEach(card => card.classList.add('selected'));
+            }
+
+            allSelected = !allSelected;
+            updateSelectionCount();
+            updateSelectAllToggle();
+        }
+
+        function updateSelectAllToggle() {
+            const toggle = document.getElementById('selectAllToggle');
+            allSelected = selectedArtists.size === followedArtists.length;
+            toggle.textContent = allSelected ? 'Deselect All' : 'Select All';
+        }
+
+        function updateSelectionCount() {
+            const count = document.getElementById('selectedCount');
+            const saveButton = document.getElementById('saveButton');
+            
+            count.textContent = selectedArtists.size;
+            saveButton.disabled = selectedArtists.size === 0;
+        }
+
+        async function saveArtistSelection() {
+            const saveButton = document.getElementById('saveButton');
+            const originalText = saveButton.textContent;
+            
+            saveButton.disabled = true;
+            saveButton.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/api/spotify/save-artists', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        artistIds: Array.from(selectedArtists)
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to save selection');
+
+                // Track successful save
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('spotify_artists_saved', {
+                        artist_count: selectedArtists.size
+                    });
+                }
+
+                // Mark as completed
+                localStorage.setItem('spotifySetupComplete', 'true');
+                
+                // Redirect to dashboard or next setup step
+                window.location.href = '/dashboard';
+                
+            } catch (error) {
+                console.error('Error saving artists:', error);
+                alert('Failed to save your selection. Please try again.');
+                
+                saveButton.disabled = false;
+                saveButton.textContent = originalText;
+            }
+        }
+
+        function formatFollowers(count) {
+            if (count >= 1000000) {
+                return `${(count / 1000000).toFixed(1)}M followers`;
+            } else if (count >= 1000) {
+                return `${(count / 1000).toFixed(1)}K followers`;
+            } else {
+                return `${count} followers`;
+            }
+        }
+
+        // Check if user is returning from Spotify OAuth
+        document.addEventListener('DOMContentLoaded', () => {
+            initPostHog();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('connected') === 'true') {
+                loadFollowedArtists();
+            } else if (urlParams.get('error')) {
+                showConnectionStatus('error', 'Connection Failed', 
+                    urlParams.get('error') || 'An error occurred during connection');
+            }
+        });
+    </script>
+</body>
+</html>

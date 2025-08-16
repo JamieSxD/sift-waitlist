@@ -8,6 +8,10 @@ const { NewsletterContent, UserContentInteraction } = require('./NewsletterConte
 const YouTubeChannel = require('./YouTubeChannel');
 const UserYouTubeSubscription = require('./UserYouTubeSubscription');
 const { YouTubeVideo, UserYouTubeVideoInteraction } = require('./YouTubeVideo');
+const SpotifyArtist = require('./SpotifyArtist');
+const UserSpotifySubscription = require('./UserSpotifySubscription');
+const { SpotifyRelease, UserSpotifyReleaseInteraction } = require('./SpotifyRelease');
+const UserSpotifyToken = require('./UserSpotifyToken');
 
 // Define associations
 
@@ -159,6 +163,69 @@ UserYouTubeVideoInteraction.belongsTo(YouTubeVideo, {
   as: 'video'
 });
 
+// Spotify associations
+User.hasMany(UserSpotifySubscription, {
+  foreignKey: 'userId',
+  as: 'spotifySubscriptions'
+});
+
+UserSpotifySubscription.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+SpotifyArtist.hasMany(UserSpotifySubscription, {
+  foreignKey: 'spotifyArtistId',
+  as: 'userSubscriptions'
+});
+
+UserSpotifySubscription.belongsTo(SpotifyArtist, {
+  foreignKey: 'spotifyArtistId',
+  as: 'spotifyArtist'
+});
+
+SpotifyArtist.hasMany(SpotifyRelease, {
+  foreignKey: 'spotifyArtistId',
+  as: 'releases'
+});
+
+SpotifyRelease.belongsTo(SpotifyArtist, {
+  foreignKey: 'spotifyArtistId',
+  as: 'spotifyArtist'
+});
+
+// Spotify Release Interaction associations
+User.hasMany(UserSpotifyReleaseInteraction, {
+  foreignKey: 'userId',
+  as: 'spotifyReleaseInteractions'
+});
+
+UserSpotifyReleaseInteraction.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+SpotifyRelease.hasMany(UserSpotifyReleaseInteraction, {
+  foreignKey: 'spotifyReleaseId',
+  as: 'userInteractions'
+});
+
+UserSpotifyReleaseInteraction.belongsTo(SpotifyRelease, {
+  foreignKey: 'spotifyReleaseId',
+  as: 'release'
+});
+
+// User Spotify Token associations
+User.hasOne(UserSpotifyToken, {
+  foreignKey: 'userId',
+  as: 'spotifyToken'
+});
+
+UserSpotifyToken.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
 module.exports = {
   sequelize,
   User,
@@ -172,4 +239,9 @@ module.exports = {
   UserYouTubeSubscription,
   YouTubeVideo,
   UserYouTubeVideoInteraction,
+  SpotifyArtist,
+  UserSpotifySubscription,
+  SpotifyRelease,
+  UserSpotifyReleaseInteraction,
+  UserSpotifyToken,
 };

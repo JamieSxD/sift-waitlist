@@ -10,10 +10,13 @@ const path = require('path');
 
 // Import database and models
 const sequelize = require('./config/database');
-const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction, YouTubeChannel, UserYouTubeSubscription, YouTubeVideo, UserYouTubeVideoInteraction } = require('./models');
+const { User, NewsletterSource, NewsletterSubscription, UserNewsletterSubscription, UserBlockList, NewsletterContent, UserContentInteraction, YouTubeChannel, UserYouTubeSubscription, YouTubeVideo, UserYouTubeVideoInteraction, SpotifyArtist, UserSpotifySubscription, SpotifyRelease, UserSpotifyReleaseInteraction, UserSpotifyToken } = require('./models');
 
 // Import YouTube API
 const { google } = require('googleapis');
+
+// Import Spotify API
+const SpotifyWebApi = require('spotify-web-api-node');
 
 const contentExtractionService = require('./services/contentExtraction');
 
@@ -161,6 +164,74 @@ app.get('/auth/youtube/callback', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('YouTube OAuth error:', error);
     res.redirect('/setup/youtube?error=oauth_failed');
+  }
+});
+
+// Spotify OAuth
+app.get('/auth/spotify', requireAuth, (req, res) => {
+  const spotifyApi = new SpotifyWebApi({
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    redirectUri: `${process.env.APP_URL}/auth/spotify/callback`
+  });
+
+  const scopes = ['user-follow-read'];
+  const state = req.user.id.toString(); // Pass user ID in state
+
+  const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+  res.redirect(authorizeURL);
+});
+
+app.get('/auth/spotify/callback', requireAuth, async (req, res) => {
+  const { code, state, error } = req.query;
+  
+  if (error) {
+    return res.redirect('/setup/spotify?error=access_denied');
+  }
+
+  if (state !== req.user.id.toString()) {
+    return res.redirect('/setup/spotify?error=invalid_state');
+  }
+
+  try {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      redirectUri: `${process.env.APP_URL}/auth/spotify/callback`
+    });
+
+    const data = await spotifyApi.authorizationCodeGrant(code);
+    const { access_token, refresh_token, expires_in, token_type, scope } = data.body;
+
+    // Get user's Spotify profile
+    spotifyApi.setAccessToken(access_token);
+    const userProfile = await spotifyApi.getMe();
+
+    // Calculate expiration time
+    const expiresAt = new Date(Date.now() + expires_in * 1000);
+
+    // Store tokens in database
+    await UserSpotifyToken.upsert({
+      userId: req.user.id,
+      spotifyUserId: userProfile.body.id,
+      accessToken: access_token,
+      refreshToken: refresh_token,
+      tokenType: token_type,
+      scope: scope,
+      expiresAt: expiresAt,
+      lastRefreshed: new Date()
+    });
+
+    // Track Spotify connection
+    posthogService.trackUser(req.user.id.toString(), 'spotify_connected', {
+      spotify_user_id: userProfile.body.id,
+      scope: scope
+    });
+
+    res.redirect('/setup/spotify?connected=true');
+  } catch (error) {
+    console.error('Spotify OAuth error:', error);
+    res.redirect('/setup/spotify?error=oauth_failed');
   }
 });
 
@@ -333,6 +404,10 @@ app.get('/setup/:type', requireAuth, (req, res) => {
     res.redirect('/setup/inbox');
   } else if (type === 'youtube') {
     res.sendFile(path.join(__dirname, 'public', 'setup-youtube.html'));
+  } else if (type === 'music') {
+    res.sendFile(path.join(__dirname, 'public', 'setup-music.html'));
+  } else if (type === 'spotify') {
+    res.sendFile(path.join(__dirname, 'public', 'setup-spotify.html'));
   } else {
     // For other types, still serve the newsletter setup (will be updated later)
     res.sendFile(path.join(__dirname, 'public', 'setup-newsletters.html'));
@@ -896,6 +971,151 @@ app.get('/api/user/has-content', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       hasContent: false
+    });
+  }
+});
+
+// Spotify API endpoints
+app.get('/api/spotify/followed-artists', requireAuth, async (req, res) => {
+  try {
+    // Get user's Spotify token
+    const userToken = await UserSpotifyToken.findOne({
+      where: { userId: req.user.id }
+    });
+
+    if (!userToken) {
+      return res.status(401).json({
+        success: false,
+        error: 'No Spotify connection found'
+      });
+    }
+
+    // Check if token is expired and refresh if needed
+    if (new Date() >= userToken.expiresAt) {
+      const spotifyApi = new SpotifyWebApi({
+        clientId: process.env.SPOTIFY_CLIENT_ID,
+        clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+      });
+
+      spotifyApi.setRefreshToken(userToken.refreshToken);
+      const refreshData = await spotifyApi.refreshAccessToken();
+      
+      const newExpiresAt = new Date(Date.now() + refreshData.body.expires_in * 1000);
+      
+      await userToken.update({
+        accessToken: refreshData.body.access_token,
+        expiresAt: newExpiresAt,
+        lastRefreshed: new Date()
+      });
+      
+      userToken.accessToken = refreshData.body.access_token;
+    }
+
+    // Get followed artists from Spotify
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(userToken.accessToken);
+
+    const followedArtists = await spotifyApi.getFollowedArtists({ limit: 50 });
+    
+    // Format artists for frontend
+    const artists = followedArtists.body.artists.items.map(artist => ({
+      id: artist.id,
+      name: artist.name,
+      images: artist.images,
+      followers: artist.followers,
+      genres: artist.genres,
+      popularity: artist.popularity,
+      external_urls: artist.external_urls
+    }));
+
+    // Track API usage
+    posthogService.trackUser(req.user.id.toString(), 'spotify_artists_fetched', {
+      artist_count: artists.length
+    });
+
+    res.json({
+      success: true,
+      artists: artists
+    });
+
+  } catch (error) {
+    console.error('Error fetching Spotify artists:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch followed artists'
+    });
+  }
+});
+
+app.post('/api/spotify/save-artists', requireAuth, async (req, res) => {
+  try {
+    const { artistIds } = req.body;
+
+    if (!Array.isArray(artistIds) || artistIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No artists selected'
+      });
+    }
+
+    // Get user's Spotify token to fetch artist details
+    const userToken = await UserSpotifyToken.findOne({
+      where: { userId: req.user.id }
+    });
+
+    if (!userToken) {
+      return res.status(401).json({
+        success: false,
+        error: 'No Spotify connection found'
+      });
+    }
+
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(userToken.accessToken);
+
+    // Get artist details from Spotify
+    const artistsResponse = await spotifyApi.getArtists(artistIds);
+    const artists = artistsResponse.body.artists;
+
+    // Save artists to database (upsert to avoid duplicates)
+    for (const artist of artists) {
+      await SpotifyArtist.upsert({
+        id: artist.id,
+        name: artist.name,
+        imageUrl: artist.images?.[0]?.url || null,
+        genres: JSON.stringify(artist.genres),
+        popularity: artist.popularity,
+        followers: artist.followers?.total || 0,
+        externalUrl: artist.external_urls?.spotify || null,
+        lastChecked: new Date()
+      });
+
+      // Create user subscription
+      await UserSpotifySubscription.upsert({
+        userId: req.user.id,
+        spotifyArtistId: artist.id,
+        enabled: true,
+        addedAt: new Date()
+      });
+    }
+
+    // Track successful save
+    posthogService.trackUser(req.user.id.toString(), 'spotify_artists_saved', {
+      artist_count: artistIds.length,
+      artist_ids: artistIds
+    });
+
+    res.json({
+      success: true,
+      message: `Successfully saved ${artistIds.length} artists`,
+      artistCount: artistIds.length
+    });
+
+  } catch (error) {
+    console.error('Error saving Spotify artists:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save artist selection'
     });
   }
 });

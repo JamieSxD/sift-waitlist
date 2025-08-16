@@ -344,7 +344,12 @@ app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/dashboard');
   }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+// Manifesto page
+app.get('/manifesto', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'manifesto.html'));
 });
 
 // Dashboard - redirects to onboarding if no content

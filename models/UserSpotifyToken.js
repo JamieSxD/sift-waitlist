@@ -8,10 +8,10 @@ const UserSpotifyToken = sequelize.define('UserSpotifyToken', {
     autoIncrement: true,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'users',
+      model: 'Users',
       key: 'id',
     },
   },

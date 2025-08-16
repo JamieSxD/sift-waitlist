@@ -74,10 +74,10 @@ const UserSpotifyReleaseInteraction = sequelize.define('UserSpotifyReleaseIntera
     autoIncrement: true,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'users',
+      model: 'Users',
       key: 'id',
     },
   },

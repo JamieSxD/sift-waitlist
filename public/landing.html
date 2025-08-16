@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A calmer way to keep up - Sift</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="A new space for the content that matters – minus the noise. Join thousands practicing intentional content consumption.">
+    <meta name="keywords" content="newsletter aggregator, youtube curation, content management, digital minimalism, mindful consumption">
+    <meta name="author" content="Sift">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="A calmer way to keep up - Sift">
+    <meta property="og:description" content="A new space for the content that matters – minus the noise.">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A calmer way to keep up - Sift">
+    <meta name="twitter:description" content="A new space for the content that matters – minus the noise.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- PostHog -->
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    </script>
+
+    <style>
+        :root {
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #6b7280;
+            --accent: #6C7BFF;
+            --accent-light: #8B5DFF;
+            --background: #fefefe;
+            --section-bg: #f8f9fa;
+            --border: #e5e7eb;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .nav-logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        /* Offset for fixed header */
+        #features, #how-it-works, #pricing {
+            scroll-margin-top: 100px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 140px 0 100px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 123, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .hero-demo {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+
+        .hero-demo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 24px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(108, 123, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px auto;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .feature-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* How It Works Section */
+        .how-it-works-section {
+            padding: 100px 0;
+            background: var(--section-bg);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 24px auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-card:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: calc(100% - 30px);
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .step-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(108, 123, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .plan-description {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 32px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .feature-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--text-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .pricing-cta:hover {
+            background: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+
+        .pricing-cta.featured {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        }
+
+        .pricing-cta.featured:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(108, 123, 255, 0.3);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 0;
+            background: var(--section-bg);
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent);
+        }
+
+        .faq-question {
+            padding: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 0;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .faq-toggle {
+            font-size: 20px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .faq-item.open .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 24px 24px 24px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            display: none;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 20px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-card:not(:last-child)::after {
+                display: none;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-section {
+                padding-top: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="nav-logo">
+                    <div class="nav-logo-icon">🌱</div>
+                    <div class="nav-logo-text">Sift</div>
+                </a>
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#how-it-works" class="nav-link">How it Works</a>
+                    <a href="#pricing" class="nav-link">Pricing</a>
+                    <a href="/manifesto" class="nav-link">Manifesto</a>
+                    <a href="/auth/google" class="nav-link">Sign In</a>
+                    <a href="/auth/google" class="nav-cta">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">A calmer way to keep up.</h1>
+            <p class="hero-subtitle">A new space for the content that matters – minus the noise.</p>
+            
+            <div class="hero-cta">
+                <a href="/auth/google" class="btn-primary">Start Free</a>
+                <a href="#features" class="btn-secondary">Learn More</a>
+            </div>
+
+            <div class="hero-demo">
+                <!-- Placeholder for product demo/screenshot -->
+                <div style="background: linear-gradient(135deg, #f0f0f0, #e5e5e5); height: 400px; display: flex; align-items: center; justify-content: center; color: #999;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🖼️</div>
+                        <div style="font-size: 18px;">Product Screenshot/Demo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Everything in one peaceful place</h2>
+                <p class="section-subtitle">Stop juggling dozens of apps and feeds. Bring your content together without the chaos.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3 class="feature-title">Newsletter Aggregation</h3>
+                    <p class="feature-description">Forward all your newsletters to one inbox. We'll extract, organize, and present them beautifully without the clutter.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📺</div>
+                    <h3 class="feature-title">YouTube Curation</h3>
+                    <p class="feature-description">Follow your favorite channels without getting lost in recommendations. See new videos in a clean, distraction-free interface.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Intentional Consumption</h3>
+                    <p class="feature-description">No algorithms deciding what you see. You choose what deserves your attention, creating a mindful content diet.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Smart Search</h3>
+                    <p class="feature-description">Find any piece of content instantly with full-text search across all your newsletters and saved videos.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Reading Analytics</h3>
+                    <p class="feature-description">Track your consumption habits and discover patterns to optimize your information diet for better focus.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3 class="feature-title">Peaceful Interface</h3>
+                    <p class="feature-description">Designed for calm, not engagement. No notifications, no infinite scroll, no distractions—just content you care about.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How it works</h2>
+                <p class="section-subtitle">Get started in minutes and transform how you consume content forever.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Connect Your Sources</h3>
+                    <p class="step-description">Link your Google account and get a unique email address for forwarding newsletters. Add your favorite YouTube channels.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Forward & Approve</h3>
+                    <p class="step-description">Forward newsletters to your Sift inbox. Approve senders once, and all future content from them appears automatically.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Consume Mindfully</h3>
+                    <p class="step-description">Everything appears in your personal dashboard, beautifully formatted and distraction-free. Read with intention, not impulse.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Simple, transparent pricing</h2>
+                <p class="section-subtitle">Start free and upgrade when you're ready. No hidden fees, cancel anytime.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-description">Perfect for trying out Sift</div>
+                    
+                    <div style="margin-bottom: 32px;">
+                        <div class="price">$0<span class="price-period">/month</span></div>
+                    </div>
+
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Up to 5 newsletter sources</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Up to 3 YouTube channels</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>7-day content history</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Basic content extraction</div>
+                        </li>
+                    </ul>
+
+                    <a href="/auth/google" class="pricing-cta">Start Free</a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card featured">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-description">For power users who want it all</div>
+                    
+                    <div style="margin-bottom: 32px;">
+                        <div class="price">$8<span class="price-period">/month</span></div>
+                    </div>
+
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Unlimited newsletter sources</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Unlimited YouTube channels</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Unlimited content history</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Advanced search & filtering</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Export to PDF, Markdown, Notion</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Reading analytics</div>
+                        </li>
+                    </ul>
+
+                    <a href="/auth/google" class="pricing-cta featured">Start Pro Trial</a>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="pricing-card">
+                    <div class="plan-name">Enterprise</div>
+                    <div class="plan-description">For teams and organizations</div>
+                    
+                    <div style="margin-bottom: 32px;">
+                        <div class="price">Custom</div>
+                    </div>
+
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Everything in Pro</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Team collaboration</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Admin controls</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Custom integrations</div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>Priority support</div>
+                        </li>
+                    </ul>
+
+                    <a href="mailto:hello@siftly.space" class="pricing-cta">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Everything you need to know about getting started with Sift</p>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How does newsletter forwarding work?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        When you sign up, you get a unique email address like jamie@inbox.siftly.space. Simply forward your newsletters to this address, and we'll extract and organize the content for you automatically.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Do I need to change my subscriptions?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        No! Keep your existing subscriptions exactly as they are. Just set up forwarding rules in your email client to automatically send newsletters to your Sift inbox.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What happens to my original emails?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Forwarding creates a copy—your original emails stay exactly where they are. You can still access them in your regular email client if needed.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How do you handle my data?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        We only process the content you forward to us. We never access your personal email account. All data is encrypted and you can export or delete it anytime.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Can I use this with any email provider?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! Gmail, Outlook, Apple Mail, and virtually every email provider supports forwarding. We'll provide setup instructions for the most popular clients.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What if I don't like a newsletter anymore?
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Simply block the sender in Sift, and future emails from them won't appear in your dashboard. You can also unsubscribe normally or remove the forwarding rule.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize PostHog
+        async function initPostHog() {
+            try {
+                const response = await fetch('/api/config/posthog');
+                const config = await response.json();
+                if (typeof posthog !== 'undefined' && config.apiKey) {
+                    posthog.init(config.apiKey, { api_host: config.host });
+                    posthog.capture('$pageview', { page: 'landing' });
+                }
+            } catch (error) { console.warn('Failed to initialize PostHog:', error); }
+        }
+        document.addEventListener('DOMContentLoaded', initPostHog);
+
+        // Navigation highlighting based on scroll position
+        function updateActiveNavLink() {
+            const sections = ['features', 'how-it-works', 'pricing'];
+            const scrollPos = window.scrollY + 150;
+            
+            let currentSection = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section && scrollPos >= section.offsetTop) {
+                    currentSection = sectionId;
+                }
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNavLink);
+        document.addEventListener('DOMContentLoaded', updateActiveNavLink);
+
+        // FAQ toggle
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const isOpen = faqItem.classList.contains('open');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('open');
+            });
+            
+            // Toggle current FAQ
+            if (!isOpen) {
+                faqItem.classList.add('open');
+                
+                // Track FAQ interaction
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('faq_question_opened', {
+                        question: button.textContent.replace('+', '').trim()
+                    });
+                }
+            }
+        }
+
+        // Track CTA clicks
+        document.querySelectorAll('.btn-primary, .btn-secondary, .pricing-cta').forEach(button => {
+            button.addEventListener('click', function() {
+                if (typeof posthog !== 'undefined') {
+                    const section = this.closest('section')?.id || 'unknown';
+                    posthog.capture('cta_clicked', { 
+                        button_text: this.textContent,
+                        section: section,
+                        button_type: this.className
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -88,20 +88,6 @@
             margin-top: 4px;
         }
 
-        .inbox-email-display {
-            background: #F8F9FA;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #E0E0E0;
-            margin-bottom: 16px;
-        }
-
-        .inbox-email {
-            font-family: monospace;
-            font-size: 16px;
-            color: #1E1E1E;
-            font-weight: 600;
-        }
 
         .btn-primary {
             background: #1E1E1E;
@@ -159,7 +145,7 @@
 
         <div class="settings-header">
             <h1 class="settings-title">Account Settings</h1>
-            <p class="settings-subtitle">Manage your account preferences and inbox settings</p>
+            <p class="settings-subtitle">Manage your account preferences</p>
         </div>
 
         <!-- Profile Settings -->
@@ -196,31 +182,6 @@
             </form>
         </div>
 
-        <!-- Inbox Settings -->
-        <div class="settings-section">
-            <h2 class="section-title">Inbox Settings</h2>
-            
-            <div class="form-group">
-                <label class="form-label">Your Inbox Address</label>
-                <div class="inbox-email-display">
-                    <div class="inbox-email" id="current-inbox-email">Loading...</div>
-                </div>
-                <div class="form-help">Forward your newsletters to this address</div>
-            </div>
-
-            <form id="inbox-form">
-                <div class="form-group">
-                    <label class="form-label" for="custom-prefix">Customize Your Inbox Address</label>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="text" id="custom-prefix" name="customInboxPrefix" class="form-input" placeholder="john" style="flex: 1;" />
-                        <span style="color: #71717A; font-size: 14px;">@inbox.siftly.space</span>
-                    </div>
-                    <div class="form-help">Choose a custom prefix for your inbox address (min 3 characters, letters and numbers only)</div>
-                </div>
-
-                <button type="submit" class="btn-primary">Update Inbox Address</button>
-            </form>
-        </div>
 
         <!-- Links -->
         <div class="settings-section">
@@ -277,13 +238,6 @@
                 if (data.isAuthenticated && data.user) {
                     document.getElementById('name').value = data.user.name || '';
                     document.getElementById('email').value = data.user.email || '';
-                    document.getElementById('current-inbox-email').textContent = data.user.inboxEmail || 'Not set';
-                    
-                    // Pre-fill custom prefix field with current prefix
-                    if (data.user.inboxEmail) {
-                        const currentPrefix = data.user.inboxEmail.split('@')[0];
-                        document.getElementById('custom-prefix').value = currentPrefix;
-                    }
                 } else {
                     window.location.href = '/';
                 }
@@ -332,45 +286,6 @@
             }
         });
 
-        // Update inbox address
-        document.getElementById('inbox-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const form = e.target;
-            const formData = new FormData(form);
-            const customPrefix = formData.get('customInboxPrefix');
-
-            if (!customPrefix || customPrefix.trim().length < 3) {
-                toastManager.show('Inbox prefix must be at least 3 characters long', 'error');
-                return;
-            }
-
-            try {
-                form.classList.add('loading');
-                
-                const response = await fetch('/api/user/settings', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ customInboxPrefix: customPrefix.trim() })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    toastManager.show('Inbox address updated successfully', 'success');
-                    document.getElementById('current-inbox-email').textContent = data.user.inboxEmail;
-                } else {
-                    toastManager.show(data.message || 'Failed to update inbox address', 'error');
-                }
-            } catch (error) {
-                console.error('Error updating inbox address:', error);
-                toastManager.show('Failed to update inbox address', 'error');
-            } finally {
-                form.classList.remove('loading');
-            }
-        });
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {

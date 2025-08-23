@@ -218,6 +218,14 @@ app.post('/api/user/settings', requireAuth, async (req, res) => {
     }
 
     if (customInboxPrefix) {
+      // Check if user already has an inbox email - prevent changes once set
+      if (req.user.inboxEmail) {
+        return res.status(400).json({
+          success: false,
+          message: 'Inbox email cannot be changed once set.'
+        });
+      }
+
       // Validate the custom prefix
       const cleanPrefix = customInboxPrefix.toLowerCase().replace(/[^a-z0-9]/g, '');
       
